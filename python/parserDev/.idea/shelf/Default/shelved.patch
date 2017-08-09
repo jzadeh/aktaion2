@@ -1,0 +1,479 @@
+Index: file_utils.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- file_utils.py	(revision )
++++ file_utils.py	(revision )
+@@ -0,0 +1,54 @@
++#This is part of the Kitware module Brothon, more info can be found here:
++# https://github.com/Kitware/BroThon/tree/master/brothon
++
++"""File utilities that might be useful"""
++import os
++
++
++def all_files_in_directory(path):
++    """Recursively list all files under a directory
++        Args:
++            path: the path of the directory to traverse
++        Returns:
++            a list of all the files contained withint the directory
++    """
++    file_list = []
++    for dirname, _dirnames, filenames in os.walk(path):
++        for filename in filenames:
++            # Skip OS Files
++            if filename != '.DS_Store':
++                file_list.append(os.path.join(dirname, filename))
++    return file_list
++
++
++def file_dir(file_path):
++    """Root directory for a file_path
++        Args:
++            file_path: a fully qualified file path
++        Returns:
++            the directory which contains the file
++    """
++    return os.path.dirname(os.path.realpath(file_path))
++
++
++def relative_dir(file_path, rel_dir):
++    """Relative directory to the file_path
++        Args:
++            file_path: a fully qualified file path
++        Returns:
++            the relative directory
++    """
++    return os.path.join(file_dir(file_path), rel_dir)
++
++
++def test_utils():
++    """Test the utility methods"""
++
++    path = relative_dir(__file__, '.')
++    print('Path: %s' % path)
++    for my_file in all_files_in_directory(path):
++        print('\t%s' % my_file)
++
++
++if __name__ == '__main__':
++    test_utils()
+\ No newline at end of file
+Index: file_tailer.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- file_tailer.py	(revision )
++++ file_tailer.py	(revision )
+@@ -0,0 +1,90 @@
++#This is part of the Kitware module Brothon, more info can be found here:
++# https://github.com/Kitware/BroThon/tree/master/brothon
++
++"""FileTailer Python Class"""
++
++import os
++import time
++
++# Local imports
++import file_utils
++
++
++class FileTailer(object):
++    """FileTailer: Will provide 'tail -f' functionality for a file. The readlines() method
++                   returns a generator that yields lines as they are added to the file
++        Args:
++            filepath (str): The full path the file (/full/path/to/the/file.txt)
++            sleep (int): The wait interval in milliseconds (default=50)
++            full_read (bool): Read the full file  (default=True)
++            tail (bool): Do a dynamic tail on the file (i.e. tail -f) (default=True)
++    """
++    def __init__(self, filepath, sleep=50, full_read=True, tail=True):
++        """FileTailer Initialization"""
++        self._filepath = filepath
++        self._sleep = sleep * 1e-3
++        self._full_read = full_read
++        self._tail = tail
++
++    def readlines(self, offset=0):
++        """Open the file for reading and yield lines as they are added"""
++        try:
++            with open(self._filepath) as fp:
++                # For full read go through existing lines in file
++                if self._full_read:
++                    fp.seek(offset)
++                    for row in fp:
++                        yield row
++
++                # Okay now dynamically tail the file
++                if self._tail:
++                    while True:
++                        current = fp.tell()
++                        row = fp.readline()
++                        if row:
++                            yield row
++                        else:
++                            fp.seek(current)
++                            time.sleep(self._sleep)
++
++        except IOError as err:
++            print('Error reading the file {0}: {1}'.format(self._filepath, err))
++            return
++
++
++def test():
++    """Test for FileTailer Python Class"""
++
++    # Grab a test file
++    data_path = file_utils.relative_dir(__file__, '../../data')
++    test_path = os.path.join(data_path, 'http.log')
++    print('Opening Data File: {:s}'.format(test_path))
++
++    # Create the Class
++    tailer = FileTailer(test_path, tail=False)  # First with no tailing
++    for line in tailer.readlines():
++        print(line)
++    print('Read with NoTail Test successful!')
++
++    # Now include tailing (note: as an automated test this needs to timeout quickly)
++    try:
++        from interruptingcow import timeout
++
++        # Spin up the class
++        tailer = FileTailer(test_path)  # Tail = True
++
++        # Tail the file for 2 seconds and then quit
++        try:
++            with timeout(2, exception=RuntimeError):
++                for line in tailer.readlines():
++                    print(line)
++        except RuntimeError:  # InterruptingCow raises a RuntimeError on timeout
++            print('Tailing Test successful!')
++
++    except ImportError:
++        print('Tailing Test not run, need interruptcow module...')
++
++
++if __name__ == '__main__':
++    # Run the test for easy testing/debugging
++    test()
+\ No newline at end of file
+Index: BroHttpPyParser.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- BroHttpPyParser.py	(revision )
++++ BroHttpPyParser.py	(revision )
+@@ -0,0 +1,52 @@
++import bro_log_reader
++
++#take a Bro log file, formatted as follows:
++#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	trans_depth	method	host	uri	referrer	user_agent	request_body_len	response_body_len	status_code	status_msg	info_code	info_msg	filename	tags	username	password	proxied	orig_fuids	orig_mime_types	resp_fuids	resp_mime_types
++#return a dictionary with all the info, plus legacy variable names from the scala version.
++
++
++def BroHttpParser(inFile):
++    #reader = bro_log_reader.BroLogReader('/Users/Gary/PycharmProjects/Aktaion/data/broData/ExploitExample/http.log')
++    reader = bro_log_reader.BroLogReader(inFile)
++    for row in reader.readrows():
++
++
++        #cast row dictionary into a new dictionary to provide legacy variable names
++        row1 = {"uid": row['uid'],
++                "idOrigHost": row['id.orig_h'],
++                "idOrigPort": row['id.orig_p'],
++                "idRespHost": row['id.resp_h'],
++                "idRespPort": row['id.resp_p'],
++                "transDepth": row['trans_depth'],
++                "method":     row['method'],
++                "host":       row['host'],
++                "uri":        row['uri'],
++                "referrer":   row['referrer'],
++                "userAgent":  row['user_agent'],
++                "requestBodyLen": row['request_body_len'],
++                "responseBodyLen": row['response_body_len'],
++                "statusCode": row['status_msg'],
++                "epochTime":  row['ts'],
++                }
++
++        if row1["idRespPort"] == 443:
++            fUrl = {"fullUrl": "https:\\" +row1["host"] + row1["uri"]}
++        else:
++                fUrl = {"fullUrl": "https:\\" + row1["host"] + row1["uri"]}
++        row1.update(fUrl)
++
++        row.update(row1)
++
++        return(row)
++
++    # pd_row = pd.DataFrame.from_dict(row)
++    #
++    # print(type(pd_row))
++    # print(pd_row)
++    #
++    # testlist = [1,2,3,4,5,6,7,8]
++    # testval = 1
++    # tesval2 = 9
++    # for testlist:
++    #     if testval = testlist[]
++    #         print(testval)
+Index: bro_log_reader.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- bro_log_reader.py	(revision )
++++ bro_log_reader.py	(revision )
+@@ -0,0 +1,201 @@
++# This is part of the Kitware module Brothon, more info can be found here:
++# https://github.com/Kitware/BroThon/tree/master/brothon
++
++"""BroLogReader: This class reads in various Bro IDS logs. The class inherits from
++                 the FileTailer class so it supports the following use cases:
++                   - Read contents of a Bro log file        (tail=False)
++                   - Read contents + 'tail -f' Bro log file (tail=True)
++       Args:
++            filepath (str): The full path the file (/full/path/to/the/file.txt)
++            delimiter (str): The delimiter in the Bro IDS logs (default='\t')
++            tail (bool): Do a dynamic tail on the file (i.e. tail -f) (default=False)
++"""
++from __future__ import print_function
++import os
++import time
++#import datetime
++
++# Local Imports
++import file_tailer, file_utils
++
++
++class BroLogReader(file_tailer.FileTailer):
++    """BroLogReader: This class reads in various Bro IDS logs. The class inherits from
++                     the FileTailer class so it supports the following use cases:
++                       - Read contents of a Bro log file        (tail=False)
++                       - Read contents + 'tail -f' Bro log file (tail=True)
++           Args:
++                filepath (str): The full path the file (/full/path/to/the/file.txt)
++                delimiter (str): The delimiter in the Bro IDS logs (default='\t')
++                tail (bool): Do a dynamic tail on the file (i.e. tail -f) (default=False)
++    """
++
++    def __init__(self, filepath, delimiter='\t', tail=False):
++        """Initialization for the BroLogReader Class"""
++        self._filepath = filepath
++        self._delimiter = delimiter
++        self._tail = tail
++
++        # Setup the Bro to Python Type mapper
++        self.field_names = []
++        self.type_converters = []
++        self.type_mapper = {'bool': lambda x: True if x == 'T' else False,
++                            'count': int,
++                            'int': int,
++                            'double': float,
++                            'time': lambda x: float(x),
++                            'interval': lambda x: datetime.timedelta(seconds=float(x)),
++                            'string': lambda x: x,
++                            'port': int,
++                            'unknown': lambda x: x}
++
++        # Initialize the Parent Class
++        super(BroLogReader, self).__init__(self._filepath, full_read=True, tail=self._tail)
++
++    def readrows(self):
++        """The readrows method reads in the header of the Bro log and
++            then uses the parent class to yield each row of the log file
++            as a dictionary of {key:value, ...} based on Bro header.
++        """
++        # Calling the internal _readrows so we can catch issues/log rotations
++        reconnecting = True
++        while True:
++            # Yield the rows from the internal reader
++            try:
++                for row in self._readrows():
++                    if reconnecting:
++                        print('Successfully monitoring {:s}...'.format(self._filepath))
++                        reconnecting = False
++                    yield row
++            except IOError:
++                # If the tail option is set then we do a retry (might just be a log rotation)
++                if self._tail:
++                    print('Could not open file {:s} Retrying...'.format(self._filepath))
++                    reconnecting = True
++                    time.sleep(5)
++                    continue
++                else:
++                    break
++
++            # If the tail option is set then we do a retry (might just be a log rotation)
++            if self._tail:
++                print('File closed {:s} Retrying...'.format(self._filepath))
++                reconnecting = True
++                time.sleep(5)
++                continue
++            else:
++                break
++
++    def _readrows(self):
++        """Internal method _readrows, see readrows() for description"""
++
++        # Read in the Bro Headers
++        offset, self.field_names, self.type_converters = self._parse_bro_header(self._filepath)
++
++        # Use parent class to yield each row as a dictionary
++        for line in self.readlines(offset=offset):
++
++            # Check for #close
++            if line.startswith('#close'):
++                return
++
++            # Yield the line as a dict
++            yield self.make_dict(line.strip().split(self._delimiter))
++
++    def _parse_bro_header(self, bro_log):
++        """Parse the Bro log header section.
++            Format example:
++                #separator \x09
++                #set_separator	,
++                #empty_field	(empty)
++                #unset_field	-
++                #path	httpheader_recon
++                #fields	ts	origin	useragent	header_events_json
++                #types	time	string	string	string
++        """
++
++        # Open the Bro logfile
++        with open(bro_log, 'r') as bro_file:
++
++            # Skip until you find the #fields line
++            _line = bro_file.readline()
++            while not _line.startswith('#fields'):
++                _line = bro_file.readline()
++
++            # Read in the field names
++            field_names = _line.strip().split(self._delimiter)[1:]
++
++            # Read in the types
++            _line = bro_file.readline()
++            field_types = _line.strip().split(self._delimiter)[1:]
++
++            # Setup the type converters
++            type_converters = []
++            for field_type in field_types:
++                type_converters.append(self.type_mapper.get(field_type, self.type_mapper['unknown']))
++
++            # Keep the header offset
++            offset = bro_file.tell()
++
++        # Return the header info
++        return offset, field_names, type_converters
++
++    def make_dict(self, field_values):
++        ''' Internal method that makes sure any dictionary elements
++            are properly cast into the correct types.
++        '''
++        data_dict = {}
++        for key, value, converter in zip(self.field_names, field_values, self.type_converters):
++            try:
++                data_dict[key] = '-' if value == '-' else converter(value)
++            except ValueError as exc:
++                print('Conversion Issue for key:{:s} value:{:s}\n{:s}'.format(key, str(value), str(exc)))
++                data_dict[key] = value
++
++        return data_dict
++
++
++def test():
++    """Test for BroLogReader Python Class"""
++
++    # Grab a test file
++    data_path = file_utils.relative_dir(__file__, '../data')
++
++    # For each file, create the Class and test the reader
++    files = ['app_stats.log', 'conn.log', 'dhcp.log', 'dns.log', 'files.log', 'ftp.log',
++             'http.log', 'notice.log', 'smtp.log', 'ssl.log', 'weird.log', 'x509.log']
++    for bro_log in files:
++        test_path = os.path.join(data_path, bro_log)
++        print('Opening Data File: {:s}'.format(test_path))
++        reader = BroLogReader(test_path, tail=False)  # First with no tailing
++        for line in reader.readrows():
++            print(line)
++    print('Read with NoTail Test successful!')
++
++    # Test some of the error conditions
++    reader.field_names = ['good', 'error']
++    reader.type_converters = [int, lambda x: datetime.datetime.fromtimestamp(float(x))]
++    reader.make_dict([5, '0, .5, .5'])
++
++    # Now include tailing (note: as an automated test this needs to timeout quickly)
++    try:
++        from interruptingcow import timeout
++
++        # Spin up the class
++        tailer = BroLogReader(test_path, tail=True)
++
++        # Tail the file for 2 seconds and then quit
++        try:
++            with timeout(2, exception=RuntimeError):
++                for line in tailer.readrows():
++                    print(line)
++        except RuntimeError:  # InterruptingCow raises a RuntimeError on timeout
++            print('Tailing Test successful!')
++
++    except ImportError:
++        print('Tailing Test not run, need interruptcow module...')
++
++
++if __name__ == '__main__':
++    # Run the test for easy testing/debugging
++    test()
+\ No newline at end of file
+Index: GenericProxyParser.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- GenericProxyParser.py	(revision )
++++ GenericProxyParser.py	(revision )
+@@ -0,0 +1,39 @@
++import pandas as pd
++import re
++
++#   #given a line of a generic log entry of the format shown in line 7, return a dictionary of labeled informtion
++def GenericProxyParser(logLine):
++    # example data
++    #logLine = '[09/Jan/2014:04:53:04 -0800] "Nico Rosberg" 172.16.2.101 77.75.107.241 1500 200 TCP_HIT "GET http://www.divernet.com/ HTTP/1.1" "Internet Services" "low risk " "text/html; charset=utf-8" 470 396 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)" "http://www.google.com/url?sa=t&rct=j&q=&esrc=s&frm=1&source=web&cd=1&sqi=2&ved=0CCoQFjAA&url=http%3A%2F%2Fwww.divernet.com%2F&ei=opvOUpyXFrSA2QXnv4DwDg&usg=AFQjCNHeSe4ebK0u69M-TBEGNkTZy-C-Nw&bvm=bv.59026428,d.b2I" "-" "0" "" "-" '
++
++    logPattern = '\[(?P<dateTime>.*?) (?P<timezone>.*?)\] \"(?P<userName>.*?)\" (?P<sourceIP>.*?) (?P<destinationIP>.*?) (?P<unknownValue>.*?) (?P<statusCode>.*?) (?P<cacheResult>.*?) \"(?P<httpMethod>.*?) (?P<urlRequested>.*?) HTTP/(?P<httpVersion>.*?)\" \"(?P<domainClassification>.*?)\" \"(?P<riskClassification>.*?)\" \"(?P<mimeType>.*?)\" (?P<bytesSent>.*?) (?P<bytesReceived>.*?) \"(?P<userAgentString>.*?)\" \"(?P<webReferrerString>.*?)\" \"(?P<urlMeta1>.*?)\" \"(?P<urlMeta2>.*?)\" \"(?P<urlMeta3>.*?)\" \"(?P<urlMeta4>.*?)\"'
++
++
++    matched = re.match(logPattern, logLine)
++    matched_dict = matched.groupdict()
++
++
++    #   #get the timestamp as a string, reformated to feed into pd.to_datetime
++    #   #get the epoch time using the to_epoch function
++
++    valPartitioned = logLine.split(" ")
++    dt_string = valPartitioned[0].replace("[", "").replace(":"," ", 1)
++    timeZone = valPartitioned[1].replace("]","")
++    #timeZone = timeZone.replace("0","")
++    dt_string = dt_string + " " + timeZone
++
++
++    def to_epoch(dt):
++        epoch = pd.to_datetime('1970-01-01')
++        return (dt - epoch).total_seconds()
++
++    dt_obj = pd.to_datetime(dt_string)
++    convertedTime = to_epoch(dt_obj)
++
++
++    #now appended the dictionary with the dt_obj object and dt_string and
++    #the concatinated URL meta data
++    matched_dict['convertedTime'] = convertedTime
++    matched_dict['timeString'] = dt_string
++    matched_dict['urlMeta'] =  matched_dict['urlMeta1'] + " " + matched_dict['urlMeta2'] + " " + matched_dict['urlMeta3'] + " " + matched_dict['urlMeta4']
++    return(matched_dict)
