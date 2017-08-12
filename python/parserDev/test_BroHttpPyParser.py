@@ -1,4 +1,4 @@
-from BroHttpPyParser import bro_http_parser
+from python.parserDev.BroHttpPyParser import bro_http_parser
 import unittest
 import os
 import inspect
@@ -9,7 +9,7 @@ from pprint import pprint
     #intakes a raw log line
     #parser the raw log line through BroHttpParser
     #Feed the parsed line through normalizedBroLog
-    #checks host, id_orig_host, and sourceIP attributes
+    #checks host, id_orig_host, and sourceIP attributesd
 
 #2)Basic Bro HTTP parser
     #intake a raw log line
