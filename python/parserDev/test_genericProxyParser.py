@@ -1,5 +1,5 @@
 import unittest
-from GenericProxyParser import generic_line_parser
+from .GenericProxyParser import generic_line_parser
 unittest.TestCase.maxDiff = None
 
 
