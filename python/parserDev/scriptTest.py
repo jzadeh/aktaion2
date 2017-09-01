@@ -1,5 +1,5 @@
 from pprint import pprint
-from python.parserDev.BroHttpPyParser import add_full_URL
+#from python.parserDev.BroHttpPyParser import add_full_URL
 import os
 import inspect
 from python.parserDev.broParse import broParse
@@ -19,8 +19,9 @@ fileName = "/Users/Gary/PycharmProjects/Aktaion2/data/broData/ExploitExample/htt
 #brothon built-in
 #pprint(broParse.bro_http_to_df(fileName))
 df = broParse.bro_http_to_df(fileName)
+pprint(df)
 #custom parser
-pprint(add_full_URL(df))
+#pprint(broParse.add_full_URL(df))
 
 #p0f testing
 # import subprocess

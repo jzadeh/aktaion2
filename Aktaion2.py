@@ -1,5 +1,5 @@
 import argparse
-from python.parserDev import BroHttpPyParser as bp
+from python.parserDev import broParse as bp
 from pprint import pprint
 import os.path
 
@@ -12,6 +12,6 @@ args = parser.parse_args()
 
 #foo = "/Users/Gary/PycharmProjects/Aktaion2/data/broData/ExploitExample/http2.log"
 if (os.path.isfile(args.fileName[0])):
-    pprint(bp.bro_http_parser(args.fileName[0]))
+    pprint(bp.bro_http_to_df(args.fileName[0]))
 else:
     print("Not a valid file path")

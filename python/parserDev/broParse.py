@@ -19,15 +19,20 @@ class broParse:
 
         reader = bro_log_reader.BroLogReader(inFile)
         bro_df = pd.DataFrame(reader.readrows())
+        bro_df = broParse.add_full_URL(bro_df)
 
         return(bro_df)
 
+    def add_full_URL(inFrame):
+        """Given a bro http.log dataframe, returns the frame with a 'fullUrl' colum appended"""
+        masterDictionary = []
+        for index, row in inFrame.iterrows():
+            if row['id.resp_h'] == 443:
+                fUrl = "https://" + row['host'] + row['uri']
+            else:
+                fUrl = "http://" + row['host'] + row['uri']
 
+            masterDictionary.append(fUrl)
 
-    # #parse the rows
-    # df = pd.read_csv('cryptoWallBroHttp.log', sep='\t', header=6, skiprows=[7], index_col=False, skipfooter=1, engine='python')
-    # df_modified = df[df.columns[:-1]]
-    # df_modified.columns = df.columns[1:]
-    # #print(df_modified)
-    #
-    # print(df_modified.groupby(by='id.orig_p').head(2).reset_index(drop=True))
+        inFrame['fullUrl'] = pd.Series(masterDictionary).values
+        return (inFrame)
