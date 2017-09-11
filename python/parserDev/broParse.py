@@ -20,6 +20,7 @@ class broParse:
         reader = bro_log_reader.BroLogReader(inFile)
         bro_df = pd.DataFrame(reader.readrows())
         bro_df = broParse.add_full_URL(bro_df)
+        bro_df = broParse.normalize_bro(bro_df)
 
         return(bro_df)
 
@@ -36,3 +37,12 @@ class broParse:
 
         inFrame['fullUrl'] = pd.Series(masterDictionary).values
         return (inFrame)
+
+    def normalize_bro(df):
+        """takes a bro-log data frame and returns a dataframe with the column names updated
+            to match the proxy-log column names"""
+        df.rename(columns={'ts': 'epochTime', 'id.resp_h': 'respHost',
+                           'method': 'httpMethod', 'orig_mime_types': 'mimeType',
+                           'id.orig_h': 'origHost', 'status_code': 'statusCode',
+                           'user_agent': 'userAgent', 'username': 'userName'}, inplace=True)
+        return(df)

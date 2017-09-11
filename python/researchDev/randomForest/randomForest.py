@@ -1,6 +1,9 @@
 # Load bro parser
 from python.parserDev.broParse import broParse as br
 
+# Load proxy parser
+from python.parserDev.GenericProxyParser import generic_line_parser
+
 # Load scikit's random forest classifier library
 from sklearn.ensemble import RandomForestClassifier
 
@@ -19,7 +22,7 @@ def make_training_class(df):
     df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75
     return(df)
 
-# Specify training data directory
+# Specify bro data directories
 bro_exploit_dir = "/Users/Gary/PycharmProjects/Aktaion2/python/researchDev/randomForest/brologs/exploits"
 bro_benign_dir = "/Users/Gary/PycharmProjects/Aktaion2/python/researchDev/randomForest/brologs/benign"
 
@@ -27,7 +30,7 @@ bro_benign_dir = "/Users/Gary/PycharmProjects/Aktaion2/python/researchDev/random
 df_ex = pd.DataFrame()
 df_be = pd.DataFrame()
 
-# Load exploit data into df_ex
+# Load exploit Bro data into df_ex
 for filename in os.listdir(bro_exploit_dir):
     bro_df = br.bro_http_to_df(bro_exploit_dir + "/" + filename)
     df_ex = df_ex.append(bro_df)
@@ -38,7 +41,7 @@ df_ex = df_ex.reset_index()
 df_ex['threat_class'] = 1
 
 
-# Load benign data into df_be
+# Load benign Bro data into df_be
 df_be = pd.DataFrame()
 for filename in os.listdir(bro_benign_dir):
     bro_df = br.bro_http_to_df(bro_benign_dir + "/" + filename)
@@ -61,7 +64,20 @@ train_be, test_be = df_be[df_be['is_train']==True], df_be[df_be['is_train']==Fal
 train = pd.concat([train_ex, train_be])
 test = pd.concat([test_ex, test_be])
 
+
+
 # Show the number of observations for the test and training dataframes
 print('Number of observations in the training data:', len(train))
 print('Number of observations in the test data:',len(test))
 
+# Initialize proxy data directories
+proxy_exploit_dir = "/Users/Gary/PycharmProjects/Aktaion2/data/proxyData/exploitData"
+proxy_benign_dir  = "/Users/Gary/PycharmProjects/Aktaion2/data/proxyData/benignData"
+
+# Initialize proxy data frames
+df_p_ex = pd.DataFrame()
+df_p_be = pd.DataFrame()
+
+# Load exploit proxy data into df_p_ex
+for filename in os.listdir(proxy_exploit_dir):
+    df_p_ex = df_p_ex.append(proxy_dic)
