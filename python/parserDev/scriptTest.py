@@ -6,6 +6,7 @@ import inspect
 from python.parserDev.broParse import broParse
 import urllib
 import pandas as pd
+from python.researchDev.randomForest.exploitUriBehaviors import microBehaviors as mb
 
 
 # #directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
@@ -50,8 +51,35 @@ bro_df = broParse.bro_http_to_df(fileName)
 
 new_df = pd.concat([bro_df, proxy_df], axis=0)
 new_df = pd.DataFrame.reset_index(new_df)
+#pprint(new_df)
+
+# create a list of the uri in the head
+uriList = new_df.head()['uri'].tolist()
+print(uriList)
+
+# test the exploitationUriBehaviors.max_path_length
+print("max uri path length is ", mb.max_path_length(uriList))
+
+# test the exploitationUriBehaviors.max_path_length
+print("min uri path length is ", mb.min_path_length(uriList))
+
+# test exploitationUriBehaviors.max_length
+print("max path length is ", mb.max_length(uriList))
+
+# test exploitationUriBehaviors.max_length
+print("min path length is ", mb.min_length(uriList))
+
+# test exploitationUriBehaviors.max_entropy
+print("the max entropy is ", mb.max_entropy(uriList))
+
+# test exploitationUriBehaviors.min_entropy
+print("the min entropy is ", mb.min_entropy(uriList))
+
+#test exploitationUriBehaviors.base_64_match
+print("the number of base64 enconded uri is ", mb.base_64_match(uriList))
+
 #pprint(type(new_df['epochTime'][4]))
-pprint(new_df['fullUrl'])
+#pprint(new_df['fullUrl'])
 # #test GenericProxyParser.generic_line_parser
 # logLine = '[09/Jan/2014:04:53:28 -0800] "Nico Rosberg" 172.16.2.101 85.93.134.203 1500 204 TCP_HIT "GET http://www.grad.ru/forum/public/js/3rd_party/colorpicker/0490c7979e/?f=s&k=5797540687062411 HTTP/1.1" "Internet Services" "low risk " "text/html" 329 203 "Mozilla/4.0 (Windows 7 6.1) Java/1.7.0_13" "" "-" "0" "" "-"'
 #

@@ -1,5 +1,5 @@
-"""broParse: this class reads in Bro logs, converting the individual rows
-             into dataframes using Brothon's built-in method
+"""broParse: this class defines broParse, which contains methods for converting the
+            individual rows of Bro Logs into dataframes using Brothon's built-in method
 
         Args:
             inFile (str): The full path to the file.
