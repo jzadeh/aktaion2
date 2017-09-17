@@ -57,26 +57,48 @@ new_df = pd.DataFrame.reset_index(new_df)
 uriList = new_df.head()['uri'].tolist()
 print(uriList)
 
-# test the exploitationUriBehaviors.max_path_length
-print("max uri path length is ", mb.max_path_length(uriList))
+# # test the exploitationUriBehaviors.max_path_length, 4
+# print("max uri path length is ", mb.max_path_length(uriList))
+#
+# # test the exploitationUriBehaviors.max_path_length, 1
+# print("min uri path length is ", mb.min_path_length(uriList))
+#
+# # test exploitationUriBehaviors.max_length, 777
+# print("max path length is ", mb.max_length(uriList))
+#
+# # test exploitationUriBehaviors.max_length, 4
+# print("min path length is ", mb.min_length(uriList))
+#
+# # test exploitationUriBehaviors.max_entropy, 0.536905227321473
+# print("the max entropy is ", mb.max_entropy(uriList))
+#
+# # test exploitationUriBehaviors.min_entropy, 0.25
+# print("the min entropy is ", mb.min_entropy(uriList))
+#
+# # test exploitationUriBehaviors.base_64_match, 1
+# print("the number of base64 encoded uri is ", mb.base_64_match(uriList))
+#
+# # check that mb.base_64_match works, 4
+# print("the number of base64 encoded strings in [dGVzdA0K, dGVzdDE=, dGVzdDI=, dGVzdDM=, #&sj.s3] is ",
+#       mb.base_64_match(['dGVzdA0K', 'dGVzdDE=', 'dGVzdDI=', 'dGVzdDM=','#&sj.s3']))
+#
+# #test exploitationUriBehaviors.isUrlencoded empty string catch, False
+# print("the empty string is  url encoded ", mb.isUrlEncoded(""))
+#
+# #test exploitationUriBehaviors.url_encoded_match, 0
+# print("The number of url encoded strings is ", mb.percent_encoding_match(uriList))
+#
+# #test exploitationUriBehaviors.url_encoded_match, should return 1
+# print("The number of url encoded strings is ", mb.percent_encoding_match(['%34%jd%kl%',
+#                                                                           '12345',
+#                                                                           '%ji.,%,./n3']))
+#
+# #test exploitationUriBehaviors.uri_distrint, expected return 2
+# print("The number of distinct uri strings is ", mb.uri_distinct(['a','b','a','b']))
+#
+# #test exploitationUriBehaviors.uri_distrint, expected return 5
+# print("The number of distinct uri strings is ", mb.uri_distinct(uriList))
 
-# test the exploitationUriBehaviors.max_path_length
-print("min uri path length is ", mb.min_path_length(uriList))
-
-# test exploitationUriBehaviors.max_length
-print("max path length is ", mb.max_length(uriList))
-
-# test exploitationUriBehaviors.max_length
-print("min path length is ", mb.min_length(uriList))
-
-# test exploitationUriBehaviors.max_entropy
-print("the max entropy is ", mb.max_entropy(uriList))
-
-# test exploitationUriBehaviors.min_entropy
-print("the min entropy is ", mb.min_entropy(uriList))
-
-#test exploitationUriBehaviors.base_64_match
-print("the number of base64 enconded uri is ", mb.base_64_match(uriList))
 
 #pprint(type(new_df['epochTime'][4]))
 #pprint(new_df['fullUrl'])
