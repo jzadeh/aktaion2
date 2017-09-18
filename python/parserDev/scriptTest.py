@@ -8,7 +8,6 @@ import urllib
 import pandas as pd
 from python.researchDev.randomForest.exploitUriBehaviors import microBehaviors as mb
 
-
 # #directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
 # #fileName = os.path.join(directory, '../../data/broData/ExploitExample/http.log')
 # #fileName = os.path.join(directory, '../../data/testData/badBroLog.log')
@@ -99,7 +98,7 @@ print(uriList)
 # #test exploitationUriBehaviors.uri_distrint, expected return 5
 # print("The number of distinct uri strings is ", mb.uri_distinct(uriList))
 
-
+pprint(mb.behaviorVector(uriList))
 #pprint(type(new_df['epochTime'][4]))
 #pprint(new_df['fullUrl'])
 # #test GenericProxyParser.generic_line_parser
