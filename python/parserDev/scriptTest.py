@@ -7,6 +7,7 @@ from python.parserDev.broParse import broParse
 import urllib
 import pandas as pd
 from python.researchDev.randomForest.exploitUriBehaviors import microBehaviors as mb
+import python.researchDev.randomForest.exploitUriBehaviors as ex
 
 # #directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
 # #fileName = os.path.join(directory, '../../data/broData/ExploitExample/http.log')
@@ -46,15 +47,17 @@ proxy_df = gpp.generic_proxy_parser("/Users/Gary/PycharmProjects/Aktaion2/data/p
 # #Test merge/normalization of bro and proxy logs
 fileName = "/Users/Gary/PycharmProjects/Aktaion2/data/broData/ExploitExample/http.log"
 bro_df = broParse.bro_http_to_df(fileName)
-#pprint(type(bro_df['epochTime'][0]))
-
 new_df = pd.concat([bro_df, proxy_df], axis=0)
+#reset index
 new_df = pd.DataFrame.reset_index(new_df)
+#blow out old index information
+del new_df['index']
+
 #pprint(new_df)
 
 # create a list of the uri in the head
-uriList = new_df.head()['uri'].tolist()
-print(uriList)
+#uriList = new_df.head()['uri'].tolist()
+#print(uriList)
 
 # # test the exploitationUriBehaviors.max_path_length, 4
 # print("max uri path length is ", mb.max_path_length(uriList))
@@ -98,10 +101,18 @@ print(uriList)
 # #test exploitationUriBehaviors.uri_distrint, expected return 5
 # print("The number of distinct uri strings is ", mb.uri_distinct(uriList))
 
-pprint(mb.behaviorVector(uriList))
+#pprint(mb.behaviorVector(uriList))
 #pprint(type(new_df['epochTime'][4]))
 #pprint(new_df['fullUrl'])
 # #test GenericProxyParser.generic_line_parser
 # logLine = '[09/Jan/2014:04:53:28 -0800] "Nico Rosberg" 172.16.2.101 85.93.134.203 1500 204 TCP_HIT "GET http://www.grad.ru/forum/public/js/3rd_party/colorpicker/0490c7979e/?f=s&k=5797540687062411 HTTP/1.1" "Internet Services" "low risk " "text/html" 329 203 "Mozilla/4.0 (Windows 7 6.1) Java/1.7.0_13" "" "-" "0" "" "-"'
 #
 # pprint (gpp.generic_line_parser(logLine))
+
+# #test exploitUriBehaviors.exploitationTimeBehaviors.max_time_interval_a
+
+td = ex.exploitationTimeBehaviors.max_time_interval_A(new_df.head())
+
+print(td)
+
+#pprint(new_df)

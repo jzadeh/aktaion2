@@ -28,8 +28,8 @@ def generic_line_parser(logLine):
         print(logPattern)
 
 
-    #   #get the timestamp as a string, reformated to feed into pd.to_datetime
-    #   #get the epoch time using the to_epoch function
+    #get the timestamp as a string, reformated to feed into pd.to_datetime
+    #get the epoch time using the to_epoch function
 
     valPartitioned = logLine.split(" ")
     dt_string = valPartitioned[0].replace("[", "").replace(":"," ", 1)
