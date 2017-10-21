@@ -6,7 +6,7 @@ import inspect
 from python.parserDev.broParse import broParse
 import urllib
 import pandas as pd
-from python.researchDev.randomForest.exploitUriBehaviors import microBehaviors as mb
+#from python.researchDev.randomForest.exploitUriBehaviors import microBehaviors as mb
 import python.researchDev.randomForest.exploitUriBehaviors as ex
 
 # #directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
@@ -111,8 +111,30 @@ del new_df['index']
 
 # #test exploitUriBehaviors.exploitationTimeBehaviors.max_time_interval_a
 
-td = ex.exploitationTimeBehaviors.max_time_interval_A(new_df.head())
+#td = ex.exploitationTimeBehaviors.max_time_interval_A(new_df.head())
 
-print(td)
+# print(td)
+
+# #test exploitUriBehaviors.exploitationTimeBehaviors.time_delta
+# print(ex.exploitationTimeBehaviors.max_time_interval(new_df))
+# print(ex.exploitationTimeBehaviors.min_time_interval(new_df))
+# print(ex.exploitationTimeBehaviors.min_time_interval(new_df))
+# print(ex.exploitationTimeBehaviors.max_time_interval(new_df))
+# print("--------------")
+# print(new_df['epochTime'])
+
+#
+# #  #test ex.exploitationTimebehaviors.get_max_deltas
+# print(ex.exploitationTimeBehaviors.get_max_deltas(new_df, 10))
+
+#  #test ex.exploitationTimebehaviors.get_min_deltas
+print(ex.exploitationTimeBehaviors.get_min_deltas(new_df))
+
+
+
+# Dlist = new_df['epochTime'].tolist()
+# print(type(Dlist))
+# print(Dlist[0])
+
 
 #pprint(new_df)
