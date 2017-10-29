@@ -50,6 +50,7 @@ bro_df = broParse.bro_http_to_df(fileName)
 new_df = pd.concat([bro_df, proxy_df], axis=0)
 #reset index
 new_df = pd.DataFrame.reset_index(new_df)
+
 #blow out old index information
 del new_df['index']
 
