@@ -127,9 +127,14 @@ del new_df['index']
 # #  #test ex.exploitationTimebehaviors.get_max_deltas
 # print(ex.exploitationTimeBehaviors.get_max_deltas(new_df, 10))
 
-#  #test ex.exploitationTimebehaviors.get_min_deltas
-print(ex.exploitationTimeBehaviors.get_min_deltas(new_df))
+# #  #test ex.exploitationTimebehaviors.get_min_deltas
+# print(ex.exploitationTimeBehaviors.get_min_deltas(new_df))
 
+#  #test ex.exploitationTimebehaviors.ratio_of_deltas_A
+#print("then ratio of frames less than 1 second is ", ex.exploitationTimeBehaviors.ratio_of_deltas_A(new_df.tail()))
+#print(len(new_df))
+
+print(ex.exploitationTimeBehaviors.interval_length(new_df.tail()))
 
 
 # Dlist = new_df['epochTime'].tolist()
