@@ -50,7 +50,6 @@ bro_df = broParse.bro_http_to_df(fileName)
 new_df = pd.concat([bro_df, proxy_df], axis=0)
 #reset index
 new_df = pd.DataFrame.reset_index(new_df)
-
 #blow out old index information
 del new_df['index']
 
@@ -134,8 +133,12 @@ del new_df['index']
 #  #test ex.exploitationTimebehaviors.ratio_of_deltas_A
 #print("then ratio of frames less than 1 second is ", ex.exploitationTimeBehaviors.ratio_of_deltas_A(new_df.tail()))
 #print(len(new_df))
-
-print(ex.exploitationTimeBehaviors.interval_length(new_df.tail()))
+# print(new_df['epochTime'].tail())
+#
+# print(ex.exploitationTimeBehaviors.interval_length(new_df.tail()), 2)
+# print(ex.exploitationTimeBehaviors.interval_length(new_df.tail()))
+#print(ex.exploitationTimeBehaviors.behavior_vector(new_df, 5))
+print(ex.microBehaviors.behaviorVector(new_df))
 
 
 # Dlist = new_df['epochTime'].tolist()
