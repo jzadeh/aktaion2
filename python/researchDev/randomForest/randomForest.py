@@ -82,7 +82,7 @@ df_p_be = pd.DataFrame()
 proxy_df = pd.DataFrame()
 
 # Load exploit proxy data into df_p_ex
-# Todo, find out why we're gettin a regex matching error when ~halfway through the file directory. This may ahve soemthing to do with the gpp file monitoring process, maybe theres a buffer overflow occuring, the behavior does not seem to be dependent on which log file is being parsed.
+# Todo, find out why we're gettin a regex matching error when ~halfway through the file directory. This may ahve soemthing to do with the gpp file monitoring process, maybe theres a buffer overflow occuring, the behavior does not seem to be dependent on which log file is being parsed 
 for filename in os.listdir(proxy_exploit_dir):
     #print(gpp.generic_proxy_parser(proxy_exploit_dir + "/" + filename))
 
