@@ -1,30 +1,30 @@
+from colorama import Fore, Style
 #author:mvaouli
 # Version 2.0
 ## Show menu ##
-print(80 * '-')
-print("              █████╗ ██╗  ██╗████████╗ █████╗ ██╗ ██████╗ ███╗   ██╗ ");
-print("             ██╔══██╗██║ ██╔╝╚══██╔══╝██╔══██╗██║██╔═══██╗████╗  ██║ ");
-print("             ███████║█████╔╝    ██║   ███████║██║██║   ██║██╔██╗ ██║ ");
-print("             ██╔══██║██╔═██╗    ██║   ██╔══██║██║██║   ██║██║╚██╗██║ ");
-print("             ██║  ██║██║  ██╗   ██║   ██║  ██║██║╚██████╔╝██║ ╚████║ ");
-print("             ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ");
-print(" ██╗   ██╗███████╗██████╗ ███████╗██╗ ██████╗ ███╗   ██╗    ██████╗     ██████╗ ");
-print(" ██║   ██║██╔════╝██╔══██╗██╔════╝██║██╔═══██╗████╗  ██║    ╚════██╗   ██╔═████╗ ");
-print(" ██║   ██║█████╗  ██████╔╝███████╗██║██║   ██║██╔██╗ ██║     █████╔╝   ██║██╔██║ ");
-print(" ╚██╗ ██╔╝██╔══╝  ██╔══██╗╚════██║██║██║   ██║██║╚██╗██║    ██╔═══╝    ████╔╝██║ ");
-print("  ╚████╔╝ ███████╗██║  ██║███████║██║╚██████╔╝██║ ╚████║    ███████╗██╗╚██████╔╝ ");
-print("   ╚═══╝  ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝    ╚══════╝╚═╝ ╚═════╝ ");
-print("                               M A I N - M E N U")
-print(80 * '-')
-print("1: Analyze Bro HTTP Sample Using Default Model")
-print("2: Analyze PCAP Sample (Bro must be installed) Using Default Model")
-print("3: Analyze Bro HTTP Sample Using Phishing Model")
-print("4: Demo")
-print(80 * '-')
+print(Fore.GREEN + 80 * '-'+ Style.RESET_ALL)
+print(Fore.LIGHTWHITE_EX +"              █████╗ ██╗  ██╗████████╗ █████╗ ██╗ ██████╗ ███╗   ██╗ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +"             ██╔══██╗██║ ██╔╝╚══██╔══╝██╔══██╗██║██╔═══██╗████╗  ██║ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +"             ███████║█████╔╝    ██║   ███████║██║██║   ██║██╔██╗ ██║ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +"             ██╔══██║██╔═██╗    ██║   ██╔══██║██║██║   ██║██║╚██╗██║ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +"             ██║  ██║██║  ██╗   ██║   ██║  ██║██║╚██████╔╝██║ ╚████║ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +"             ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +" ██╗   ██╗███████╗██████╗ ███████╗██╗ ██████╗ ███╗   ██╗    ██████╗     ██████╗ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +" ██║   ██║██╔════╝██╔══██╗██╔════╝██║██╔═══██╗████╗  ██║    ╚════██╗   ██╔═████╗ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +" ██║   ██║█████╗  ██████╔╝███████╗██║██║   ██║██╔██╗ ██║     █████╔╝   ██║██╔██║ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +" ╚██╗ ██╔╝██╔══╝  ██╔══██╗╚════██║██║██║   ██║██║╚██╗██║    ██╔═══╝    ████╔╝██║ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +"  ╚████╔╝ ███████╗██║  ██║███████║██║╚██████╔╝██║ ╚████║    ███████╗██╗╚██████╔╝ "+ Style.RESET_ALL);
+print(Fore.LIGHTWHITE_EX +"   ╚═══╝  ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝    ╚══════╝╚═╝ ╚═════╝ "+ Style.RESET_ALL);
+print(Fore.WHITE+"                               M A I N - M E N U"+ Style.RESET_ALL)
+print(Fore.GREEN + 80 * '-'+ Style.RESET_ALL)
+print(Fore.GREEN +'1:' + Fore.WHITE + ' Analyze Bro HTTP Sample Using Default Model' + Style.RESET_ALL),
+print(Fore.GREEN +'2:' + Fore.WHITE + ' Analyze PCAP Sample Using Default Model',Fore.RED + "(Bro must be installed!)" + Style.RESET_ALL),
+print(Fore.GREEN +'3:' + Fore.WHITE + ' Analyze Bro HTTP Sample Using Phishing Model' + Style.RESET_ALL),
+print(Fore.GREEN +'4:' + Fore.WHITE + ' Demo'+ Style.RESET_ALL),
+print(Fore.GREEN+80 * '-'+ Style.RESET_ALL)
 
 ## Get input ###
-choice = input('Enter your choice [1-4] : ')
-
+choice = input(Fore.WHITE+'Enter your choice' + Fore.GREEN + ' (1-4)'+ Fore.GREEN+':' + Style.RESET_ALL)
 ### Convert string to int type ##
 choice = int(choice)
 
@@ -38,4 +38,4 @@ elif choice == 3:
 elif choice == 4:
     print("")
 else:  ## default ##
-    print("Invalid number. Try again...")
+    print(Fore.RED+"Invalid number. Try again..."+ Style.RESET_ALL)
