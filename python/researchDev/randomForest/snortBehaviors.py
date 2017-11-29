@@ -3,7 +3,7 @@ import re
 import collections
 import javax.xml.bind.DatatypeConverter
 
-class HttpFeaturesSnort(inList)
+class HttpFeaturesSnort(inList):
 
     def HttpIdsRulesCache(inList):
 
@@ -17,7 +17,7 @@ class HttpFeaturesSnort(inList)
 
         if (rule_match == True):
             return True
-        else
+        else:
             return False
 
-    def HttpIdsUtils(http_uri,http_method,http_header):
+   # def HttpIdsUtils(http_uri,http_method,http_header):

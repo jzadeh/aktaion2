@@ -6,6 +6,6 @@
 #print(domain.name)
 #print(domain.expiration_date)
 
-import whois 
-w = whois.whois('boxden.com')
-print w
+# import whois
+# w = whois.whois('boxden.com')
+# print w

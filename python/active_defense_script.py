@@ -52,11 +52,11 @@ ssh.connect(SSH_SERVER, username=SSH_USERNAME, password=SSH_PASSWORD)
 for entry in fileList:
     entry = entry.rstrip()
     cmd_to_execute = powerShellString + ' ' + entry + '"'
-    print "Executing command- " + cmd_to_execute
-    print
+    print("Executing command- " + cmd_to_execute)
+    print(" ")
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
     for line in ssh_stdout:
         line = line.rstrip()
-        print line
+        print(line)
 ssh.close()
 

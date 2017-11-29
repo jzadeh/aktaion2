@@ -2,7 +2,6 @@
 import re
 import entropy as en
 import pandas as pd
-import requests
 
 class microBehaviors:
 
@@ -172,11 +171,6 @@ class microBehaviors:
 
         return(behaviorVector)
 
-    def tinyUrl(inList):
-        url = 'http://short2.in','http:/sk.gy','http://tinylord.com','http://goo.gl'
-        req =  requests.get(url)
-        return(req.url)
-
 class exploitationTimeBehaviors:
 
     """Class specific method for calculating difference between time-stamps,
@@ -318,21 +312,21 @@ class exploitationTimeBehaviors:
                       interval_length"""
 
         #define the behavior Vector
-<<<<<<< HEAD
 
         behaviorVector = {'time_delta': exploitationTimeBehaviors.time_delta(self), + 'time_interval': exploitationTimeBehaviors.get_time_interval(self),
                           'time_interval': exploitationTimeBehaviors.get_time_interval(self), + 'time_delta': exploitationTimeBehaviors.time_delta(self),
                           'max_deltas': exploitationTimeBehaviors.get_max_deltas(self, n), + 'min_deltas': exploitationTimeBehaviors.get_min_deltas(self, n),
                           'min_deltas': exploitationTimeBehaviors.get_min_deltas(self, n), + 'max_deltas': exploitationTimeBehaviors.get_max_deltas(self, n),
                           'ratio_of_deltas_A': exploitationTimeBehaviors.ratio_of_deltas_A(self), + 'ratio_of_deltas_B': exploitationTimeBehaviors.ratio_of_deltas_B(self),
-                          'ratio_of_deltas_B': exploitationTimeBehaviors.ratio_of_deltas_B(self), + 'ratio_of_deltas_A': exploitationTimeBehaviors.ratio_of_deltas_B(self),
+                          'ratio_of_deltas_B': exploitationTimeBehaviors.ratio_of_deltas_B(self), + 'ratio_of_deltas_A': exploitationTimeBehaviors.ratio_of_deltas_B(self)
                           'ratio_of_deltas_C': exploitationTimeBehaviors.ratio_of_deltas_C(self), + 'ratio_of_deltas_D': exploitationTimeBehaviors.ratio_of_deltas_D(self),
                           'ratio_of_deltas_D': exploitationTimeBehaviors.ratio_of_deltas_D(self), + 'ratio_of_deltas_E': exploitationTimeBehaviors.ratio_of_deltas_E(self),
-                          'ratio_of_deltas_E': exploitationTimeBehaviors.ratio_of_deltas_E(self), + 'ratio_of_deltas_C': exploitationTimeBehaviors.ratio_of_deltas_B(self),
+                          'ratio_of_deltas_E': exploitationTimeBehaviors.ratio_of_deltas_E(self), + 'ratio_of_deltas_C': exploitationTimeBehaviors.ratio_of_deltas_B(self)
                           'max_time_interval': exploitationTimeBehaviors.max_time_interval(self), + 'min_time_interval': exploitationTimeBehaviors.min_time_interval(self),
                           'min_time_interval': exploitationTimeBehaviors.min_time_interval(self), + 'max_time_interval': exploitationTimeBehaviors.max_time_interval(self),
-                          'interval_length': exploitationTimeBehaviors.interval_length(self), + 'max_time_interval': exploitationTimeBehaviors.max_time_interval(self), + 'min_time_interval': exploitationTimeBehaviors.min_time_interval(self)}
-        microBehaviors = {'isBase64': microBehaviors.isBase64(self),
+                          'interval_length': exploitationTimeBehaviors.interval_length(self)}, + 'max_time_interval': exploitationTimeBehaviors.max_time_interval(self), + 'min_time_interval': exploitationTimeBehaviors.min_time_interval(self)]
+
+        microBehaviors = ['isBase64': microBehaviors.isBase64(self),
                           'isUrlEncoded': microBehaviors.isUrlEncoded(self),
                           'max_path_length': microBehaviors.max_path_length(self),
                           'min_path_length': microBehaviors.min_path_length(self),
@@ -343,20 +337,7 @@ class exploitationTimeBehaviors:
                           'base_64_match': microBehaviors.base_64_match(self),
                           'percent_encoding_match': microBehaviors.percent_encoding_match(self),
                           'uri_distinct': microBehaviors.uri_distinct(self),
-                          'behaviorVector': microBehaviors.behaviorVector(self)}
-=======
-        behaviorVector = {'time_interval': exploitationTimeBehaviors.get_time_interval(self),
-                          'max_deltas': exploitationTimeBehaviors.get_max_deltas(self),
-                          'min_deltas': exploitationTimeBehaviors.get_min_deltas(self),
-                          'ratio_of_deltas_A': exploitationTimeBehaviors.ratio_of_deltas_A(self),
-                          'ratio_of_deltas_B': exploitationTimeBehaviors.ratio_of_deltas_B(self),
-                          'ratio_of_deltas_C': exploitationTimeBehaviors.ratio_of_deltas_C(self),
-                          'ratio_of_deltas_D': exploitationTimeBehaviors.ratio_of_deltas_D(self),
-                          'ratio_of_deltas_E': exploitationTimeBehaviors.ratio_of_deltas_E(self),
-                          'max_time_interval': exploitationTimeBehaviors.max_time_interval(self),
-                          'min_time_interval': exploitationTimeBehaviors.min_time_interval(self),
-                          'interval_length': exploitationTimeBehaviors.interval_length(self)}
->>>>>>> 202ebcf35ab685ed25fd71a693984c1871b8385b
+                          'behaviorVector': microBehaviors.behaviorVector(self)]
 
         return(behaviorVector)
 
