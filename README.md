@@ -6,9 +6,9 @@ Current project URL: <http://www.github.com/jzadeh/aktaion2>
 
 The original Java/Scala code is located here: <http://www.github.com/jzadeh/aktaion>
 
-# Project Setup
+# Project Setup (use python 3): 
 
-pip3 -r python/requirements.txt
+pip3 -r requirements.txt
 
 # Running the demo
 
