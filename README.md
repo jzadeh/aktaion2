@@ -12,5 +12,8 @@ pip3 -r requirements.txt
 
 # Running the demo
 
+./run_demo.sh
 
+# Running the ML Logic in debug mode
 
+./run_ml.sh
