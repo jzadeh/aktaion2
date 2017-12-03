@@ -6,7 +6,7 @@ import inspect
 from python.parserDev.broParse import broParse
 import urllib
 import pandas as pd
-#from python.researchDev.randomForest.exploitUriBehaviors import microBehaviors as mb
+#from python.researchDev.random_forest.exploitUriBehaviors import microBehaviors as mb
 import python.researchDev.randomForest.exploitUriBehaviors as ex
 
 # #directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))

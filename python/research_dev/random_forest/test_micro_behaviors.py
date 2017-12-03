@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from python.researchDev.randomForest.exploitUriBehaviors import microBehaviors as mb
+from python.research_dev.random_forest.exploit_uri_behaviors import microBehaviors as mb
 
 
 class TestMicroBehaviors(TestCase):

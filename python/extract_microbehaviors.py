@@ -1,8 +1,8 @@
 # Load bro parser
-from python.parserDev.broParse import broParse as br
+from python.parser_dev.bro_parser import broParse as br
 
 # Load proxy parser
-import python.parserDev.GenericProxyParser as gpp
+import python.parser_dev.generic_proxy_parser as gpp
 
 # Load scikit's random forest classifier library
 from sklearn.ensemble import RandomForestClassifier
@@ -23,8 +23,8 @@ def make_training_class(df):
     return(df)
 
 # # Specify bro data directories
-# bro_exploit_dir = "/Users/Gary/PycharmProjects/Aktaion2/python/researchDev/randomForest/brologs/exploits"
-# bro_benign_dir = "/Users/Gary/PycharmProjects/Aktaion2/python/researchDev/randomForest/brologs/benign"
+# bro_exploit_dir = "/Users/Gary/PycharmProjects/Aktaion2/python/researchDev/random_forest/brologs/exploits"
+# bro_benign_dir = "/Users/Gary/PycharmProjects/Aktaion2/python/researchDev/random_forest/brologs/benign"
 #
 # # Declare global exploit and benign dataFrame vars
 # df_ex = pd.DataFrame()
