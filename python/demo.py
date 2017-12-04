@@ -1,26 +1,24 @@
-from colorama import Fore, Style, Back
-#author:mvaouli
+# author:mvaouli
 # Version 2.0
-## Show menu ##
+#Entry point for Blackhat 2017 EU Demo
+#Protoype microbehavior extractio logic and exploit/phishing detection
+
+
+from colorama import Fore, Style, Back
 import subprocess as sp
+import pandas as pd
 
 import python.parser_dev.generic_proxy_parser as gpp
-# from python.parserDev.BroHttpPyParser import add_full_URL
-import os
-import inspect
-from python.parserDev.broParse import broParse
-import urllib
-import pandas as pd
-# from python.researchDev.randomForest.exploitUriBehaviors import microBehaviors as mb
-import python.researchDev.randomForest.exploitUriBehaviors as ex
-
-
+from python.parser_dev.bro_parser import broParse
+import python.research_dev.random_forest.exploit_uri_behaviors as ex
 from python.demo_tools.boot import boot
 
+
+##inital spalsh message for aktaion
 boot()
 sp.call('clear',shell=True)
 
-
+#demo speficic ascii art
 print(Fore.GREEN + 81 * '-'+ Style.RESET_ALL)
 print(Fore.LIGHTWHITE_EX + Style.BRIGHT +"              █████╗ ██╗  ██╗████████╗ █████╗ ██╗ ██████╗ ███╗   ██╗             "+ Style.RESET_ALL);
 print(Fore.LIGHTWHITE_EX + Style.BRIGHT +"             ██╔══██╗██║ ██╔╝╚══██╔══╝██╔══██╗██║██╔═══██╗████╗  ██║             "+ Style.RESET_ALL);
@@ -41,18 +39,34 @@ print(Fore.GREEN +'2:' + Fore.WHITE + ' Analyze Bro HTTP Sample Using Phishing M
 print(Fore.GREEN +'3:' + Fore.WHITE + ' Demo                                                                          '+ Style.RESET_ALL),
 print(Fore.GREEN + 81 * '-'+ Style.RESET_ALL)
 
-## Get input ###
+# Get input
 choice = input(Fore.WHITE + 'Enter your choice' + Fore.GREEN + ' (1-4)'+ Fore.GREEN+':')
 ### Convert string to int type ##
 choice = int(choice)
 
-### Take action as per selected menu-option ###
+# Take action as per selected menu-option
 if choice == 1:
-    print("")
+    print("Analyze Proxy Log For Potential Exploit Behavior")
 
+    path = "data/logs_proxy_format/exploit/2014-01-02-neutrino-exploit-traffic.webgateway"
+    print("File for analysis : ", path)
 
+    proxy_df = gpp.generic_proxy_parser(path)
+   # print(proxy_df)
 
+    # Test merge/normalization of bro and proxy logs
+    fileName = "data/logs_bro_format/exploit/http.log"
+    bro_df = broParse.bro_http_to_df(fileName)
+    new_df = pd.concat([bro_df, proxy_df], axis=0)
+    # reset index
+    new_df = pd.DataFrame.reset_index(new_df)
+    # blow out old index information
+    del new_df['index']
 
+    print(ex.microBehaviors.behaviorVector(new_df))
+    import python.demo_tools.exploitascii
+    import python.demo_tools.phishingascii
+       # exploit_chain_art()
 
 elif choice == 2:
     print("")
