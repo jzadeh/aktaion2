@@ -7,17 +7,17 @@ from python.parserDev.broParse import broParse
 import urllib
 import pandas as pd
 #from python.researchDev.random_forest.exploitUriBehaviors import microBehaviors as mb
-import python.researchDev.randomForest.exploitUriBehaviors as ex
+import python.researchDev.random_forest.exploit_uri_behaviors as ex
 
 # #directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
-# #fileName = os.path.join(directory, '../../data/broData/ExploitExample/http.log')
-# #fileName = os.path.join(directory, '../../data/testData/badBroLog.log')
+# #fileName = os.path.join(directory, '../../data/logs_bro_format/ExploitExample/http.log')
+# #fileName = os.path.join(directory, '../../data/test_data/badBroLog.log')
 #
 # #http.log
-# fileName = "/Users/Gary/PycharmProjects/Aktaion2/data/broData/ExploitExample/http.log"
+# fileName = "/Users/Gary/PycharmProjects/Aktaion2/data/logs_bro_format/ExploitExample/http.log"
 #
 # #bro.csv
-# #fileName = "/Users/Gary/PycharmProjects/Aktaion2/data/testData/bro.csv"
+# #fileName = "/Users/Gary/PycharmProjects/Aktaion2/data/test_data/bro.csv"
 #
 # #brothon built-in
 # df = broParse.bro_http_to_df(fileName)
@@ -41,11 +41,11 @@ import python.researchDev.randomForest.exploitUriBehaviors as ex
 # # #Popen("sudo ./p0f -i en0 -p", cwd="/Users/Gary/p0f-3.09b/")
 
 # #test GenericProxyParser.generic_proxy_parser
-proxy_df = gpp.generic_proxy_parser("/Users/Gary/PycharmProjects/Aktaion2/data/proxyData/exploitData/2014-01-02-neutrino-exploit-traffic.webgateway")
+proxy_df = gpp.generic_proxy_parser("/Users/Gary/PycharmProjects/Aktaion2/data/proxyformat_data/exploit/2014-01-02-neutrino-exploit-traffic.webgateway")
 #pprint(proxy_df)
 
 # #Test merge/normalization of bro and proxy logs
-fileName = "/Users/Gary/PycharmProjects/Aktaion2/data/broData/ExploitExample/http.log"
+fileName = "/Users/Gary/PycharmProjects/Aktaion2/data/logs_bro_format/ExploitExample/http.log"
 bro_df = broParse.bro_http_to_df(fileName)
 new_df = pd.concat([bro_df, proxy_df], axis=0)
 #reset index

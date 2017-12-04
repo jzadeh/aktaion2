@@ -72,8 +72,8 @@ print('Number of observations in the training data:', len(train))
 print('Number of observations in the test data:',len(test))
 
 # Initialize proxy data directories
-proxy_exploit_dir = "data/proxyData/exploitData"
-proxy_benign_dir  = "data/proxyData/benignData"
+proxy_exploit_dir = "data/proxyformat_data/exploit"
+proxy_benign_dir  = "data/proxyformat_data/benign"
 
 # Initialize proxy data frames
 df_p_ex = pd.DataFrame()
