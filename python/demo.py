@@ -48,11 +48,15 @@ choice = int(choice)
 if choice == 1:
     print("Analyze Proxy Log For Potential Exploit Behavior")
 
+    from python.demo_tools.loading import load_analyzer
+    load_analyzer()
+
+
     path = "data/logs_proxy_format/exploit/2014-01-02-neutrino-exploit-traffic.webgateway"
     print("File for analysis : ", path)
 
     proxy_df = gpp.generic_proxy_parser(path)
-   # print(proxy_df)
+    # print(proxy_df)
 
     # Test merge/normalization of bro and proxy logs
     fileName = "data/logs_bro_format/exploit/http.log"
