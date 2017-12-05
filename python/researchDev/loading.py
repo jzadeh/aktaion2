@@ -6,9 +6,10 @@ import sys
 done = False
 #loading animation
 def load_analyzer():
-    for f in itertools.cycle(['ᗧ*Analyzing*File*','*Aᗧnalyzing*File*','*Anᗧalyzing*File*','*Anaᗧlyzing*File*','*Analᗧyzing*File*',
-                              '*Analyᗧzing*File*','*Analyzᗧing*File*','*Analyziᗧng*File*','*Analyzinᗧg*File*','*AnalyzingᗧFile*',
-                              '*Analyzing*Fᗧile*','*Analyzing*Fiᗧle*','*Analyzing*Filᗧe*','*Analyzing Fileᗧ*']):
+    for f in itertools.cycle(['ᗧ*Analyzing*File*','*Aᗧnalyzing*File*','*Anᗧalyzing*File*','*Anaᗧlyzing*File*',
+                              '*Analᗧyzing*File*','*Analyᗧzing*File*','*Analyzᗧing*File*','*Analyziᗧng*File*',
+                              '*Analyzinᗧg*File*','*AnalyzingᗧFile*','*Analyzing*Fᗧile*','*Analyzing*Fiᗧle*',
+                              '*Analyzing*Filᗧe*','*Analyzing*Fileᗧ*']):
     #for f in itertools.cycle(['ᗧ','ᗧ*','*ᗧ*','**ᗧ*','***ᗧ*','****ᗧ*','*****ᗧ*','****ᗧ']):
         if done:
             break
