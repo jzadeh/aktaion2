@@ -24,7 +24,7 @@ print(Fore.GREEN +'4:' + Fore.WHITE + ' Demo                                    
 print(Fore.GREEN + 81 * '-'+ Style.RESET_ALL)
 
 ## Get input ###
-choice = input(Fore.WHITE + 'Enter your choice' + Fore.GREEN + ' (1-4)'+ Fore.GREEN+':')
+choice = input(Fore.WHITE + 'Enter your choice' + Fore.GREEN + ' (1-4)'+ Fore.GREEN+':' + Style.RESET_ALL)
 ### Convert string to int type ##
 choice = int(choice)
 
