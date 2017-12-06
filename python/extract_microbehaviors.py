@@ -20,9 +20,12 @@ def make_training_class(df):
     df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75
     return(df)
 
-# Specify bro data directories
+# Specify  data directories
 bro_exploit_dir = "data/logs_bro_format/exploit"
 bro_benign_dir = "data/logs_bro_format/benign"
+
+proxy_exploit_dir = "data/logs_proxy_format/exploit"
+proxy_benign_dir  = "data/logs_proxy_format/benign"
 
 # Declare global exploit and benign dataFrame vars for keeping the raw log data
 df_ex = pd.DataFrame()
@@ -36,26 +39,12 @@ df_mb_be = pd.DataFrame()
 window_len = 5
 
 #configuration for output
-bro_benign = True
+bro_benign = False
 bro_exploit = False
-proxy_benign = False
+proxy_benign = True
 proxy_exploit = False
 
-# Load exploit Bro data into df_ex
-# for filename in os.listdir(bro_exploit_dir):
-#  #   try:
-#     bro_df = br.bro_http_to_df(bro_exploit_dir + "/" + filename)
-#     df_ex = df_ex.append(bro_df)
-# #    except:
-
-#print(df_ex)
-
-# # Reset the df_ex rows index
-# df_ex = df_ex.reset_index()
-# # Add and populate threat_class column
-# df_ex['threat_class'] = 1
-#
-
+#helper method for building a dataframe of sliding windows
 def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
 
     # use for determining upper bound in number of sliding windows we create
@@ -78,85 +67,50 @@ def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
     return df_microbeahaviors
 
 # Step 1: Build Stats For Benign Bro Files
-if bro_benign == True:
+if bro_benign:
     for filename in os.listdir(bro_benign_dir):
-
         #convert raw log to dataframe
         try:
             df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename).head(100)
         except: print("Parsing Error")
 
         df_mb_be = create_df_of_sliding_windows(df_bro_raw_log_benign, df_mb_be)
-        # #use for determining upper bound in number of sliding windows we create
-        # df_len = len(df_bro_raw_log_benign)
-        #
-        # if df_len > window_len:
-        #     for i in range(0,df_len -window_len):
-        #       print(i)
-        #
-        #       #create sliding window which outputs another dataframe
-        #       df_raw_log_window = df_bro_raw_log_benign[i:i+window_len]
-        #
-        #       # use the micro behavior api to extract the stats as a dict
-        #       dict_mb = ex.TimeBehaviors.behavior_vector(df_raw_log_window)
-        #
-        #       # convert each dict (window) to a dataframe and add to our global variable
-        #       df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
-        #       df_mb_be = df_mb_be.append(df_from_dict, ignore_index=True)
 
     output_path = 'data/benign_bro_microbehaviors.csv'
-    print("Writing Benign BRO Benign Microbehavior Statistics to CSV file: " + output_path)
+    print("Writing Benign BRO Microbehavior Statistics to CSV file: " + output_path)
     df_mb_be.to_csv(output_path)
-    print("Done Writing BRO Benign Microbehavior Data")
+    print("Done Writing Benign BRO Microbehavior Data")
 
 # Step 2: Build Stats For Malicious Bro Files
-if bro_exploit == True:
+if bro_exploit:
     for filename in os.listdir(bro_exploit_dir):
-
         try:
             df_bro_raw_log_exploit = br.bro_http_to_df(bro_exploit_dir + "/" + filename)
         except:
             print("Parsing Error")
 
-        # use for determining upper bound in number of sliding windows we create
-        df_len = len(df_bro_raw_log_exploit)
+            df_mb_ex = create_df_of_sliding_windows(df_bro_raw_log_exploit, df_mb_ex)
 
-        if df_len > window_len:
-            for i in range(0, df_len - window_len):
-                print(i)
+    output_path = 'data/exploit_bro_microbehaviors.csv'
+    print("Writing Exploit BRO Microbehavior Statistics to CSV file: " + output_path)
+    df_mb_ex.to_csv(output_path)
+    print("Done Writing Exploit BRO Microbehavior Data")
 
-                # create sliding window which outputs another dataframe
-                df_raw_log_window = df_bro_raw_log_exploit[i:i + window_len]
-
-                # use the micro behavior api to extract the stats as a dict
-                dict_mb = ex.TimeBehaviors.behavior_vector(df_raw_log_window)
-
-                # convert each dict (window) to a dataframe and add to our global variable
-                df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
-                df_mb_be = df_mb_be.append(df_from_dict, ignore_index=True)
-
-    output_path = 'data/benign_bro_microbehaviors.csv'
-    print("Writing Benign BRO Benign Microbehavior Statistics to CSV file: " + output_path)
+# Step 3: Build Stats For Benign Proxy Files
+if proxy_benign:
+    for filename in os.listdir(proxy_benign_dir):
+        try:
+            df_proxy_raw_log_benign = gpp.generic_proxy_parser(proxy_benign_dir + "/" + filename)
+            df_mb_be = create_df_of_sliding_windows(df_proxy_raw_log_benign, df_mb_be)
+        except UnicodeDecodeError:
+            print("Unicode Parsing Error")
+    output_path = 'data/benign_proxy_microbehaviors.csv'
+    print("Writing Benign Proxy Microbehavior Statistics to CSV file: " + output_path)
     df_mb_be.to_csv(output_path)
-    print("Done Writing BRO Benign Microbehavior Data")
+    print("Done Writing Benign Proxy Microbehavior Data")
 
-#
-# # Reset the df_be rows index
-# df_be = df_be.reset_index()
-# # Add and populate threat_class column
-# df_be['threat_class'] = 0
-#
-# # Add is_train column
-# df_ex = make_training_class(df_ex)
-# df_be = make_training_class(df_be)
-#
-# # Create two for each set new dataframes, one with the training rows, one with the test rows
-# train_ex, test_ex = df_ex[df_ex['is_train']==True], df_ex[df_ex['is_train']==False]
-# train_be, test_be = df_be[df_be['is_train']==True], df_be[df_be['is_train']==False]
-#
-# # Concatenate the test and training data into two seperate dataframes
-# train = pd.concat([train_ex, train_be])
-# test = pd.concat([test_ex, test_be])
+
+
 
 
 
@@ -165,8 +119,7 @@ if bro_exploit == True:
 # print('Number of observations in the test data:',len(test))
 
 # Initialize proxy data directories
-proxy_exploit_dir = "data/logs_proxy_format/exploit"
-# proxy_benign_dir  = "data/logs_proxy_format/benign"
+
 #
 # # Initialize proxy data frames
 # df_p_ex = pd.DataFrame()

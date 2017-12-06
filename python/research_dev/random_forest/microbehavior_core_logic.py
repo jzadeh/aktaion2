@@ -154,28 +154,28 @@ class HTTPMicroBehaviors:
         define a dictionary of learning features: uriMaxPathDepth, uriMinPathDepth, uriMaxLength, uriMinLength, uriDistinct,
         uriMaxEntropy, uriMinEntropy, isBase64, isUrlEncoded"""
 
-        # inList = inFrame['uri'].head
-        #
-        # # Dirty work around for IndexError anomaly generated when calling entropy inside  the dictionary key/value declaration below
-        # mxEntropy = HTTPMicroBehaviors.max_entropy(inList)
-        # mnEntropy = HTTPMicroBehaviors.min_entropy(inList)
-        #
-        # behaviorVector = {'max_path_depth': HTTPMicroBehaviors.max_path_length(inList),
-        #               'min_path_depth': HTTPMicroBehaviors.min_path_length(inList),
-        #               'max_length':HTTPMicroBehaviors.max_length(inList),
-        #               'min_length':HTTPMicroBehaviors.min_length(inList),
-        #               'uri_Distinct':HTTPMicroBehaviors.uri_distinct(inList),
-        #               'max_entropy':mxEntropy,
-        #               'min_entropy':mnEntropy,
-        #               'base64Match':HTTPMicroBehaviors.base_64_match(inList),
-        #               'percentEncoded':HTTPMicroBehaviors.url_percent_encoding_match(inList)}
-        #
-        # timing_vector = TimeBehaviors.behavior_vector(inFrame)
-        #
-        # dict = dict(behaviorVector)
-        # dict.update(timing_vector)
-        #
-        # print(dict)
+        inList = inFrame['uri'].head
+
+        # Dirty work around for IndexError anomaly generated when calling entropy inside  the dictionary key/value declaration below
+        mxEntropy = HTTPMicroBehaviors.max_entropy(inList)
+        mnEntropy = HTTPMicroBehaviors.min_entropy(inList)
+
+        behaviorVector = {'max_path_depth': HTTPMicroBehaviors.max_path_length(inList),
+                      'min_path_depth': HTTPMicroBehaviors.min_path_length(inList),
+                      'max_length':HTTPMicroBehaviors.max_length(inList),
+                      'min_length':HTTPMicroBehaviors.min_length(inList),
+                      'uri_Distinct':HTTPMicroBehaviors.uri_distinct(inList),
+                      'max_entropy':mxEntropy,
+                      'min_entropy':mnEntropy,
+                      'base64Match':HTTPMicroBehaviors.base_64_match(inList),
+                      'percentEncoded':HTTPMicroBehaviors.url_percent_encoding_match(inList)}
+
+        timing_vector = TimeBehaviors.behavior_vector(inFrame)
+
+        dict = dict(behaviorVector)
+        dict.update(timing_vector)
+
+        print(dict)
 
         return(timing_vector)
 
@@ -266,7 +266,11 @@ class TimeBehaviors:
         for i in TimeBehaviors.get_time_interval(inFrame):
             if i <= 1:
                 counter = counter + 1
-        return(counter / TimeBehaviors.interval_length(inFrame))
+        try:
+            return(counter / TimeBehaviors.interval_length(inFrame))
+        except: ZeroDivisionError
+
+        return 0.0
 
     def ratio_of_deltas_B(inFrame):
         """(Ratio of time-deltas < 5 second)/(window size)
@@ -276,8 +280,11 @@ class TimeBehaviors:
         for i in TimeBehaviors.get_time_interval(inFrame):
             if i < 5:
                 counter = counter + 1
+        try:
+            return(counter / TimeBehaviors.interval_length(inFrame))
+        except: ZeroDivisionError
 
-        return(counter / TimeBehaviors.interval_length(inFrame))
+        return 0.0
 
     def ratio_of_deltas_C(inFrame):
         """(Ratio of time-deltas < 10 second)/(window size)
@@ -287,8 +294,11 @@ class TimeBehaviors:
         for i in TimeBehaviors.get_time_interval(inFrame):
             if i < 10:
                 counter = counter + 1
+        try:
+            return(counter / TimeBehaviors.interval_length(inFrame))
+        except: ZeroDivisionError
 
-        return(counter / TimeBehaviors.interval_length(inFrame))
+        return 0.0
 
     def ratio_of_deltas_D(inFrame):
         """(Ratio of time-deltas < 20 second)/(window size)
@@ -298,8 +308,11 @@ class TimeBehaviors:
         for i in TimeBehaviors.get_time_interval(inFrame):
             if i < 20:
                 counter = counter + 1
+        try:
+            return(counter / TimeBehaviors.interval_length(inFrame))
+        except: ZeroDivisionError
 
-        return(counter / TimeBehaviors.interval_length(inFrame))
+        return 0.0
 
     def ratio_of_deltas_E(inFrame):
         """(Ratio of time-deltas >= 100 second)/(window size)
@@ -310,8 +323,11 @@ class TimeBehaviors:
             if i >= 100:
                 counter = counter + 1
 
-        return(counter / TimeBehaviors.interval_length(inFrame))
+        try:
+            return(counter / TimeBehaviors.interval_length(inFrame))
+        except: ZeroDivisionError
 
+        return 0.0
 
     def behavior_vector(self, n = 5):
         """Given a dataFrame with time-ordered lists as entries:

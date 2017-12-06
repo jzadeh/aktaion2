@@ -43,21 +43,26 @@ def generic_line_parser(logLine):
 
     #now appended the dictionary with the dt_obj object and dt_string and
     #the concatinated URL meta data
-    matched_dict['epochTime'] = epochTime
-    matched_dict['timeString'] = dt_string
-    matched_dict['urlMeta'] =  matched_dict['urlMeta1'] + " " + matched_dict['urlMeta2'] + " " + matched_dict['urlMeta3'] + " " + matched_dict['urlMeta4']
 
-    # Add uri key/value pair with urllib.parse
-    matched_dict['uri'] = urllib.parse.urlparse(matched_dict['fullUrl']).path
+    try:
+        matched_dict['epochTime'] = epochTime
+        matched_dict['timeString'] = dt_string
+        matched_dict['urlMeta'] =  matched_dict['urlMeta1'] + " " + matched_dict['urlMeta2'] + " " + matched_dict['urlMeta3'] + " " + matched_dict['urlMeta4']
 
-    # Add host key/value pair with urllib.parse
-    matched_dict['host'] = urllib.parse.urlparse(matched_dict['fullUrl']).netloc
+        # Add uri key/value pair with urllib.parse
+        matched_dict['uri'] = urllib.parse.urlparse(matched_dict['fullUrl']).path
 
-    # Cast epochTime into tslib.timeStamp datatype
-    matched_dict['epochTime'] = pd.to_datetime(matched_dict['epochTime'], unit='s')
+        # Add host key/value pair with urllib.parse
+        matched_dict['host'] = urllib.parse.urlparse(matched_dict['fullUrl']).netloc
 
+        # Cast epochTime into tslib.timeStamp datatype
+        matched_dict['epochTime'] = pd.to_datetime(matched_dict['epochTime'], unit='s')
+        return (matched_dict)
 
-    return(matched_dict)
+    except: UnboundLocalError: print("parsing error at log line " + logLine)
+
+    return {}
+
 
 def generic_proxy_parser(inFile):
     """Takes a fully-qualified file-path and returns a dataframe of the file contents"""
