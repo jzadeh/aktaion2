@@ -1,2 +1,2 @@
-PYTHONPATH='.' python3 python/demo.py
+PYTHONPATH='.' python3 python/aktaion2.py
 

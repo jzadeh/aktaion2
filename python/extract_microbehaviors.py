@@ -31,9 +31,9 @@ df_mb_be = pd.DataFrame()
 window_len = 5
 
 #configuration for output
-bro_benign = False
-bro_exploit = False
-proxy_benign = False
+bro_benign = True
+bro_exploit = True
+proxy_benign = True
 proxy_exploit = True
 
 #helper method for building a dataframe of sliding windows
@@ -61,7 +61,7 @@ if bro_benign:
     for filename in os.listdir(bro_benign_dir):
         #convert raw log to dataframe
         try:
-            df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename).head(100)
+            df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename)
         except: print("Parsing Error")
 
         df_mb_be = create_df_of_sliding_windows(df_bro_raw_log_benign, df_mb_be)

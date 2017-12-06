@@ -51,18 +51,20 @@ class HTTPMicroBehaviors:
 
     def min_path_length(inList):
         """return the min path length of all URIs"""
-
         # Count the depth of the file structure for each uri in inList
-        for uri in inList:
-            try:
+        try:
+            for uri in inList:
                 minLength = uri.count('/')
 
                 # Check the current uri path length against the running length
                 if uri.count('/') < minLength:
                     minLength = uri.count('/')
-            except: AttributeError
 
-        return (minLength)
+            return minLength
+
+        except: AttributeError
+        return 0
+
 
     def max_length(inList):
         """Max length of all URIs in list"""
@@ -101,26 +103,37 @@ class HTTPMicroBehaviors:
         """returns the maximum shannon entropy of URIs in the list"""
         try:
             maxEntropy = en.shannon_entropy(inList[0])
-        except(IndexError,TypeError):
+        except(IndexError,TypeError,KeyError):
             try:
                 maxEntropy = en.shannon_entropy(inList)
             except(TypeError):
                 maxEntropy = 0.0
 
         for uri in inList:
-            if maxEntropy <  en.shannon_entropy(uri):
-                maxEntropy = en.shannon_entropy(uri)
+            try:
+                if maxEntropy <  en.shannon_entropy(uri):
+                    maxEntropy = en.shannon_entropy(uri)
+            except(IndexError, TypeError, KeyError):
+                print()
 
         return(maxEntropy)
 
     def min_entropy(inList):
         """Returns the minimum shannon entropy of URIs in the list"""
-
-        minEntropy = en.shannon_entropy(inList[0])
+        try:
+            minEntropy = en.shannon_entropy(inList[0])
+        except(IndexError,TypeError,KeyError):
+            try:
+                minEntropy = en.shannon_entropy(inList)
+            except(TypeError):
+                minEntropy = 0.0
 
         for uri in inList:
-            if minEntropy > en.shannon_entropy(uri):
-                minEntropy = en.shannon_entropy(uri)
+            try:
+                if minEntropy > en.shannon_entropy(uri):
+                    minEntropy = en.shannon_entropy(uri)
+            except(IndexError, TypeError, KeyError):
+                print()
 
         return(minEntropy)
 
@@ -181,16 +194,16 @@ class HTTPMicroBehaviors:
         inList = inFrame['uri']
 
         # Dirty work around for IndexError anomaly generated when calling entropy inside  the dictionary key/value declaration below
-        #mxEntropy = HTTPMicroBehaviors.max_entropy(inList)
-        #mnEntropy = HTTPMicroBehaviors.min_entropy(inList)
+        mxEntropy = HTTPMicroBehaviors.max_entropy(inList)
+        mnEntropy = HTTPMicroBehaviors.min_entropy(inList)
 
         behaviorVector = {'max_path_depth': HTTPMicroBehaviors.max_path_length(inList),
                       'min_path_depth': HTTPMicroBehaviors.min_path_length(inList),
                       'max_length':HTTPMicroBehaviors.max_length(inList),
                       'min_length':HTTPMicroBehaviors.min_length(inList),
                       'uri_Distinct':HTTPMicroBehaviors.uri_distinct(inList),
-                      #'max_entropy':mxEntropy,
-                      #'min_entropy':mnEntropy,
+                      'max_entropy':mxEntropy,
+                      'min_entropy':mnEntropy,
                       'base64Match':HTTPMicroBehaviors.base_64_match(inList),
                       'percentEncoded':HTTPMicroBehaviors.url_percent_encoding_match(inList)}
 
@@ -198,9 +211,6 @@ class HTTPMicroBehaviors:
 
         uri_dict = dict(behaviorVector)
         uri_dict.update(timing_vector)
-
-        print(uri_dict)
-
         return(uri_dict)
 
 class TimeBehaviors:
