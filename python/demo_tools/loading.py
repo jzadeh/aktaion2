@@ -4,9 +4,11 @@ import time
 import sys
 from colorama import Fore, Style
 
+
 done = False
 #loading animation
 def load_analyzer():
+
     for f in itertools.cycle([ Fore.LIGHTWHITE_EX + Style.BRIGHT + '*' + Fore.YELLOW + 'ᗧ' + Fore.LIGHTWHITE_EX +
                                Style.BRIGHT + 'Analyzing*File*','*A' + Fore.YELLOW + 'ᗧ' +
                                Fore.LIGHTWHITE_EX + Style.BRIGHT + 'nalyzing*File*' , '*An' + Fore.YELLOW + 'ᗧ' +
@@ -24,6 +26,7 @@ def load_analyzer():
                                Fore.LIGHTWHITE_EX + Style.BRIGHT + 'e*' , '*Analyzing*File' + Fore.YELLOW + 'ᗧ' +
                                Fore.LIGHTWHITE_EX + Style.BRIGHT + '*' + Style.RESET_ALL ]):
     #for f in itertools.cycle(['ᗧ','ᗧ*','*ᗧ*','**ᗧ*','***ᗧ*','****ᗧ*','*****ᗧ*','****ᗧ']):
+
         if done:
             break
         sys.stdout.write('\r' + f)
