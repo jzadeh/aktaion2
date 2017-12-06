@@ -7,13 +7,15 @@
 from colorama import Fore, Style, Back
 import subprocess as sp
 import pandas as pd
-
+import os
 import python.parser_dev.generic_proxy_parser as gpp
 from python.parser_dev.bro_parser import broParse
 import python.research_dev.random_forest.exploit_uri_behaviors as ex
 from python.demo_tools.boot import boot
+import time
 
 
+time.sleep(1.0)
 ##inital spalsh message for aktaion
 boot()
 sp.call('clear',shell=True)
@@ -40,20 +42,26 @@ print(Fore.GREEN +'3:' + Fore.WHITE + ' Demo                                    
 print(Fore.GREEN + 81 * '-'+ Style.RESET_ALL)
 
 # Get input
-choice = input(Fore.WHITE + 'Enter your choice' + Fore.GREEN + ' (1-4)'+ Fore.GREEN+':')
+choice = input(Fore.WHITE + 'Enter your choice' + Fore.GREEN + ' (1-4)'+ Fore.GREEN+':' + Style.RESET_ALL)
 ### Convert string to int type ##
 choice = int(choice)
+os.system('cls||clear')
 
 # Take action as per selected menu-option
 if choice == 1:
-    print("Analyze Proxy Log For Potential Exploit Behavior")
 
+    print("Analyze Proxy Log For Potential Exploit Behavior".center(1070))
+    time.sleep(1.0)
+    os.system('cls||clear')
     from python.demo_tools.loading import load_analyzer
     load_analyzer()
 
 
     path = "data/logs_proxy_format/exploit/2014-01-02-neutrino-exploit-traffic.webgateway"
+    os.system('cls||clear')
     print("File for analysis : ", path)
+    os.system('cls||clear')
+
 
     proxy_df = gpp.generic_proxy_parser(path)
     # print(proxy_df)
@@ -67,8 +75,12 @@ if choice == 1:
     # blow out old index information
     del new_df['index']
 
+
     print(ex.microBehaviors.behaviorVector(new_df))
+    time.sleep(4.0)
+    os.system('cls||clear')
     import python.demo_tools.exploitascii
+    os.system('cls||clear')
     import python.demo_tools.phishingascii
        # exploit_chain_art()
 
@@ -78,3 +90,4 @@ elif choice == 3:
     print("")
 else:  ## default ##
     print(Fore.RED+"Invalid number. Try again..."+ Style.RESET_ALL)
+
