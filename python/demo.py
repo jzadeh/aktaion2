@@ -37,18 +37,17 @@ print(Fore.LIGHTWHITE_EX + Style.BRIGHT +"   ╚═══╝  ╚═════
 print(Fore.WHITE+"                               M A I N - M E N U                                 "+ Style.RESET_ALL)
 print(Fore.GREEN + 81 * '-'+ Style.RESET_ALL)
 print(Fore.GREEN +'1:' + Fore.WHITE + ' Run Demo ' + Style.RESET_ALL),
-print(Fore.GREEN +'2:' + Fore.WHITE + ' Analyze Bro HTTP Sample Using Phishing Model                                  ' + Style.RESET_ALL),
-print(Fore.GREEN +'3:' + Fore.WHITE + ' Demo                                                                          '+ Style.RESET_ALL),
+print(Fore.GREEN +'2:' + Fore.WHITE + ' Analyze Bro HTTP Log File                                  ' + Style.RESET_ALL),
 print(Fore.GREEN + 81 * '-'+ Style.RESET_ALL)
 
 # Get input
-choice = input(Fore.WHITE + 'Enter your choice' + Fore.GREEN + ' (1-4)'+ Fore.GREEN+':' + Style.RESET_ALL)
+choice = input(Fore.WHITE + 'Enter your choice' + Fore.GREEN + ' (1-2)'+ Fore.GREEN+':' + Style.RESET_ALL)
 ### Convert string to int type ##
 choice = int(choice)
 os.system('cls||clear')
 
 # Take action as per selected menu-option
-if choice == 1:
+if choice != 2:
 
     print("Analyze Proxy Log For Potential Exploit Behavior".center(1070))
     time.sleep(1.0)
@@ -56,12 +55,10 @@ if choice == 1:
     from python.demo_tools.loading import load_analyzer
     load_analyzer()
 
-
     path = "data/logs_proxy_format/exploit/2014-01-02-neutrino-exploit-traffic.webgateway"
     os.system('cls||clear')
     print("File for analysis : ", path)
     os.system('cls||clear')
-
 
     proxy_df = gpp.generic_proxy_parser(path)
     # print(proxy_df)
@@ -75,19 +72,19 @@ if choice == 1:
     # blow out old index information
     del new_df['index']
 
-
     print(ex.microBehaviors.behaviorVector(new_df))
     time.sleep(4.0)
     os.system('cls||clear')
     import python.demo_tools.exploitascii
-    os.system('cls||clear')
-    import python.demo_tools.phishingascii
+    #os.system('cls||clear')
+    # import python.demo_tools.phishingascii
        # exploit_chain_art()
 
 elif choice == 2:
-    print("")
-elif choice == 3:
-    print("")
-else:  ## default ##
-    print(Fore.RED+"Invalid number. Try again..."+ Style.RESET_ALL)
+    file_path = input(Fore.WHITE + 'Please enter file location as string of BRO http.log' + Fore.GREEN + ':' + Style.RESET_ALL)
+    user_bro_df = broParse.bro_http_to_df(file_path)
+    print(ex.microBehaviors.behaviorVector(user_bro_df))
+
+# else:  ## default ##
+#     print(Fore.RED+"Invalid number. Try again..."+ Style.RESET_ALL)
 
