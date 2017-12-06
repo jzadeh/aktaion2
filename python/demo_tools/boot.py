@@ -1,6 +1,6 @@
 import os
 from colorama import Fore, Style
-os.system('cls||clear') 
+os.system('cls||clear')
 def boot():
 
     print
@@ -26,15 +26,12 @@ print ('                 /:::/    /               \::|   |                      
 print ('                 \::/    /                 \:|   |                                       \::/    /                 \::/    /                 ~~                      \::/    / ')
 print ('                  \/____/                   \|___|                                        \/____/                   \/____/                                           \/____/ ')
 
-print("")
-print("")
-print("")
-print("")
+print('\n' * 4)
 print(Fore.LIGHTWHITE_EX + Style.BRIGHT +"Welcome to Aktaion 2.0: Open source tool for detection exploitation and phishing behaviors.")
-print("")
+print('\n' * 10)
 print("The input is a bro http file and the output is a detection either malicious or benign plus related IOCs.")
 print("For more information consult the source repo https://github.com/jzadeh/aktaion2 or the original v1 java project: https://github.com/jzadeh/aktaion")
-
+print('\n' * 10)
 #try:
 #    input ('Press enter to continue:')
 #except NameError:
