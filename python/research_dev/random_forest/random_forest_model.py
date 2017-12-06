@@ -77,10 +77,10 @@ for f in range(len(importances)):
    print("%d. feature %s (%f)" % (f + 1, featureList[f], importances[indices[f]]))
 
 # Plot the feature importances of the forest
-# plt.figure()
-# plt.title("Feature importances")
-# plt.bar(range(len(importances)), importances[indices],
-#        color="b", yerr=std[indices], align="center")
-# plt.xticks(range(len(importances)), featureList[indices], rotation=90)
-# plt.xlim([-1, len(importances)])
-# plt.show()
+plt.figure()
+plt.title("Feature importances")
+plt.bar(range(len(importances)), importances[indices],
+       color="b", yerr=std[indices], align="center")
+plt.xticks(range(len(importances)), featureList[indices], rotation=90)
+plt.xlim([-1, len(importances)])
+plt.show()
