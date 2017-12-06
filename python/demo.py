@@ -13,6 +13,7 @@ from python.parser_dev.bro_parser import broParse
 import python.research_dev.random_forest.exploit_uri_behaviors as ex
 from python.demo_tools.boot import boot
 import time
+import shutil
 
 
 time.sleep(1.0)
@@ -49,8 +50,10 @@ os.system('cls||clear')
 # Take action as per selected menu-option
 if choice != 2:
 
-    print("Analyze Proxy Log For Potential Exploit Behavior".center(1070))
-    time.sleep(1.0)
+    columns = shutil.get_terminal_size().columns
+    print('\n' * 25)
+    print('Analyze Proxy Log For Potential Exploit Behavior'.center(columns))
+    time.sleep(2.0)
     os.system('cls||clear')
     from python.demo_tools.loading import load_analyzer
     load_analyzer()
