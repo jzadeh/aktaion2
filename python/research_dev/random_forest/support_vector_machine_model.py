@@ -7,8 +7,13 @@ from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 from sklearn.svm import SVC
 
-df1 = pd.read_csv('data/exploit.csv')
-df2 = pd.read_csv('data/benign.csv')
+#df1 = pd.read_csv('data/exploit.csv')
+# df2 = pd.read_csv('data/benign.csv')
+df1 = pd.read_csv('data/logs_normalized_format/exploit_bro_timing_microbehaviors.csv')
+df1['Type'] = "exploit"
+df2 = pd.read_csv('data/logs_normalized_format/benign_bro_timing_microbehaviors.csv')
+df2['Type'] = "benign"
+
 frame = [df1, df2]
 df = pd.concat(frame)
 

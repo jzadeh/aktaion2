@@ -6,9 +6,9 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 
-df1 = pd.read_csv('data/exploits_proxy_logs.csv')
+df1 = pd.read_csv('data/logs_normalized_format/exploit_bro_timing_microbehaviors.csv')
 df1['Type'] = "exploit"
-df2 = pd.read_csv('data/benign_proxy_logs.csv')
+df2 = pd.read_csv('data/logs_normalized_format/benign_bro_timing_microbehaviors.csv')
 df2['Type'] = "benign"
 frame = [df1, df2]
 df = pd.concat(frame)
@@ -48,8 +48,6 @@ RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
             n_estimators=30, n_jobs=1, oob_score=False, random_state=1,
             verbose=0, warm_start=False)
 
-
-
 y_predict = random_forest.predict(X_test)
 print accuracy_score(y_test, y_predict)
 
@@ -79,10 +77,10 @@ for f in range(len(importances)):
    print("%d. feature %s (%f)" % (f + 1, featureList[f], importances[indices[f]]))
 
 # Plot the feature importances of the forest
-plt.figure()
-plt.title("Feature importances")
-plt.bar(range(len(importances)), importances[indices],
-       color="b", yerr=std[indices], align="center")
-plt.xticks(range(len(importances)), featureList[indices], rotation=90)
-plt.xlim([-1, len(importances)])
-plt.show()
+# plt.figure()
+# plt.title("Feature importances")
+# plt.bar(range(len(importances)), importances[indices],
+#        color="b", yerr=std[indices], align="center")
+# plt.xticks(range(len(importances)), featureList[indices], rotation=90)
+# plt.xlim([-1, len(importances)])
+# plt.show()
