@@ -25,10 +25,11 @@ def make_training_class(df):
 bro_exploit_dir = "data/logs_bro_format/exploit"
 bro_benign_dir = "data/logs_bro_format/benign"
 
-# Declare global exploit and benign dataFrame vars
+# Declare global exploit and benign dataFrame vars for keeping the raw log data
 df_ex = pd.DataFrame()
 df_be = pd.DataFrame()
 
+# keep the extracted micro behaviors here
 df_mb_ex = pd.DataFrame()
 df_mb_be = pd.DataFrame()
 
@@ -47,23 +48,70 @@ df_mb_be = pd.DataFrame()
 # # Add and populate threat_class column
 # df_ex['threat_class'] = 1
 #
-# # Load benign Bro data into df_be
-df_be = pd.DataFrame()
-
 
 window_len = 5
 
+# def dict_to_df(d):
+#     df=pd.DataFrame(d.items())
+#     df.set_index(0, inplace=True)
+#     return df
+
 for filename in os.listdir(bro_benign_dir):
     print(filename)
-    try:
-        bro_df = br.bro_http_to_df(bro_benign_dir + "/" + filename)
-        # df_be = df_be.append(bro_df)
-        mb_df = ex.exploitationTimeBehaviors.behavior_vector(bro_df)
+    #try:
+    df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename).head(100)
+    # df_be = df_be.append(bro_df)
 
+    # select the first 5 rows (rows 0,1,2,3,4)
+    df_len = len(df_bro_raw_log_benign)
 
-        print(mb_df)
-        df_mb_be.append(mb_df)
-    except: print ("bro parsing error")
+    for i in range(0,df_len -window_len):
+        #try:
+      print(i)
+      # print(i+window_len)
+      df_raw_log_window = df_bro_raw_log_benign[i:i+window_len]
+      #print(window_df)
+      dict_mb = ex.exploitationTimeBehaviors.behavior_vector(df_raw_log_window)
+      df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
+      print(type(df_from_dict))
+      print(df_from_dict)
+      df_mb_be = df_mb_be.append(df_from_dict, ignore_index=True)
+
+      print(len(df_mb_be))
+
+        #  print(i)
+        #  print(dict_mb)
+        #  print(type(dict_mb))
+
+         # print("Outer type " + type(dict_mb))
+
+          #print(dict_mb)
+
+          #df_from_dict = pd.DataFrame.from_dict(dict_mb)
+          # if i == 0:
+          #   #  print(i)
+          #
+          #     df_mb_be = pd.DataFrame([dict_mb], columns=dict_mb.keys())
+          #     print(df_mb_be)
+          #
+          #     #df_mb_be = df_mb_be([dict_mb])
+          #     #print(df_mb_be)
+          #     # df_mb_be = df_mb_be.append(df_mb_be([dict_mb]))
+          #     # print(df_mb_be)
+          #
+          #   #  print(i)
+          # else:
+          #   df_mb_be.append(pd.DataFrame([dict_mb], columns=dict_mb.keys()))
+             # print(x)
+
+                    # print(df_from_dict)
+              #df_mb_be.append(x)
+
+       #   print("Data Frame from dictionary data")
+         # print("df_mb_be")
+       # except: print()
+     #   df_mb_be.append(mb_df)
+   # except: print ("bro parsing error")
 
    # mb_df = ex.microBehaviors.behaviorVector(df_be)
    # df_mb_be = df_mb_be.append(mb_df)
@@ -75,7 +123,7 @@ for filename in os.listdir(bro_benign_dir):
 #
 # print(mb_df)
 #
-df_mb_be.to_csv('data/benign_proxy_microbehaviors.csv')
+#df_mb_be.to_csv('data/benign_proxy_microbehaviors.csv')
 
 #
 # # Reset the df_be rows index
