@@ -9,16 +9,8 @@ import python.research_dev.random_forest.microbehavior_core_logic as ex
 # Load pandas
 import pandas as pd
 
-# Load numpy
-import numpy as np
-
 # Load os to parse directories
 import os
-
-# Define make_training_class to pick rows for training/test
-def make_training_class(df):
-    df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75
-    return(df)
 
 # Specify  data directories
 bro_exploit_dir = "data/logs_bro_format/exploit"
@@ -41,8 +33,8 @@ window_len = 5
 #configuration for output
 bro_benign = False
 bro_exploit = False
-proxy_benign = True
-proxy_exploit = False
+proxy_benign = False
+proxy_exploit = True
 
 #helper method for building a dataframe of sliding windows
 def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
@@ -104,12 +96,24 @@ if proxy_benign:
             df_mb_be = create_df_of_sliding_windows(df_proxy_raw_log_benign, df_mb_be)
         except UnicodeDecodeError:
             print("Unicode Parsing Error")
+
     output_path = 'data/benign_proxy_microbehaviors.csv'
     print("Writing Benign Proxy Microbehavior Statistics to CSV file: " + output_path)
     df_mb_be.to_csv(output_path)
     print("Done Writing Benign Proxy Microbehavior Data")
 
+if proxy_exploit:
+    for filename in os.listdir(proxy_exploit_dir):
+        try:
+            df_proxy_raw_log_exploit = gpp.generic_proxy_parser(proxy_exploit_dir + "/" + filename)
+            df_mb_ex = create_df_of_sliding_windows(df_proxy_raw_log_exploit, df_mb_ex)
+        except UnicodeDecodeError:
+            print("Unicode Parsing Error")
 
+    output_path = 'data/exploit_proxy_microbehaviors.csv'
+    print("Writing Exploit Proxy Microbehavior Statistics to CSV file: " + output_path)
+    df_mb_ex.to_csv(output_path)
+    print("Done Writing Exploit Proxy Microbehavior Data")
 
 
 
