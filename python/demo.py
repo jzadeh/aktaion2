@@ -10,7 +10,7 @@ import pandas as pd
 import os
 import python.parser_dev.generic_proxy_parser as gpp
 from python.parser_dev.bro_parser import broParse
-import python.research_dev.random_forest.exploit_uri_behaviors as ex
+import python.research_dev.random_forest.microbehavior_core_logic as ex
 from python.demo_tools.boot import boot
 import time
 import shutil
@@ -75,7 +75,7 @@ if choice == 1:
     # blow out old index information
     del new_df['index']
 
-    print(ex.microBehaviors.behaviorVector(new_df))
+    print(ex.HTTPMicroBehaviors.behaviorVector(new_df))
     time.sleep(4.0)
     os.system('cls||clear')
     import python.demo_tools.exploitascii
@@ -86,7 +86,7 @@ if choice == 1:
 if choice == 2:
     file_path = input(Fore.WHITE + 'Please enter file location as string of BRO http.log' + Fore.GREEN + ':' + Style.RESET_ALL)
     user_bro_df = broParse.bro_http_to_df(file_path)
-    print(ex.microBehaviors.behaviorVector(user_bro_df))
+    print(ex.HTTPMicroBehaviors.behaviorVector(user_bro_df))
 #try:
 #    in_file = broParse.bro_http_to_df(fileName)
 #    print('File opened successfully!')

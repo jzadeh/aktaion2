@@ -6,7 +6,7 @@ import inspect
 from python.parserDev.broParse import broParse
 import urllib
 import pandas as pd
-#from python.researchDev.random_forest.exploitUriBehaviors import microBehaviors as mb
+#from python.researchDev.random_forest.exploitUriBehaviors import MicroBehaviors as mb
 import python.researchDev.random_forest.exploit_uri_behaviors as ex
 
 # #directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
@@ -109,35 +109,35 @@ del new_df['index']
 #
 # pprint (gpp.generic_line_parser(logLine))
 
-# #test exploitUriBehaviors.exploitationTimeBehaviors.max_time_interval_a
+# #test exploitUriBehaviors.TimeBehaviors.max_time_interval_a
 
-#td = ex.exploitationTimeBehaviors.max_time_interval_A(new_df.head())
+#td = ex.TimeBehaviors.max_time_interval_A(new_df.head())
 
 # print(td)
 
-# #test exploitUriBehaviors.exploitationTimeBehaviors.time_delta
-# print(ex.exploitationTimeBehaviors.max_time_interval(new_df))
-# print(ex.exploitationTimeBehaviors.min_time_interval(new_df))
-# print(ex.exploitationTimeBehaviors.min_time_interval(new_df))
-# print(ex.exploitationTimeBehaviors.max_time_interval(new_df))
+# #test exploitUriBehaviors.TimeBehaviors.time_delta
+# print(ex.TimeBehaviors.max_time_interval(new_df))
+# print(ex.TimeBehaviors.min_time_interval(new_df))
+# print(ex.TimeBehaviors.min_time_interval(new_df))
+# print(ex.TimeBehaviors.max_time_interval(new_df))
 # print("--------------")
 # print(new_df['epochTime'])
 
 #
 # #  #test ex.exploitationTimebehaviors.get_max_deltas
-# print(ex.exploitationTimeBehaviors.get_max_deltas(new_df, 10))
+# print(ex.TimeBehaviors.get_max_deltas(new_df, 10))
 
 # #  #test ex.exploitationTimebehaviors.get_min_deltas
-# print(ex.exploitationTimeBehaviors.get_min_deltas(new_df))
+# print(ex.TimeBehaviors.get_min_deltas(new_df))
 
 #  #test ex.exploitationTimebehaviors.ratio_of_deltas_A
-#print("then ratio of frames less than 1 second is ", ex.exploitationTimeBehaviors.ratio_of_deltas_A(new_df.tail()))
+#print("then ratio of frames less than 1 second is ", ex.TimeBehaviors.ratio_of_deltas_A(new_df.tail()))
 #print(len(new_df))
 # print(new_df['epochTime'].tail())
 #
-# print(ex.exploitationTimeBehaviors.interval_length(new_df.tail()), 2)
-# print(ex.exploitationTimeBehaviors.interval_length(new_df.tail()))
-#print(ex.exploitationTimeBehaviors.behavior_vector(new_df, 5))
+# print(ex.TimeBehaviors.interval_length(new_df.tail()), 2)
+# print(ex.TimeBehaviors.interval_length(new_df.tail()))
+#print(ex.TimeBehaviors.behavior_vector(new_df, 5))
 print(ex.microBehaviors.behaviorVector(new_df))
 
 

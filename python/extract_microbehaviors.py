@@ -4,7 +4,7 @@ from python.parser_dev.bro_parser import broParse as br
 # Load proxy parser
 import python.parser_dev.generic_proxy_parser as gpp
 
-import python.research_dev.random_forest.exploit_uri_behaviors as ex
+import python.research_dev.random_forest.microbehavior_core_logic as ex
 
 # Load pandas
 import pandas as pd
@@ -14,7 +14,6 @@ import numpy as np
 
 # Load os to parse directories
 import os
-
 
 # Define make_training_class to pick rows for training/test
 def make_training_class(df):
@@ -33,6 +32,14 @@ df_be = pd.DataFrame()
 df_mb_ex = pd.DataFrame()
 df_mb_be = pd.DataFrame()
 
+#specify the length of window used in generating microbehavior statistics
+window_len = 5
+
+#configuration for output
+bro_benign = True
+bro_exploit = False
+proxy_benign = False
+proxy_exploit = False
 
 # Load exploit Bro data into df_ex
 # for filename in os.listdir(bro_exploit_dir):
@@ -49,81 +56,54 @@ df_mb_be = pd.DataFrame()
 # df_ex['threat_class'] = 1
 #
 
-window_len = 5
+# Step 1: Build Stats For Benign Bro Files
+if bro_benign == True:
+    for filename in os.listdir(bro_benign_dir):
 
-# def dict_to_df(d):
-#     df=pd.DataFrame(d.items())
-#     df.set_index(0, inplace=True)
-#     return df
+        #convert to raw log file
+        df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename)
 
-for filename in os.listdir(bro_benign_dir):
-    print(filename)
-    #try:
-    df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename).head(100)
-    # df_be = df_be.append(bro_df)
+        #use for determining upper bound in number of sliding windows we create
+        df_len = len(df_bro_raw_log_benign)
 
-    # select the first 5 rows (rows 0,1,2,3,4)
-    df_len = len(df_bro_raw_log_benign)
+        for i in range(0,df_len -window_len):
 
-    for i in range(0,df_len -window_len):
-        #try:
-      print(i)
-      # print(i+window_len)
-      df_raw_log_window = df_bro_raw_log_benign[i:i+window_len]
-      #print(window_df)
-      dict_mb = ex.exploitationTimeBehaviors.behavior_vector(df_raw_log_window)
-      df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
-      print(type(df_from_dict))
-      print(df_from_dict)
-      df_mb_be = df_mb_be.append(df_from_dict, ignore_index=True)
+          #create sliding window which outputs another dataframe
+          df_raw_log_window = df_bro_raw_log_benign[i:i+window_len]
 
-      print(len(df_mb_be))
+          # use the
+          dict_mb = ex.TimeBehaviors.behavior_vector(df_raw_log_window)
+          df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
+          df_mb_be = df_mb_be.append(df_from_dict, ignore_index=True)
 
-        #  print(i)
-        #  print(dict_mb)
-        #  print(type(dict_mb))
+    output_path = 'data/benign_bro_microbehaviors.csv'
+    print("Writing Benign BRO Benign Microbehavior Statistics to CSV file: " + output_path)
+    df_mb_be.to_csv(output_path)
+    print("Done Writing BRO Benig Microbehavior Data")
 
-         # print("Outer type " + type(dict_mb))
+# Step 2: Build Stats For Malicious Bro Files
+if bro_exploit == True:
+    for filename in os.listdir(bro_exploit_dir):
 
-          #print(dict_mb)
+        # convert to raw log file
+        df_bro_raw_log_exploit = br.bro_http_to_df(bro_exploit_dir + "/" + filename)
 
-          #df_from_dict = pd.DataFrame.from_dict(dict_mb)
-          # if i == 0:
-          #   #  print(i)
-          #
-          #     df_mb_be = pd.DataFrame([dict_mb], columns=dict_mb.keys())
-          #     print(df_mb_be)
-          #
-          #     #df_mb_be = df_mb_be([dict_mb])
-          #     #print(df_mb_be)
-          #     # df_mb_be = df_mb_be.append(df_mb_be([dict_mb]))
-          #     # print(df_mb_be)
-          #
-          #   #  print(i)
-          # else:
-          #   df_mb_be.append(pd.DataFrame([dict_mb], columns=dict_mb.keys()))
-             # print(x)
+        # use for determining upper bound in number of sliding windows we create
+        num_events_in_df = len(df_bro_raw_log_exploit)
 
-                    # print(df_from_dict)
-              #df_mb_be.append(x)
+        for i in range(0, num_events_in_df - window_len):
+            # create sliding window which outputs another dataframe
+            df_raw_log_window = df_bro_raw_log_exploit[i:i + window_len]
 
-       #   print("Data Frame from dictionary data")
-         # print("df_mb_be")
-       # except: print()
-     #   df_mb_be.append(mb_df)
-   # except: print ("bro parsing error")
+            # use the
+            dict_mb = ex.TimeBehaviors.behavior_vector(df_raw_log_window)
+            df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
+            df_mb_be = df_mb_be.append(df_from_dict, ignore_index=True)
 
-   # mb_df = ex.microBehaviors.behaviorVector(df_be)
-   # df_mb_be = df_mb_be.append(mb_df)
-
-
-# #df_be.to_csv('data/benign_proxy_logs.csv')
-#
-# mb_df = ex.microBehaviors.behaviorVector(df_be)
-#
-# print(mb_df)
-#
-#df_mb_be.to_csv('data/benign_proxy_microbehaviors.csv')
+    output_path = 'data/benign_bro_microbehaviors.csv'
+    print("Writing Benign BRO Benign Microbehavior Statistics to CSV file: " + output_path)
+    df_mb_be.to_csv(output_path)
+    print("Done Writing BRO Benig Microbehavior Data")
 
 #
 # # Reset the df_be rows index

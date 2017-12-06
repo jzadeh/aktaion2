@@ -12,7 +12,7 @@ pip3 -r requirements.txt
 
 # Running the demo
 
-./run_demo.sh
+./run_aktaion2.sh
 
 # Running the ML Logic in debug mode
 

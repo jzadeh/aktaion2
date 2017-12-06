@@ -3,7 +3,7 @@ import re
 import entropy as en
 import pandas as pd
 
-class microBehaviors:
+class HTTPMicroBehaviors:
 
     def isBase64(s):
         """ Define a class method for matching base64 strings"""
@@ -106,7 +106,7 @@ class microBehaviors:
         count = 0
 
         for uri in inList:
-            if microBehaviors.isBase64(uri):
+            if HTTPMicroBehaviors.isBase64(uri):
                 count = count+1
 
         return(count)
@@ -115,7 +115,7 @@ class microBehaviors:
         """Number of URIs with large number of % encoded strings"""
         count = 0
         for uri in inList:
-            if microBehaviors.isUrlEncoded(uri):
+            if HTTPMicroBehaviors.isUrlEncoded(uri):
                 count = count + 1
 
         return(count)
@@ -142,7 +142,7 @@ class microBehaviors:
         matched = []
         for uri in inList:
             try:
-                matched.append(microBehaviors.isUrlEncoded(uri))
+                matched.append(HTTPMicroBehaviors.isUrlEncoded(uri))
             except:
                 return(matched)
 
@@ -153,33 +153,34 @@ class microBehaviors:
         """expects a dataFrame, returns a dictionary
         define a dictionary of learning features: uriMaxPathDepth, uriMinPathDepth, uriMaxLength, uriMinLength, uriDistinct,
         uriMaxEntropy, uriMinEntropy, isBase64, isUrlEncoded"""
-        # inList = inFrame['uri']
-        #
-        # # Dirty work around for IndexError anomaly generated when calling entropy inside  the dictionary key/value declaration below
-        # mxEntropy = microBehaviors.max_entropy(inList)
-        # mnEntropy = microBehaviors.min_entropy(inList)
-        #
-        # behaviorVector = {'max_path_depth': microBehaviors.max_path_length(inList),
-        #               'min_path_depth': microBehaviors.min_path_length(inList),
-        #               'max_length':microBehaviors.max_length(inList),
-        #               'min_length':microBehaviors.min_length(inList),
-        #               'uri_Distinct':microBehaviors.uri_distinct(inList),
-        #               'max_entropy':mxEntropy,
-        #               'min_entropy':mnEntropy,
-        #               'base64Match':microBehaviors.base_64_match(inList),
-        #               'percentEncoded':microBehaviors.url_percent_encoding_match(inList)}
-        #
-        timing_vector = exploitationTimeBehaviors.behavior_vector(inFrame)
+
+        inList = inFrame['uri'].head
+
+        # Dirty work around for IndexError anomaly generated when calling entropy inside  the dictionary key/value declaration below
+        mxEntropy = HTTPMicroBehaviors.max_entropy(inList)
+        mnEntropy = HTTPMicroBehaviors.min_entropy(inList)
+
+        behaviorVector = {'max_path_depth': HTTPMicroBehaviors.max_path_length(inList),
+                      'min_path_depth': HTTPMicroBehaviors.min_path_length(inList),
+                      'max_length':HTTPMicroBehaviors.max_length(inList),
+                      'min_length':HTTPMicroBehaviors.min_length(inList),
+                      'uri_Distinct':HTTPMicroBehaviors.uri_distinct(inList),
+                      'max_entropy':mxEntropy,
+                      'min_entropy':mnEntropy,
+                      'base64Match':HTTPMicroBehaviors.base_64_match(inList),
+                      'percentEncoded':HTTPMicroBehaviors.url_percent_encoding_match(inList)}
+
+        timing_vector = TimeBehaviors.behavior_vector(inFrame)
 
         # dict = dict(behaviorVector)
         # dict.update(timing_vector)
         #
         # print(dict)
 
-        print("inner type " + type(timing_vector))
         return(timing_vector)
 
-class exploitationTimeBehaviors:
+class TimeBehaviors:
+
 
     """Class specific method for calculating difference between time-stamps,
         expects list of date timese, type float"""
@@ -198,7 +199,7 @@ class exploitationTimeBehaviors:
         #read through the epochTime list until empty
         while len(times) > 1:
             #for each iteration, calculate the total second time delta
-            deltas.append(exploitationTimeBehaviors.time_delta(times))
+            deltas.append(TimeBehaviors.time_delta(times))
             #strip the head off the list
             times.remove(times[0])
         #return the list of time deltas
@@ -207,26 +208,26 @@ class exploitationTimeBehaviors:
     def max_time_interval(inFrame):
         """Returns the maximum time interval in a window,
             expects a dataFrame, returns a float"""
-        return(max(exploitationTimeBehaviors.get_time_interval(inFrame)))
+        return(max(TimeBehaviors.get_time_interval(inFrame)))
 
     def min_time_interval(inFrame):
         """Returns the minimum time interval in a window
             expects a dataFrame, returns a float"""
-        return(min(exploitationTimeBehaviors.get_time_interval(inFrame)))
+        return(min(TimeBehaviors.get_time_interval(inFrame)))
 
     def interval_length(inFrame):
         """Time Length in Window,
             expects a dataFrame, returns window time delta, difference of last and first time stamps"""
         #last row number of the inFrame
-        d0 = exploitationTimeBehaviors.min_time_interval(inFrame)
-        d1 = exploitationTimeBehaviors.max_time_interval(inFrame)
+        d0 = TimeBehaviors.min_time_interval(inFrame)
+        d1 = TimeBehaviors.max_time_interval(inFrame)
         return(d1-d0)
 
     def get_max_deltas(inFrame, n=5):
         """Get a list containing the max deltas info, default is top 5
             expects a dataFrame, returns a list of floats"""
         #get time deltas list
-        DeltasList = exploitationTimeBehaviors.get_time_interval(inFrame)
+        DeltasList = TimeBehaviors.get_time_interval(inFrame)
 
         #sort DeltasList
         DeltasList = sorted(DeltasList, reverse=True)
@@ -243,7 +244,7 @@ class exploitationTimeBehaviors:
         """Get a list containing the min deltas info, default is least 5
             expects a dataFrame, returns a list of floats"""
         #get time deltas list
-        DeltasList = exploitationTimeBehaviors.get_time_interval(inFrame)
+        DeltasList = TimeBehaviors.get_time_interval(inFrame)
 
         #sort DeltasList
         DeltasList = sorted(DeltasList)
@@ -262,54 +263,54 @@ class exploitationTimeBehaviors:
         counter = 0
         index = 0
 
-        for i in exploitationTimeBehaviors.get_time_interval(inFrame):
+        for i in TimeBehaviors.get_time_interval(inFrame):
             if i <= 1:
                 counter = counter + 1
-        return(counter/exploitationTimeBehaviors.interval_length(inFrame))
+        return(counter / TimeBehaviors.interval_length(inFrame))
 
     def ratio_of_deltas_B(inFrame):
         """(Ratio of time-deltas < 5 second)/(window size)
            expects a dataFrame, returns a float"""
         counter = 0
 
-        for i in exploitationTimeBehaviors.get_time_interval(inFrame):
+        for i in TimeBehaviors.get_time_interval(inFrame):
             if i < 5:
                 counter = counter + 1
 
-        return(counter/exploitationTimeBehaviors.interval_length(inFrame))
+        return(counter / TimeBehaviors.interval_length(inFrame))
 
     def ratio_of_deltas_C(inFrame):
         """(Ratio of time-deltas < 10 second)/(window size)
             expects a dataFrame, returns a float"""
         counter = 0
 
-        for i in exploitationTimeBehaviors.get_time_interval(inFrame):
+        for i in TimeBehaviors.get_time_interval(inFrame):
             if i < 10:
                 counter = counter + 1
 
-        return(counter/exploitationTimeBehaviors.interval_length(inFrame))
+        return(counter / TimeBehaviors.interval_length(inFrame))
 
     def ratio_of_deltas_D(inFrame):
         """(Ratio of time-deltas < 20 second)/(window size)
             expects a dataFrame, returns a float"""
         counter = 0
 
-        for i in exploitationTimeBehaviors.get_time_interval(inFrame):
+        for i in TimeBehaviors.get_time_interval(inFrame):
             if i < 20:
                 counter = counter + 1
 
-        return(counter/exploitationTimeBehaviors.interval_length(inFrame))
+        return(counter / TimeBehaviors.interval_length(inFrame))
 
     def ratio_of_deltas_E(inFrame):
         """(Ratio of time-deltas >= 100 second)/(window size)
             expects a dataFrame, returns a float"""
         counter = 0
 
-        for i in exploitationTimeBehaviors.get_time_interval(inFrame):
+        for i in TimeBehaviors.get_time_interval(inFrame):
             if i >= 100:
                 counter = counter + 1
 
-        return(counter/exploitationTimeBehaviors.interval_length(inFrame))
+        return(counter / TimeBehaviors.interval_length(inFrame))
 
 
     def behavior_vector(self, n = 5):
@@ -320,17 +321,17 @@ class exploitationTimeBehaviors:
                       interval_length"""
 
         #define the behavior Vector
-        behaviorVector = {'time_interval': exploitationTimeBehaviors.get_time_interval(self),
-                          'max_deltas': exploitationTimeBehaviors.get_max_deltas(self),
-                          'min_deltas': exploitationTimeBehaviors.get_min_deltas(self),
-                          'ratio_of_deltas_A': exploitationTimeBehaviors.ratio_of_deltas_A(self),
-                          'ratio_of_deltas_B': exploitationTimeBehaviors.ratio_of_deltas_B(self),
-                          'ratio_of_deltas_C': exploitationTimeBehaviors.ratio_of_deltas_C(self),
-                          'ratio_of_deltas_D': exploitationTimeBehaviors.ratio_of_deltas_D(self),
-                          'ratio_of_deltas_E': exploitationTimeBehaviors.ratio_of_deltas_E(self),
-                          'max_time_interval': exploitationTimeBehaviors.max_time_interval(self),
-                          'min_time_interval': exploitationTimeBehaviors.min_time_interval(self),
-                          'interval_length': exploitationTimeBehaviors.interval_length(self)}
+        behaviorVector = {'time_interval': TimeBehaviors.get_time_interval(self),
+                          'max_deltas': TimeBehaviors.get_max_deltas(self),
+                          'min_deltas': TimeBehaviors.get_min_deltas(self),
+                          'ratio_of_deltas_A': TimeBehaviors.ratio_of_deltas_A(self),
+                          'ratio_of_deltas_B': TimeBehaviors.ratio_of_deltas_B(self),
+                          'ratio_of_deltas_C': TimeBehaviors.ratio_of_deltas_C(self),
+                          'ratio_of_deltas_D': TimeBehaviors.ratio_of_deltas_D(self),
+                          'ratio_of_deltas_E': TimeBehaviors.ratio_of_deltas_E(self),
+                          'max_time_interval': TimeBehaviors.max_time_interval(self),
+                          'min_time_interval': TimeBehaviors.min_time_interval(self),
+                          'interval_length': TimeBehaviors.interval_length(self)}
 
         return(behaviorVector)
 
