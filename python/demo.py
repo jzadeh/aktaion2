@@ -48,7 +48,7 @@ choice = int(choice)
 os.system('cls||clear')
 
 # Take action as per selected menu-option
-if choice != 2:
+if choice == 1:
 
     columns = shutil.get_terminal_size().columns
     print('\n' * 25)
@@ -83,11 +83,17 @@ if choice != 2:
     # import python.demo_tools.phishingascii
        # exploit_chain_art()
 
-elif choice == 2:
+if choice == 2:
     file_path = input(Fore.WHITE + 'Please enter file location as string of BRO http.log' + Fore.GREEN + ':' + Style.RESET_ALL)
     user_bro_df = broParse.bro_http_to_df(file_path)
     print(ex.microBehaviors.behaviorVector(user_bro_df))
+#try:
+#    in_file = broParse.bro_http_to_df(fileName)
+#    print('File opened successfully!')
+#    in_file.close()
+#except IOError:
+#    print(Fore.RED+"Cannot open file!"+ Style.RESET_ALL)
 
-# else:  ## default ##
-#     print(Fore.RED+"Invalid number. Try again..."+ Style.RESET_ALL)
+else:  ## default ##
+    print(Fore.RED+"Invalid number. Try again..."+ Style.RESET_ALL)
 
