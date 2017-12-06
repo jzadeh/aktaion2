@@ -57,6 +57,7 @@ def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
             # convert each dict (window) to a dataframe and add to our global variable
             df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
             df_microbeahaviors = df_microbeahaviors.append(df_from_dict, ignore_index=True)
+            print('Total DF Size ',len(df_microbeahaviors))
 
     return df_microbeahaviors
 
@@ -81,6 +82,7 @@ if bro_benign:
 if bro_exploit:
     for filename in os.listdir(bro_exploit_dir):
         try:
+            print('Parsing ' + bro_exploit_dir + "/" + filename)
             df_bro_raw_log_exploit = br.bro_http_to_df(bro_exploit_dir + "/" + filename)
         except:
             print("Parsing Error")
