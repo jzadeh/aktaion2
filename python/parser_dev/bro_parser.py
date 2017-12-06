@@ -13,7 +13,7 @@ class broParse:
 
     def bro_http_to_df(inFile):
         """Parses a Bro http.log file, returns a pandas data frame"""
-        if not inFile.endswith('http.log'):
+        if not inFile.endswith('log'):
             print('This method only works with Bro http.log files..')
             sys.exit(1)
 
