@@ -48,12 +48,10 @@ def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
             df_raw_log_window = df_raw_log[i:i + window_len]
 
             # use the micro behavior api to extract the stats as a dict
-            dict_mb = ex.TimeBehaviors.behavior_vector(df_raw_log_window)
+            dict_mb = ex.HTTPMicroBehaviors.behaviorVector(df_raw_log_window)
 
             # convert each dict (window) to a dataframe and add to our global variable
             df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
-            print(df_from_dict)
-            print(len(df_microbeahaviors))
             df_microbeahaviors = df_microbeahaviors.append(df_from_dict, ignore_index=True)
 
     return df_microbeahaviors
@@ -114,52 +112,3 @@ if proxy_exploit:
     print("Writing Exploit Proxy Microbehavior Statistics to CSV file: " + output_path)
     df_mb_ex.to_csv(output_path)
     print("Done Writing Exploit Proxy Microbehavior Data")
-
-
-
-
-# Show the number of observations for the test and training dataframes
-# print('Number of observations in the training data:', len(train))
-# print('Number of observations in the test data:',len(test))
-
-# Initialize proxy data directories
-
-#
-# # Initialize proxy data frames
-# df_p_ex = pd.DataFrame()
-# df_p_be = pd.DataFrame()
-#
-# # Initialized proxy holding frames
-# proxy_df = pd.DataFrame()
-
-#Load exploit proxy data into df_p_ex
-# for filename in os.listdir(proxy_exploit_dir):
-#
-#     try:
-#         proxy_df = gpp.generic_proxy_parser(proxy_exploit_dir + "/" + filename)
-#         print(proxy_df)
-#         print(filename)
-#         df_p_ex = pd.concat([proxy_df, df_p_ex])
-#
-#    # df_p_ex.append(p_ex)
-#
-#     except NameError:
-#         print("problem with parsing file name: " + filename)
-#
-#
-# print("the number of observations in the generic proxy parser exploit frame is ", len(df_p_ex))
-#df_p_ex.to_csv('data/exploit_proxy_logs.csv')
-
-# for filename in os.listdir(proxy_benign_dir):
-#
-#     try:
-#         proxy_df_benign = gpp.generic_proxy_parser(proxy_benign_dir + "/" + filename)
-#         print(proxy_df_benign)
-#         print(filename)
-#         df_p_benign = pd.concat([proxy_df_benign, df_p_benign])
-#
-#     except NameError:
-#         print("problem with parsing file name: " + filename)
-#
-# print("the number of observations in the generic proxy parser benign frame is ", len(df_p_benign))
-# df_p_benign.to_csv('data/benign_proxy_logs.csv')
