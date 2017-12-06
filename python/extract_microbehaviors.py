@@ -12,6 +12,10 @@ import pandas as pd
 # Load os to parse directories
 import os
 
+import time
+
+start_time = time.time()
+
 # Specify  data directories
 bro_exploit_dir = "data/logs_bro_format/exploit"
 bro_benign_dir = "data/logs_bro_format/benign"
@@ -61,6 +65,7 @@ if bro_benign:
     for filename in os.listdir(bro_benign_dir):
         #convert raw log to dataframe
         try:
+            print('Parsing ' + bro_benign_dir + "/" + filename)
             df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename)
         except: print("Parsing Error")
 
@@ -70,6 +75,7 @@ if bro_benign:
     print("Writing Benign BRO Microbehavior Statistics to CSV file: " + output_path)
     df_mb_be.to_csv(output_path)
     print("Done Writing Benign BRO Microbehavior Data")
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 # Step 2: Build Stats For Malicious Bro Files
 if bro_exploit:
@@ -85,6 +91,7 @@ if bro_exploit:
     print("Writing Exploit BRO Microbehavior Statistics to CSV file: " + output_path)
     df_mb_ex.to_csv(output_path)
     print("Done Writing Exploit BRO Microbehavior Data")
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 # Step 3: Build Stats For Benign Proxy Files
 if proxy_benign:
@@ -99,6 +106,7 @@ if proxy_benign:
     print("Writing Benign Proxy Microbehavior Statistics to CSV file: " + output_path)
     df_mb_be.to_csv(output_path)
     print("Done Writing Benign Proxy Microbehavior Data")
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 if proxy_exploit:
     for filename in os.listdir(proxy_exploit_dir):
@@ -112,3 +120,6 @@ if proxy_exploit:
     print("Writing Exploit Proxy Microbehavior Statistics to CSV file: " + output_path)
     df_mb_ex.to_csv(output_path)
     print("Done Writing Exploit Proxy Microbehavior Data")
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+print("--- %s seconds ---" % (time.time() - start_time))
