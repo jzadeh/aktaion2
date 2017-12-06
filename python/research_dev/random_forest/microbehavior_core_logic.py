@@ -8,7 +8,12 @@ class HTTPMicroBehaviors:
     def isBase64(s):
         """ Define a class method for matching base64 strings"""
         # check that the string has no remainder in %4, check that it only contains valid characters
-        return re.match('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$', s)
+
+        try:
+            re_check = re.match('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$', s)
+            return re.match('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$', s)
+        except: TypeError
+        return False
 
     def isUrlEncoded(s):
         """Define a class method for matching url encoded strings"""
@@ -30,14 +35,17 @@ class HTTPMicroBehaviors:
     def max_path_length(inList):
         """return the max path length of all URIs in list"""
         # Declare local var that will store the max path length
-        maxLength = 0
+        maxLength = 1
 
         # Count the depth of the file structure for each uri in inList
         for uri in inList:
+            try:
+                current_count = uri.count('/')
 
-            # Check the current uri path length against the running length
-            if uri.count('/') > maxLength :
-                maxLength = uri.count('/')
+                # Check the current uri path length against the running length
+                if uri.count('/') > maxLength:
+                    maxLength = current_count
+            except: AttributeError
 
         return(maxLength)
 
@@ -46,39 +54,46 @@ class HTTPMicroBehaviors:
 
         # Count the depth of the file structure for each uri in inList
         for uri in inList:
-
-            minLength = uri.count('/')
-
-            # Check the current uri path length against the running length
-            if uri.count('/') < minLength:
+            try:
                 minLength = uri.count('/')
+
+                # Check the current uri path length against the running length
+                if uri.count('/') < minLength:
+                    minLength = uri.count('/')
+            except: AttributeError
 
         return (minLength)
 
     def max_length(inList):
         """Max length of all URIs in list"""
+        maxLength = len(inList.head(1))
         previous_len = 0
 
         for uri in inList:
-            current_len = len(uri)
-            if current_len>= previous_len:
-                maxLength = current_len
-            previous_len = current_len
+            try:
+                current_len = len(uri)
+                if current_len>= previous_len:
+                    maxLength = current_len
+                previous_len = current_len
+            except: AttributeError
 
         return(maxLength)
 
     def min_length(inList):
         """Min length of all URIs in list"""
 
-        previous_len = len(inList.head(1))
+        minLength = len(inList.head(1))
+        previous_len = 0
 
         for uri in inList:
-            current_len = len(uri)
-            if current_len <= previous_len:
-                minLength = current_len
-            else:
-                minLength = 0
-            previous_len = current_len
+            try:
+                current_len = len(uri)
+                if current_len <= previous_len:
+                    minLength = current_len
+                else:
+                    minLength = 0
+                previous_len = current_len
+            except: AttributeError
 
         return(minLength)
 
