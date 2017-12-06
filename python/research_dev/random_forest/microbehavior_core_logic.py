@@ -154,24 +154,24 @@ class HTTPMicroBehaviors:
         define a dictionary of learning features: uriMaxPathDepth, uriMinPathDepth, uriMaxLength, uriMinLength, uriDistinct,
         uriMaxEntropy, uriMinEntropy, isBase64, isUrlEncoded"""
 
-        inList = inFrame['uri'].head
-
-        # Dirty work around for IndexError anomaly generated when calling entropy inside  the dictionary key/value declaration below
-        mxEntropy = HTTPMicroBehaviors.max_entropy(inList)
-        mnEntropy = HTTPMicroBehaviors.min_entropy(inList)
-
-        behaviorVector = {'max_path_depth': HTTPMicroBehaviors.max_path_length(inList),
-                      'min_path_depth': HTTPMicroBehaviors.min_path_length(inList),
-                      'max_length':HTTPMicroBehaviors.max_length(inList),
-                      'min_length':HTTPMicroBehaviors.min_length(inList),
-                      'uri_Distinct':HTTPMicroBehaviors.uri_distinct(inList),
-                      'max_entropy':mxEntropy,
-                      'min_entropy':mnEntropy,
-                      'base64Match':HTTPMicroBehaviors.base_64_match(inList),
-                      'percentEncoded':HTTPMicroBehaviors.url_percent_encoding_match(inList)}
-
-        timing_vector = TimeBehaviors.behavior_vector(inFrame)
-
+        # inList = inFrame['uri'].head
+        #
+        # # Dirty work around for IndexError anomaly generated when calling entropy inside  the dictionary key/value declaration below
+        # mxEntropy = HTTPMicroBehaviors.max_entropy(inList)
+        # mnEntropy = HTTPMicroBehaviors.min_entropy(inList)
+        #
+        # behaviorVector = {'max_path_depth': HTTPMicroBehaviors.max_path_length(inList),
+        #               'min_path_depth': HTTPMicroBehaviors.min_path_length(inList),
+        #               'max_length':HTTPMicroBehaviors.max_length(inList),
+        #               'min_length':HTTPMicroBehaviors.min_length(inList),
+        #               'uri_Distinct':HTTPMicroBehaviors.uri_distinct(inList),
+        #               'max_entropy':mxEntropy,
+        #               'min_entropy':mnEntropy,
+        #               'base64Match':HTTPMicroBehaviors.base_64_match(inList),
+        #               'percentEncoded':HTTPMicroBehaviors.url_percent_encoding_match(inList)}
+        #
+        # timing_vector = TimeBehaviors.behavior_vector(inFrame)
+        #
         # dict = dict(behaviorVector)
         # dict.update(timing_vector)
         #

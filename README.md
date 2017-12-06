@@ -16,4 +16,4 @@ pip3 -r requirements.txt
 
 # Running the ML Logic in debug mode
 
-./run_ml.sh
+./build_machine_learning_dataset.sh
