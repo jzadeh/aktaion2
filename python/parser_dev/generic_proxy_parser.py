@@ -59,9 +59,9 @@ def generic_line_parser(logLine):
         matched_dict['epochTime'] = pd.to_datetime(matched_dict['epochTime'], unit='s')
         return (matched_dict)
 
-    except: UnboundLocalError: print("parsing error at log line " + logLine)
-
-    return {}
+    except UnboundLocalError:
+        print("parsing error at log line " + logLine)
+        return {}
 
 
 def generic_proxy_parser(inFile):
