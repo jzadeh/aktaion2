@@ -198,15 +198,19 @@ class HTTPMicroBehaviors:
         mxEntropy = HTTPMicroBehaviors.max_entropy(inList)
         mnEntropy = HTTPMicroBehaviors.min_entropy(inList)
 
-        behaviorVector = {'max_path_depth': HTTPMicroBehaviors.max_path_length(inList),
-                      'min_path_depth': HTTPMicroBehaviors.min_path_length(inList),
-                      'max_length':HTTPMicroBehaviors.max_length(inList),
-                      'min_length':HTTPMicroBehaviors.min_length(inList),
-                      'uri_Distinct':HTTPMicroBehaviors.uri_distinct(inList),
-                      'max_entropy':mxEntropy,
-                      'min_entropy':mnEntropy,
-                      'base64Match':HTTPMicroBehaviors.base_64_match(inList),
-                      'percentEncoded':HTTPMicroBehaviors.url_percent_encoding_match(inList)}
+        behaviorVector = {'max_path_depth': HTTPMicroBehaviors.max_path_length(inList) +
+                                            HTTPMicroBehaviors.min_path_length(inList) ,
+                          'min_path_depth': HTTPMicroBehaviors.min_path_length(inList) +
+                                            HTTPMicroBehaviors.max_path_length(inList),
+                          'max_length':     HTTPMicroBehaviors.max_length(inList) +
+                                            HTTPMicroBehaviors.min_length(inList),
+                          'min_length':     HTTPMicroBehaviors.min_length(inList) +
+                                            HTTPMicroBehaviors.max_length(inList),
+                          'uri_Distinct':   HTTPMicroBehaviors.uri_distinct(inList),
+                          'max_entropy':    mxEntropy + mnEntropy,
+                          'min_entropy':    mnEntropy + mxEntropy,
+                          'base64Match':    HTTPMicroBehaviors.base_64_match(inList),
+                          'percentEncoded': HTTPMicroBehaviors.url_percent_encoding_match(inList)}
 
         timing_vector = TimeBehaviors.behavior_vector(inFrame)
 
@@ -412,7 +416,7 @@ class TimeBehaviors:
                       interval_length"""
 
         #define the behavior Vector
-        behaviorVector = {'time_interval': TimeBehaviors.get_time_interval(self),
+        behaviorVector = {'time_interval':     TimeBehaviors.get_time_interval(self),
                           'max_deltas':        TimeBehaviors.get_max_deltas(self) +
                                                TimeBehaviors.get_min_deltas(self),
                           'min_deltas':        TimeBehaviors.get_min_deltas(self) +
