@@ -14,6 +14,26 @@ import os
 
 import time
 
+import argparse
+
+#takes user input file
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', dest='infile',
+                    help="input file", metavar='INPUT_FILE')
+parser.add_argument('-o', dest='outfile',
+                    help='output file', metavar='OUTPUT_FILE')
+args = parser.parse_args()
+
+with open(args.infile, 'r') as infile:
+    indata = infile.read()
+
+words = indata.split()
+words.sort()
+
+with open(args.outfile, 'w') as outfile:
+    for word in words:
+        outfile.write('{}\n'.format(word))
+
 start_time = time.time()
 
 # Specify  data directories
