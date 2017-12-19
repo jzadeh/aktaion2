@@ -1,99 +1,127 @@
 # Load bro parser
-from python.parserDev.broParse import broParse as br
+from python.parser_dev.bro_parser import broParse as br
 
 # Load proxy parser
-import python.parserDev.GenericProxyParser as gpp
+import python.parser_dev.generic_proxy_parser as gpp
 
-# Load scikit's random forest classifier library
-from sklearn.ensemble import RandomForestClassifier
+import python.research_dev.random_forest.microbehavior_core_logic as ex
 
 # Load pandas
 import pandas as pd
 
-# Load numpy
-import numpy as np
-
 # Load os to parse directories
 import os
 
+import time
 
-# Define make_training_class to pick rows for training/test
-def make_training_class(df):
-    df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75
-    return(df)
+start_time = time.time()
 
-# # Specify bro data directories
-# bro_exploit_dir = "/Users/Gary/PycharmProjects/Aktaion2/python/researchDev/randomForest/brologs/exploits"
-# bro_benign_dir = "/Users/Gary/PycharmProjects/Aktaion2/python/researchDev/randomForest/brologs/benign"
-#
-# # Declare global exploit and benign dataFrame vars
-# df_ex = pd.DataFrame()
-# df_be = pd.DataFrame()
-#
-# # Load exploit Bro data into df_ex
-# for filename in os.listdir(bro_exploit_dir):
-#     bro_df = br.bro_http_to_df(bro_exploit_dir + "/" + filename)
-#     df_ex = df_ex.append(bro_df)
-#
-# # Reset the df_ex rows index
-# df_ex = df_ex.reset_index()
-# # Add and populate threat_class column
-# df_ex['threat_class'] = 1
-#
-#
-# # Load benign Bro data into df_be
-# df_be = pd.DataFrame()
-# for filename in os.listdir(bro_benign_dir):
-#     bro_df = br.bro_http_to_df(bro_benign_dir + "/" + filename)
-#     df_be = df_be.append(bro_df)
-#
-# # Reset the df_be rows index
-# df_be = df_be.reset_index()
-# # Add and populate threat_class column
-# df_be['threat_class'] = 0
-#
-# # Add is_train column
-# df_ex = make_training_class(df_ex)
-# df_be = make_training_class(df_be)
-#
-# # Create two for each set new dataframes, one with the training rows, one with the test rows
-# train_ex, test_ex = df_ex[df_ex['is_train']==True], df_ex[df_ex['is_train']==False]
-# train_be, test_be = df_be[df_be['is_train']==True], df_be[df_be['is_train']==False]
-#
-# # Concatenate the test and training data into two seperate dataframes
-# train = pd.concat([train_ex, train_be])
-# test = pd.concat([test_ex, test_be])
-#
-#
-#
-# # Show the number of observations for the test and training dataframes
-# print('Number of observations in the training data:', len(train))
-# print('Number of observations in the test data:',len(test))
+# Specify  data directories
+bro_exploit_dir = "data/logs_bro_format/exploit"
+bro_benign_dir = "data/logs_bro_format/benign"
 
-# Initialize proxy data directories
-proxy_exploit_dir = "data/proxyData/exploitData"
-proxy_benign_dir  = "data/proxyData/benignData"
+proxy_exploit_dir = "data/logs_proxy_format/exploit"
+proxy_benign_dir  = "data/logs_proxy_format/benign"
 
-# Initialize proxy data frames
-df_p_ex = pd.DataFrame()
-df_p_be = pd.DataFrame()
+# Declare global exploit and benign dataFrame vars for keeping the raw log data
+df_ex = pd.DataFrame()
+df_be = pd.DataFrame()
 
-# Initialized proxy holding frames
-proxy_df = pd.DataFrame()
+# keep the extracted micro behaviors here
+df_mb_ex = pd.DataFrame()
+df_mb_be = pd.DataFrame()
 
-# Load exploit proxy data into df_p_ex
-for filename in os.listdir(proxy_exploit_dir):
+#specify the length of window used in generating microbehavior statistics
+window_len = 5
 
-    try:
-        proxy_df = gpp.generic_proxy_parser(proxy_exploit_dir + "/" + filename)
-        print(proxy_df)
-        print(filename)
-        df_p_ex = pd.concat([proxy_df, df_p_ex])
+#configuration for output
+bro_benign = True
+bro_exploit = True
+proxy_benign = True
+proxy_exploit = True
 
-        df_p_ex.append(p_ex)
+#helper method for building a dataframe of sliding windows
+def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
 
-    except NameError:
-        print("Oops!  That was no valid number.  Try again...")
+    # use for determining upper bound in number of sliding windows we create
+    df_len = len(df_raw_log)
 
+    if df_len > window_len:
+        for i in range(0, df_len - window_len):
+            # create sliding window which outputs another dataframe
+            df_raw_log_window = df_raw_log[i:i + window_len]
 
-print("the number of observations in the generic proxy parser exploit frame is ", len(df_p_ex))
+            # use the micro behavior api to extract the stats as a dict
+            dict_mb = ex.HTTPMicroBehaviors.behaviorVector(df_raw_log_window)
+
+            # convert each dict (window) to a dataframe and add to our global variable
+            df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
+            df_microbeahaviors = df_microbeahaviors.append(df_from_dict, ignore_index=True)
+            print('Total DF Size ',len(df_microbeahaviors))
+
+    return df_microbeahaviors
+
+# Step 1: Build Stats For Benign Bro Files
+if bro_benign:
+    for filename in os.listdir(bro_benign_dir):
+        #convert raw log to dataframe
+        try:
+            print('Parsing ' + bro_benign_dir + "/" + filename)
+            df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename)
+        except: print("Parsing Error")
+
+        df_mb_be = create_df_of_sliding_windows(df_bro_raw_log_benign, df_mb_be)
+
+    output_path = 'data/benign_bro_microbehaviors.csv'
+    print("Writing Benign BRO Microbehavior Statistics to CSV file: " + output_path)
+    df_mb_be.to_csv(output_path)
+    print("Done Writing Benign BRO Microbehavior Data")
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+# Step 2: Build Stats For Malicious Bro Files
+if bro_exploit:
+    for filename in os.listdir(bro_exploit_dir):
+        try:
+            print('Parsing ' + bro_exploit_dir + "/" + filename)
+            df_bro_raw_log_exploit = br.bro_http_to_df(bro_exploit_dir + "/" + filename)
+        except:
+            print("Parsing Error")
+
+            df_mb_ex = create_df_of_sliding_windows(df_bro_raw_log_exploit, df_mb_ex)
+
+    output_path = 'data/exploit_bro_microbehaviors.csv'
+    print("Writing Exploit BRO Microbehavior Statistics to CSV file: " + output_path)
+    df_mb_ex.to_csv(output_path)
+    print("Done Writing Exploit BRO Microbehavior Data")
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+# Step 3: Build Stats For Benign Proxy Files
+if proxy_benign:
+    for filename in os.listdir(proxy_benign_dir):
+        try:
+            df_proxy_raw_log_benign = gpp.generic_proxy_parser(proxy_benign_dir + "/" + filename)
+            df_mb_be = create_df_of_sliding_windows(df_proxy_raw_log_benign, df_mb_be)
+        except UnicodeDecodeError:
+            print("Unicode Parsing Error")
+
+    output_path = 'data/benign_proxy_microbehaviors.csv'
+    print("Writing Benign Proxy Microbehavior Statistics to CSV file: " + output_path)
+    df_mb_be.to_csv(output_path)
+    print("Done Writing Benign Proxy Microbehavior Data")
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+if proxy_exploit:
+    for filename in os.listdir(proxy_exploit_dir):
+        try:
+            df_proxy_raw_log_exploit = gpp.generic_proxy_parser(proxy_exploit_dir + "/" + filename)
+            df_mb_ex = create_df_of_sliding_windows(df_proxy_raw_log_exploit, df_mb_ex)
+        except UnicodeDecodeError:
+            print("Unicode Parsing Error")
+
+    output_path = 'data/exploit_proxy_microbehaviors.csv'
+    print("Writing Exploit Proxy Microbehavior Statistics to CSV file: " + output_path)
+    df_mb_ex.to_csv(output_path)
+    print("Done Writing Exploit Proxy Microbehavior Data")
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+print("--- %s seconds ---" % (time.time() - start_time))
