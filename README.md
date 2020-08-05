@@ -7,7 +7,7 @@
 
 Redteam Village Defcon 28 Links: [Homepage](https://redteamvillage.io/), 
 [Discord](https://discord.gg/redteamvillage), 
-[Training Link](https://www.eventbrite.com/e/aktaion-v2-open-source-tool-for-microbehavior-based-exploit-detection-tickets-115593759045
+[Training Link](https://www.eventbrite.com/e/aktaion-v2-open-source-tool-for-microbehavior-based-exploit-detection-tickets-115593759045)
 
 ![redteamvillage_logo](./defcon2020/RTV-logo-high-res.svg "Redteamvillage Logo")
 
