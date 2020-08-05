@@ -5,7 +5,16 @@ import urllib
 # Define epoch to datetime support method for the line parser
 def to_epoch(dt):
     """Take and epoch time and return a pandas date-time object"""
-    epoch = pd.to_datetime('1970-01-01')
+    print(type(dt))
+    print(dt)
+
+    epoch = pd.to_datetime('1970-01-01 00:00:00-08:00')
+    print(type(epoch))
+    print(epoch)
+    test = dt - epoch
+    print(type(test))
+    print(test)
+
     return (dt - epoch).total_seconds()
 
 

@@ -5,13 +5,14 @@ Aktaion V2 is a python3 project for detecting exploits using ML models built on 
 # About this Event
 Class Format: Speaker will be on video and audio, as well as chatting over Discord. 
 You will only be able to ask questions in Discord (not via voice to the speaker). 
-So you must signup for discord - and join the Red Team Village Discord Server, and the Hands-on-labs channel during the training time.
+So you must signup for discord - and join the [Red Team Village Discord Server](https://RedTeamVillage.io/discord), 
+and the Hands-on-labs channel during the training time.
 
 ### Speaker: Joseph Zadeh
 **Bio**: Principal Security Research Engineer, Splunk's Threat Research Team.
 Joseph has spent a career in Silicon Valley building behavioral intrusion detection technologies at scale for a 
 variety of use cases some times to help enterprise security as well as the fight against human 
-trafficking.He enjoys working on Blue/Purple team research projects that combine security, artificial intelligence 
+trafficking. He enjoys working on Blue/Purple team research projects that combine security, artificial intelligence 
 and distributed systems.
 
 # Presentation Information
