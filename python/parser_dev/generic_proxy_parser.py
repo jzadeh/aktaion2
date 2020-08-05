@@ -6,19 +6,37 @@ import urllib
 # Define epoch to datetime support method for the line parser
 def to_epoch(dt):
     """Take and epoch time and return a pandas date-time object"""
-    epoch = pd.to_datetime('1970-01-01 00:00:00-08:00')
-    return (dt - epoch).total_seconds()
+    try:
+        # @todo simplify the logic here to remove offsets before we compute
+        timestamp_str = str(dt)
+        if timestamp_str.find("-08:00"):
+            epoch = pd.to_datetime('1970-01-01 00:00:00-08:00')
+            return (dt - epoch).total_seconds()
+        elif timestamp_str.find("-07:00"):
+            epoch = pd.to_datetime('1970-01-01 00:00:00-07:00')
+            return (dt - epoch).total_seconds()
+        elif timestamp_str.find("-06:00"):
+            epoch = pd.to_datetime('1970-01-01 00:00:00-06:00')
+            return (dt - epoch).total_seconds()
+    except TypeError as e:
+        # print some values here to troubleshoot and return 0 values in the case the logic errors out
+        print("Timestamp format issue with epoch time arithmetic.")
+        print("Input Type, Value: ", print(type(dt), ",", print(str(dt))))
+
+        epoch = pd.to_datetime('1970-01-01 00:00:00-08:00')
+        print("Epoch Origin Type, Value: ", print(type(epoch), ",", print(str(epoch))))
+        return (epoch - epoch).total_seconds()
 
 
-#  given a line of a generic log entry of the format shown in line 7, return a dictionary of labeled informtion
-def generic_line_parser(logLine):
+#  given a line of a generic log entry of the format shown in line 7, return a dictionary of labeled information
+def generic_line_parser(log_line):
     """take a proxy-log formatted log line and return a dictionary with appropriate key names"""
     # example data
     # logLine = '[09/Jan/2014:04:53:04 -0800] "Nico Rosberg" 172.16.2.101 77.75.107.241 1500 200 TCP_HIT "GET http://www.divernet.com/ HTTP/1.1" "Internet Services" "low risk " "text/html; charset=utf-8" 470 396 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)" "http://www.google.com/url?sa=t&rct=j&q=&esrc=s&frm=1&source=web&cd=1&sqi=2&ved=0CCoQFjAA&url=http%3A%2F%2Fwww.divernet.com%2F&ei=opvOUpyXFrSA2QXnv4DwDg&usg=AFQjCNHeSe4ebK0u69M-TBEGNkTZy-C-Nw&bvm=bv.59026428,d.b2I" "-" "0" "" "-" '
     log_pattern = '\[(?P<dateTime>.*?) (?P<timezone>.*?)\] \"(?P<userName>.*?)\" (?P<origHost>.*?) (?P<respHost>.*?) (?P<unknownValue>.*?) (?P<statusCode>.*?) (?P<cacheResult>.*?) \"(?P<httpMethod>.*?) (?P<fullUrl>.*?) HTTP/(?P<httpVersion>.*?)\" \"(?P<domainClassification>.*?)\" \"(?P<riskClassification>.*?)\" \"(?P<mimeType>.*?)\" (?P<bytesSent>.*?) (?P<bytesReceived>.*?) \"(?P<userAgent>.*?)\" \"(?P<referrer>.*?)\" \"(?P<urlMeta1>.*?)\" \"(?P<urlMeta2>.*?)\" \"(?P<urlMeta3>.*?)\" \"(?P<urlMeta4>.*?)\"'
 
     try:
-        matched = re.match(log_pattern, logLine)
+        matched = re.match(log_pattern, log_line)
         matched_dict = matched.groupdict()
     except ValueError as e:
         print("Invalid log format, does not match")
@@ -27,23 +45,23 @@ def generic_line_parser(logLine):
         print("Invalid log format, does not match")
         print(log_pattern)
 
-    # get the timestamp as a string, reformated to feed into pd.to_datetime
+    # get the timestamp as a string, reformatted to feed into pd.to_datetime
     # get the epoch time using the to_epoch function
 
-    valPartitioned = logLine.split(" ")
-    dt_string = valPartitioned[0].replace("[", "").replace(":", " ", 1)
-    timeZone = valPartitioned[1].replace("]", "")
+    val_partitioned = log_line.split(" ")
+    dt_string = val_partitioned[0].replace("[", "").replace(":", " ", 1)
+    time_zone = val_partitioned[1].replace("]", "")
     # timeZone = timeZone.replace("0","")
-    dt_string = dt_string + " " + timeZone
+    dt_string = dt_string + " " + time_zone
 
     dt_obj = pd.to_datetime(dt_string)
-    epochTime = to_epoch(dt_obj)
+    epoch_time = to_epoch(dt_obj)
 
     # now appended the dictionary with the dt_obj object and dt_string and
-    # the concatinated URL meta data
+    # the concatenated URL meta data
 
     try:
-        matched_dict['epochTime'] = epochTime
+        matched_dict['epochTime'] = epoch_time
         matched_dict['timeString'] = dt_string
         matched_dict['urlMeta'] = matched_dict['urlMeta1'] + " " + matched_dict['urlMeta2'] + " " + matched_dict[
             'urlMeta3'] + " " + matched_dict['urlMeta4']
@@ -56,21 +74,21 @@ def generic_line_parser(logLine):
 
         # Cast epochTime into tslib.timeStamp datatype
         matched_dict['epochTime'] = pd.to_datetime(matched_dict['epochTime'], unit='s')
-        return (matched_dict)
+        return matched_dict
 
     except UnboundLocalError:
-        print("parsing error at log line " + logLine)
+        print("parsing error at log line " + log_line)
         return {}
 
 
-def generic_proxy_parser(inFile):
+def generic_proxy_parser(file):
     """Takes a fully-qualified file-path and returns a dataframe of the file contents"""
     # instantiate the local vars
     # df_proxy = pd.DataFrame()
     proxy_ls = []
 
     # run through the file, calling generic_line_parser for each line.
-    with open(inFile) as f:
+    with open(file) as f:
         for line in f:
             # get a line
             line = line.rstrip('\n')
@@ -84,12 +102,12 @@ def generic_proxy_parser(inFile):
             # print(proxy_ls)
 
     # return a dataFrame made from proxy_ls
-    return (pd.DataFrame(proxy_ls))
+    return pd.DataFrame(proxy_ls)
 
 
 def test_generic_line_parser():
-    testLine = '[09/Jan/2014:04:53:04 -0800] "Nico Rosberg" 172.16.2.101 77.75.107.241 1500 200 TCP_HIT "GET http://www.divernet.com/ HTTP/1.1" "Internet Services" "low risk " "text/html; charset=utf-8" 470 396 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)" "http://www.google.com/url?sa=t&rct=j&q=&esrc=s&frm=1&source=web&cd=1&sqi=2&ved=0CCoQFjAA&url=http%3A%2F%2Fwww.divernet.com%2F&ei=opvOUpyXFrSA2QXnv4DwDg&usg=AFQjCNHeSe4ebK0u69M-TBEGNkTZy-C-Nw&bvm=bv.59026428,d.b2I" "-" "0" "" "-"'
-    testDict = {'bytesReceived': '396',
+    test_line = '[09/Jan/2014:04:53:04 -0800] "Nico Rosberg" 172.16.2.101 77.75.107.241 1500 200 TCP_HIT "GET http://www.divernet.com/ HTTP/1.1" "Internet Services" "low risk " "text/html; charset=utf-8" 470 396 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)" "http://www.google.com/url?sa=t&rct=j&q=&esrc=s&frm=1&source=web&cd=1&sqi=2&ved=0CCoQFjAA&url=http%3A%2F%2Fwww.divernet.com%2F&ei=opvOUpyXFrSA2QXnv4DwDg&usg=AFQjCNHeSe4ebK0u69M-TBEGNkTZy-C-Nw&bvm=bv.59026428,d.b2I" "-" "0" "" "-"'
+    test_dict = {'bytesReceived': '396',
                 'bytesSent': '470',
                 'cacheResult': 'TCP_HIT',
                 'epochTime': 1389271984.0,
@@ -115,7 +133,7 @@ def test_generic_line_parser():
                              'Trident/6.0)',
                 'userName': 'Nico Rosberg',
                 'referrer': 'http://www.google.com/url?sa=t&rct=j&q=&esrc=s&frm=1&source=web&cd=1&sqi=2&ved=0CCoQFjAA&url=http%3A%2F%2Fwww.divernet.com%2F&ei=opvOUpyXFrSA2QXnv4DwDg&usg=AFQjCNHeSe4ebK0u69M-TBEGNkTZy-C-Nw&bvm=bv.59026428,d.b2I'}
-    assert generic_line_parser(testLine) == testDict
+    assert generic_line_parser(test_line) == test_dict
 
 # def test_invalid_log_format_exception():
 #     badFormatLine = ' "Nico Rosberg" 77.75.107.241 1500 200 TCP_HIT "GET http://www.divernet.com/ HTTP/1.1" "Internet Services" "low risk " "text/html; charset=utf-8" 470 396 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)" "http://www.google.com/url?sa=t&rct=j&q=&esrc=s&frm=1&source=web&cd=1&sqi=2&ved=0CCoQFjAA&url=http%3A%2F%2Fwww.divernet.com%2F&ei=opvOUpyXFrSA2QXnv4DwDg&usg=AFQjCNHeSe4ebK0u69M-TBEGNkTZy-C-Nw&bvm=bv.59026428,d.b2I" "-" "0" "" "-" '

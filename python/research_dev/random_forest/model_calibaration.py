@@ -18,8 +18,8 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 
-df1 = pd.read_csv('data/exploit.csv')
-df2 = pd.read_csv('data/benign.csv')
+df1 = pd.read_csv('data/logs_normalized_format/exploit_bro_timing_microbehaviors.csv')
+df2 = pd.read_csv('data/logs_normalized_format/benign_bro_timing_microbehaviors.csv')
 frame = [df1, df2]
 df = pd.concat(frame)
 #print(df.head())
