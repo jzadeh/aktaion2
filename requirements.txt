@@ -2,7 +2,7 @@ scipy==0.19.1
 numpy==1.13.1
 brothon==0.2.3
 pandas==0.20.3
-requests==2.18.3
+requests==2.20.0
 colorama==0.3.9
 entropy==0.10
 paramiko==2.4.0
