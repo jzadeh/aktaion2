@@ -1,16 +1,21 @@
-# Updated for Defcon Readteam Village 8/5/2020:  [Training Readme Here](https://github.com/jzadeh/aktaion2/blob/master/defcon2020/TrainingAbstract.md)
+# Updated for Defcon 38 Redteam Village 8/8/2020:  [Training Readme Here](https://github.com/jzadeh/aktaion2/blob/master/defcon2020/TrainingAbstract.md)
 
-Redteam Village Defcon 28 Links: [Homepage](https://redteamvillage.io/), [Discord](https://discord.gg/redteamvillage)
+Redteam Village Defcon 28 Links: [Homepage](https://redteamvillage.io/), [Discord](https://discord.gg/redteamvillage), [Training Link]()
 
 # Aktaion V2: Open Source Tool For Microbehavior Based Exploit Detection
 
-Aktaion V2 is a python3 project for detecting exploits (and more generally attack behaviors).  
-The project is meant to be a learning/teaching tool on how to blend multiple security signals and behaviors into an expressive framework for intrusion detection.  
+Aktaion is a machine learning open source & active defense (orchestration) prototype. 
+The tool focuses on the detection of Ransomware based on machine learning techniques, independent of static-based signatures. 
+The tool has been mentioned and featured in may respected community publications and research, and in years past presented at a variety of Blackhat Arsenal events. 
+AKTAION v2 is the second iteration or port of the project from the original Java into Python3.
+
+The port to python  is meant to be a learning/teaching tool on how to blend multiple security signals and behaviors into an expressive framework for intrusion detection.  
 The key abstraction we wanted to prototype is the idea of a Microbehavior.  
 This concept helps to provide an expressive mechanism to add high level IOCs such as timing behavior of a certain Malware family in parallel to simple statistics, 
 rules or anything relevant to building a programmatic description of a sequential evolving set of adversary behaviors.
 Current project URL: <http://www.github.com/jzadeh/aktaion2>
-The original Java/Scala code is located here: <http://www.github.com/jzadeh/aktaion>
+The original Java/Scala code is located in an older repo here: <http://www.github.com/jzadeh/aktaion>
+
 
 ## Project Setup (use python 3): 
 To run the project make sure you have the latest python3/pip3 and virtual environment setup.  Then run the command 
@@ -29,4 +34,4 @@ This will use verbose printing of feature vector extraction and parsing logic fo
 to the project. This is useful for debugging specific issues related to the parsing of input files for building the 
 ML workflow:
 
-`./build_machine_learning_dataset.sh`
+`./aktaion2_ml_debug.sh`
