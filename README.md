@@ -1,6 +1,6 @@
 # Aktaion: Behavior Based Exploit Detection Prototype
 <table><tr>
-<td> <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/aktaion_fractal_juliaset2.png" alt="aktaion_logo" width="200" height="200"/> </td>
+<td> <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/aktaion_fractal_juliaset2.png" alt="aktaion_logo" width="300" height="300"/> </td>
 <td> <img src="https://github.com/jzadeh/aktaion2/blob/master/defcon2020/RTV-logo-high-res.png" alt="redteamvillage_logo" width="200" height="200"/> </td>
 <td> <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/exploit_logo.png" alt="exploit_logo" width="200" height="200"/> </td>
 </tr></table>
@@ -41,3 +41,8 @@ to the project. This is useful for debugging specific issues related to the pars
 ML workflow:
 
 `./aktaion2_ml_debug.sh`
+
+
+<p align="center">
+    <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/aktaion_logo.png" width="400" height="400"> 
+</p>
