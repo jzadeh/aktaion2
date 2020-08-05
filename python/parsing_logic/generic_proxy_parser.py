@@ -18,13 +18,32 @@ def to_epoch(dt):
         elif timestamp_str.find("-06:00"):
             epoch = pd.to_datetime('1970-01-01 00:00:00-06:00')
             return (dt - epoch).total_seconds()
+        elif timestamp_str.find("-05:00"):
+            epoch = pd.to_datetime('1970-01-01 00:00:00-05:00')
+            return (dt - epoch).total_seconds()
+        elif timestamp_str.find("-04:00"):
+            epoch = pd.to_datetime('1970-01-01 00:00:00-04:00')
+            return (dt - epoch).total_seconds()
+        elif timestamp_str.find("-03:00"):
+            epoch = pd.to_datetime('1970-01-01 00:00:00-03:00')
+            return (dt - epoch).total_seconds()
+        elif timestamp_str.find("-02:00"):
+            epoch = pd.to_datetime('1970-01-01 00:00:00-02:00')
+            return (dt - epoch).total_seconds()
+        elif timestamp_str.find("-01:00"):
+            epoch = pd.to_datetime('1970-01-01 00:00:00-01:00')
+            return (dt - epoch).total_seconds()
+        elif timestamp_str.find("-00:00"):
+            epoch = pd.to_datetime('1970-01-01 00:00:00-00:00')
+            return (dt - epoch).total_seconds()
     except TypeError as e:
         # print some values here to troubleshoot and return 0 values in the case the logic errors out
         print("Timestamp format issue with epoch time arithmetic.")
-        print("Input Type, Value: ", print(type(dt), ",", print(str(dt))))
-
+        print("Input Type, Value: ", print(type(dt)), ",", print(str(dt)))
+        print("\n")
         epoch = pd.to_datetime('1970-01-01 00:00:00-08:00')
-        print("Epoch Origin Type, Value: ", print(type(epoch), ",", print(str(epoch))))
+        print("Epoch Origin Type, Value: ", print(type(epoch)), ",", print(str(epoch)))
+        print("\n")
         return (epoch - epoch).total_seconds()
 
 

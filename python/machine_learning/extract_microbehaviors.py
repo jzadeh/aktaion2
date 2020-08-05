@@ -5,7 +5,7 @@ from python.parsing_logic.bro_parser import bro_parse as br
 import python.parsing_logic.generic_proxy_parser as gpp
 
 # Load ML Logic
-import python.machine_learning.microbehavior_core_logic as ex
+import python.machine_learning.microbehavior_core as ex
 
 # Load pandas
 import pandas as pd

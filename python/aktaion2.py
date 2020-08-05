@@ -7,7 +7,7 @@ import subprocess as sp
 import pandas as pd
 import python.parsing_logic.generic_proxy_parser as gpp
 from python.parsing_logic.bro_parser import bro_parse
-import python.machine_learning.microbehavior_core_logic as ex
+import python.machine_learning.microbehavior_core as ex
 from python.demo_tools.boot import boot
 import time
 import shutil
@@ -76,7 +76,7 @@ if choice == 1:
     print(ex.HTTPMicroBehaviors.behaviorVector(new_df))
     time.sleep(2.0)
     # os.system('cls||clear')
-    import python.demo_tools.exploit_ascii as ex_ascii
+    import python.demo_tools.ascii_splash_exploit as ex_ascii
     ex_ascii.exploit_chain_art()
 
 if choice == 2:

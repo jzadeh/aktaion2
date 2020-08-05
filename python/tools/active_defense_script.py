@@ -45,8 +45,8 @@ SSH_PASSWORD = 'Password1'
 ssh.connect(SSH_SERVER, username=SSH_USERNAME, password=SSH_PASSWORD)
 
 # With private key
-#key = RSAKey.from_private_key_file("/path/key.pem")
-#ssh.connect(SSH_SERVER, username=SSH_USERNAME, pkey = key )
+# key = RSAKey.from_private_key_file("/path/key.pem")
+# ssh.connect(SSH_SERVER, username=SSH_USERNAME, pkey = key )
 
 
 for entry in fileList:

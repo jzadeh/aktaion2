@@ -374,7 +374,7 @@ class TimeBehaviors:
 
         return 0.0
 
-    def check_if_shortened_url(inList):
+    def check_if_shortened_url(in_list):
         # checks if any shortened Urls are detected
         words = ['bit.ly', 'goo.gl', 'tinylord.com', 'sk.gy', 'short2.in', 't.co', 'adbooth.net', 'adfoc.us', 'bc.vc',
                  'j.gs', 'cutt.us', 'tiny.cc', 'adfa.st', 'ity.im', 'budurl.com', 'soo.gd', 'prettylinkpro.com',
@@ -391,48 +391,47 @@ class TimeBehaviors:
                  'tip.pe','ty.by']
 
         for word in words:
-            if word in inList:
+            if word in in_list:
                 return True
             else:
                 return False
 
-    def RiskyExtention(inList):
+    def risky_extension(inList):
         from urllib.parse import urlparse
         o = urlparse('http://www.cwi.nl:80/%7Eguido/Python.html')
-        o.scheme
-        o.port
-        print(o)
+        #o.scheme
+        #o.port
+       #print(o)
         currentpath = o.path
-        # splitpath=currentpath.split(".")
         testlist = ['.pdf', '.exe', '.mp3', '.mp4', '.bin', '.zip', '.gif', '.jpg', '.ps1', '.bat', '.bin',
                     '.ps', '.jar', '.txt', '.rar', '.avi', '.mov', '.avi']
-        lastpath = currentpath[:-4]
+        last_path = currentpath[:-4]
 
-        if lastpath in testlist:
+        if last_path in testlist:
             return True
         else:
             return False
 
-    def behavior_vector(self, n = 5):
+    def behavior_vector(self, n=5):
         """Given a dataFrame with time-ordered lists as entries:
                     return dictionary with entries get_time_interval, get_max_deltas, get_min_deltas
                      time_delta, ratio_of_deltas_A,  ratio_of_deltas_B,  ratio_of_deltas_C,
                       ratio_of_deltas_D,  ratio_of_deltas_E, max_time_interval, min_time_interval
                       interval_length"""
 
-        #define the behavior Vector
-        behaviorVector = {'time_interval':     TimeBehaviors.get_time_interval(self),
-                          'max_deltas':        TimeBehaviors.get_max_deltas(self) +
+        # define the behavior Vector
+        behavior_vector = {'time_interval':     TimeBehaviors.get_time_interval(self),
+                           'max_deltas':        TimeBehaviors.get_max_deltas(self) +
                                                TimeBehaviors.get_min_deltas(self),
-                          'min_deltas':        TimeBehaviors.get_min_deltas(self) +
+                           'min_deltas':        TimeBehaviors.get_min_deltas(self) +
                                                TimeBehaviors.get_max_deltas(self),
-                          'ratio_of_deltas_A': TimeBehaviors.ratio_of_deltas_A(self) +
+                           'ratio_of_deltas_A': TimeBehaviors.ratio_of_deltas_A(self) +
                                                TimeBehaviors.ratio_of_deltas_B(self),
-                          'ratio_of_deltas_B': TimeBehaviors.ratio_of_deltas_B(self) +
+                           'ratio_of_deltas_B': TimeBehaviors.ratio_of_deltas_B(self) +
                                                TimeBehaviors.ratio_of_deltas_A(self),
-                          'ratio_of_deltas_C': TimeBehaviors.ratio_of_deltas_C(self) +
+                           'ratio_of_deltas_C': TimeBehaviors.ratio_of_deltas_C(self) +
                                                TimeBehaviors.ratio_of_deltas_D(self),
-                          'ratio_of_deltas_D': TimeBehaviors.ratio_of_deltas_D(self) +
+                           'ratio_of_deltas_D': TimeBehaviors.ratio_of_deltas_D(self) +
                                                TimeBehaviors.ratio_of_deltas_E(self),
                           'ratio_of_deltas_E': TimeBehaviors.ratio_of_deltas_E(self) +
                                                TimeBehaviors.ratio_of_deltas_C(self),
@@ -444,6 +443,6 @@ class TimeBehaviors:
                                                TimeBehaviors.min_time_interval(self) +
                                                TimeBehaviors.max_time_interval(self),
                           'short_url':         TimeBehaviors.check_if_shortened_url(self),
-                          'risk_extention' :   TimeBehaviors.RiskyExtention(self)}
-        return(behaviorVector)
+                          'risk_extention' :   TimeBehaviors.risky_extension(self)}
+        return(behavior_vector)
 
