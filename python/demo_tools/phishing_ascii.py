@@ -37,8 +37,8 @@ print (' ███░░░░██░░█████░░██░░░�
 print ('█████░░██░░██▒▒▒██░░██░░█████'.center(columns))
 print ('▀█████▀█░░ ▀█████▀░░ █ ▀█████▀'.center(columns))
 print ('   ..... ████████████  ..... '.center(columns))
-print('\n' * 17)
-try:
-    input ('Press enter to continue:')
-except NameError:
-    pass
+print('\n' * 4)
+# try:
+#     input ('Press enter to continue:')
+# except NameError:
+#     pass

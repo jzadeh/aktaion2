@@ -50,16 +50,17 @@ df_be = pd.DataFrame()
 df_mb_ex = pd.DataFrame()
 df_mb_be = pd.DataFrame()
 
-#specify the length of window used in generating microbehavior statistics
+# specify the length of window used in generating microbehavior statistics
 window_len = 5
 
-#configuration for output
+# configuration for output
 bro_benign = True
 bro_exploit = True
 proxy_benign = True
 proxy_exploit = True
 
-#helper method for building a dataframe of sliding windows
+
+# helper method for building a dataframe of sliding windows
 def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
 
     # use for determining upper bound in number of sliding windows we create
@@ -80,10 +81,11 @@ def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
 
     return df_microbeahaviors
 
+
 # Step 1: Build Stats For Benign Bro Files
 if bro_benign:
     for filename in os.listdir(bro_benign_dir):
-        #convert raw log to dataframe
+        # convert raw log to dataframe
         try:
             print('Parsing ' + bro_benign_dir + "/" + filename)
             df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename)

@@ -54,7 +54,7 @@ installed if you want to follow along with the training examples interactively.
 
 ### Required Materials:
 
-A computer running Python 3.7 (virutalenv) along with the dependencies listed in the project requirements file here:
+A Linux (Ubuntu) or MacOS machine running Python 3.7 (virutalenv) along with the dependencies listed in the project requirements file here:
 [https://github.com/jzadeh/aktaion2/blob/master/requirements.txt](https://github.com/jzadeh/aktaion2/blob/master/requirements.txt)
 
 ### Question and answers, Some extra tips:
