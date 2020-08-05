@@ -8,7 +8,7 @@ The original Java/Scala code is located here: <http://www.github.com/jzadeh/akta
 
 # Project Setup (use python 3): 
 
-pip3 -r requirements.txt
+pip install virtualenv && virtualenv -p python3 venv && source venv/bin/activate && pip install -r requirements.txt
 
 # Running the demo
 
