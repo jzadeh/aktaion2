@@ -23,12 +23,11 @@ The tool focuses on the detection of Ransomware based on machine learning techni
 The tool has been mentioned and featured in may respected community publications and research, and in years past presented at a variety of Blackhat Arsenal events. 
 AKTAION v2 is the second iteration or port of the project from the original Java into Python3.
 
-The port to python  is meant to be a learning/teaching tool on how to blend multiple security signals and behaviors into an expressive framework for intrusion detection.  
-The key abstraction we wanted to prototype is the idea of a Microbehavior.  
-This concept helps to provide an expressive mechanism to add high level IOCs such as timing behavior of a certain Malware family in parallel to simple statistics, 
-rules or anything relevant to building a programmatic description of a sequential evolving set of adversary behaviors.
-Current project URL: <http://www.github.com/jzadeh/aktaion2>
-The original Java/Scala code is located in an older repo here: <http://www.github.com/jzadeh/aktaion>
+The port to python  is meant to be a learning/teaching tool on how to blend multiple security signals and behaviors into an expressive framework for intrusion detection. The key abstraction we wanted to prototype is the idea of a Microbehavior.  
+This concept helps to provide an expressive mechanism to add high level IOCs such as timing behavior of a certain Malware family in parallel to simple statistics, rules or anything relevant to building a programmatic description of a sequential evolving set of adversary behaviors.
+
+1. *Current Project Repo*: <http://www.github.com/jzadeh/aktaion2>
+2. The original Java/Scala code is located in an older repo here: <http://www.github.com/jzadeh/aktaion>
 
 ### Project Setup (use python 3): 
 To run the project make sure you have the latest python3/pip3 and virtual environment setup.  Then run the command 
