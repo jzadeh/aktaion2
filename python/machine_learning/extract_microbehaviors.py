@@ -61,7 +61,6 @@ proxy_exploit = True
 
 # helper method for building a dataframe of sliding windows
 def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
-
     # use for determining upper bound in number of sliding windows we create
     df_len = len(df_raw_log)
 
@@ -72,11 +71,13 @@ def create_df_of_sliding_windows(df_raw_log, df_microbeahaviors):
 
             # use the micro behavior api to extract the stats as a dict
             dict_mb = ex.HTTPMicroBehaviors.behaviorVector(df_raw_log_window)
+            print(str(dict_mb))
 
             # convert each dict (window) to a dataframe and add to our global variable
             df_from_dict = pd.DataFrame([dict_mb], columns=dict_mb.keys())
             df_microbeahaviors = df_microbeahaviors.append(df_from_dict, ignore_index=True)
-            print('Total DF Size ',len(df_microbeahaviors))
+            print('Total DF Size ', len(df_microbeahaviors))
+
 
     return df_microbeahaviors
 
@@ -88,9 +89,12 @@ if bro_benign:
         try:
             print('Parsing ' + bro_benign_dir + "/" + filename)
             df_bro_raw_log_benign = br.bro_http_to_df(bro_benign_dir + "/" + filename)
-        except: print("Parsing Error")
+            print(str(df_bro_raw_log_benign))
+        except:
+            print("Parsing Error")
 
         df_mb_be = create_df_of_sliding_windows(df_bro_raw_log_benign, df_mb_be)
+        print(str(df_mb_be))
 
     output_path = 'data/benign_bro_microbehaviors.csv'
     print("Writing Benign BRO Microbehavior Statistics to CSV file: " + output_path)
@@ -104,10 +108,11 @@ if bro_exploit:
         try:
             print('Parsing ' + bro_exploit_dir + "/" + filename)
             df_bro_raw_log_exploit = br.bro_http_to_df(bro_exploit_dir + "/" + filename)
+            print(str(df_bro_raw_log_exploit))
         except:
             print("Parsing Error")
-
             df_mb_ex = create_df_of_sliding_windows(df_bro_raw_log_exploit, df_mb_ex)
+            print(str(df_mb_ex))
 
     output_path = 'data/exploit_bro_microbehaviors.csv'
     print("Writing Exploit BRO Microbehavior Statistics to CSV file: " + output_path)
@@ -121,6 +126,7 @@ if proxy_benign:
         try:
             df_proxy_raw_log_benign = gpp.generic_proxy_parser(proxy_benign_dir + "/" + filename)
             df_mb_be = create_df_of_sliding_windows(df_proxy_raw_log_benign, df_mb_be)
+            print(str(df_mb_be))
         except UnicodeDecodeError:
             print("Unicode Parsing Error")
 
@@ -135,6 +141,7 @@ if proxy_exploit:
         try:
             df_proxy_raw_log_exploit = gpp.generic_proxy_parser(proxy_exploit_dir + "/" + filename)
             df_mb_ex = create_df_of_sliding_windows(df_proxy_raw_log_exploit, df_mb_ex)
+            print(str(df_mb_ex))
         except UnicodeDecodeError:
             print("Unicode Parsing Error")
 
