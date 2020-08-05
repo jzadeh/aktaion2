@@ -1,11 +1,11 @@
 # Load bro parser
-from python.parser_dev.bro_parser import broParse as br
+from python.parsing_logic.bro_parser import broParse as br
 
 # Load proxy parser
-import python.parser_dev.generic_proxy_parser as gpp
+import python.parsing_logic.generic_proxy_parser as gpp
 
 # Load ML Logic
-import python.research_dev.random_forest.microbehavior_core_logic as ex
+import python.machine_learning.random_forest.microbehavior_core_logic as ex
 
 # Load pandas
 import pandas as pd

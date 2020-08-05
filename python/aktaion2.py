@@ -6,9 +6,9 @@ from colorama import Fore, Style, Back
 import subprocess as sp
 import pandas as pd
 import os
-import python.parser_dev.generic_proxy_parser as gpp
-from python.parser_dev.bro_parser import broParse
-import python.research_dev.random_forest.microbehavior_core_logic as ex
+import python.parsing_logic.generic_proxy_parser as gpp
+from python.parsing_logic.bro_parser import broParse
+import python.machine_learning.random_forest.microbehavior_core_logic as ex
 from python.demo_tools.boot import boot
 import time
 import shutil
