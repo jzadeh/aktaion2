@@ -1,4 +1,6 @@
-## Updated for Defcon Readteam Village 8/5/2020:  [Training Readme Here](https://github.com/jzadeh/aktaion2/blob/master/defcon2020/TrainingAbstract.md)
+# Updated for Defcon Readteam Village 8/5/2020:  [Training Readme Here](https://github.com/jzadeh/aktaion2/blob/master/defcon2020/TrainingAbstract.md)
+
+Redteam Village Defcon 28 Links: [Homepage](https://redteamvillage.io/), [Discord](https://discord.gg/redteamvillage)
 
 # Aktaion V2: Open Source Tool For Microbehavior Based Exploit Detection
 
