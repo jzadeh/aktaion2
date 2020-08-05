@@ -1,13 +1,13 @@
 # Aktaion: Behavior Based Exploit Detection Prototype
 
-<div class="row">
-     <div class="column">
+<div class="column">
+     <div class="row">
         <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/aktaion_fractal_juliaset2.png" width="200" height="200">
     </div>
-     <div class="column">
+     <div class="row">
      <img src="https://github.com/jzadeh/aktaion2/blob/master/defcon2020/RTV-logo-high-res.png" width="200" height="200"> 
     </div>
-       <div class="column">
+       <div class="row">
      <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/exploit_logo.png" width="200" height="200"> 
     </div>
 </div>
