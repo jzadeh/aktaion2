@@ -44,10 +44,10 @@ tools that use behavior for defensive use cases.
 
 Students are required to use their own laptop and latest versions of python/pip tested and working. 
 
-**Class Format**
-[1] Speaker will be on video and audio, as well as chatting over Discord.
-[2] You will only be able to ask questions in Discord (not via voice to the speaker)
-[3] So you must signup for discord - and join the Red Team Village Discord Server, and the Hands-on-labs channel here: [https://RedTeamVillage.io/discord](https://RedTeamVillage.io/discord)
+#### **Class Format**
+1. Speaker will be on video and audio, as well as chatting over Discord.
+2. You will only be able to ask questions in Discord (not via voice to the speaker)
+3. So you must signup for discord - and join the Red Team Village Discord Server, and the Hands-on-labs channel here: [https://RedTeamVillage.io/discord](https://RedTeamVillage.io/discord)
 
 ### Required Materials:
 
