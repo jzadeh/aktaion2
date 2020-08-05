@@ -1,6 +1,9 @@
 # Aktaion: Behavior Based Exploit Detection Prototype
 
-![aktaion_logo](aktaion_fractal_juliaset2.png "Aktaion Logo")
+<p align="center">
+  <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/aktaion_fractal_juliaset2.png" width="200" height="200">
+</p>
+
 
 ## Updated for Defcon 28 Redteam Village 8/8/2020: 
 [Training Readme Here](https://github.com/jzadeh/aktaion2/blob/master/defcon2020/TrainingAbstract.md)
@@ -9,7 +12,9 @@ Redteam Village Defcon 28 Links: [Homepage](https://redteamvillage.io/),
 [Discord](https://discord.gg/redteamvillage), 
 [Training Link](https://www.eventbrite.com/e/aktaion-v2-open-source-tool-for-microbehavior-based-exploit-detection-tickets-115593759045)
 
-<img src="https://github.com/jzadeh/aktaion2/blob/master/defcon2020/RTV-logo-high-res.png" width="100" height="100"> 
+<p align=""center">
+    <img src="https://github.com/jzadeh/aktaion2/blob/master/defcon2020/RTV-logo-high-res.png" width="100" height="100"> 
+</p>
 
 ## Aktaion V2: Open Source Tool For Microbehavior Based Exploit Detection
 
