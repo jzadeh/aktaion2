@@ -1,4 +1,7 @@
-# Aktaion V2 Training - Hands on with open source ML for Exploit Detection
+# Defcon 28 Redteam Village Aktaion Training - Hands on with open source ML for Exploit Detection
+
+<td> <img src="https://github.com/jzadeh/aktaion2/blob/master/defcon2020/RTV-logo-high-res.png" alt="redteamvillage_logo" width="200" height="200"/> </td>
+
 
 Aktaion V2 is a python3 project for detecting exploits using ML models built on PCAP/Bro Data. 
 
