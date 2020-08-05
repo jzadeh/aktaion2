@@ -43,7 +43,9 @@ The expected audience is network and security engineers and architects,
 or anyone with an interest in hacking and building 
 tools that use behavior for defensive use cases. 
 
-Students are required to use their own laptop and latest versions of python/pip tested and working. 
+Students are required to use their own laptop and latest versions of python/pip tested and working.  It is recommended
+to use [PyCharm Community Edition](https://www.jetbrains.com/pycharm/download/) and have a working version of Bash or Zsh
+installed if you want to follow along with the training examples interactively. 
 
 #### **Class Format**
 1. Speaker will be on video and audio, as well as chatting over Discord.
@@ -56,5 +58,5 @@ A computer running Python 3.7 (virutalenv) along with the dependencies listed in
 [https://github.com/jzadeh/aktaion2/blob/master/requirements.txt](https://github.com/jzadeh/aktaion2/blob/master/requirements.txt)
 
 ### Question and answers, Some extra tips:
-Join the Red Team Village Discord Channel for technical discussions, support and Q&A here -> [Readteam Village Discord](https://RedTeamVillage.io/discord)
+Join the Red Team Village Discord Channel for technical discussions, support and Q&A here -> [Redteam Village Discord](https://RedTeamVillage.io/discord)
 

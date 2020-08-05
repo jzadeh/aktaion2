@@ -1,8 +1,13 @@
 #author:azadeh
 import re
-import entropy as en
+import math
+from collections import Counter
 import pandas as pd
 
+
+def shannon_entropy(s):
+    p, lns = Counter(s), float(len(s))
+    return -sum(count / lns * math.log(count / lns, 2) for count in p.values())
 
 class HTTPMicroBehaviors:
 
@@ -100,20 +105,22 @@ class HTTPMicroBehaviors:
 
         return(minLength)
 
+
+
     def max_entropy(inList):
         """returns the maximum shannon entropy of URIs in the list"""
         try:
-            maxEntropy = en.shannon_entropy(inList[0])
+            maxEntropy = shannon_entropy(inList[0])
         except(IndexError,TypeError,KeyError):
             try:
-                maxEntropy = en.shannon_entropy(inList)
+                maxEntropy = shannon_entropy(inList)
             except(TypeError):
                 maxEntropy = 0.0
 
         for uri in inList:
             try:
-                if maxEntropy <  en.shannon_entropy(uri):
-                    maxEntropy = en.shannon_entropy(uri)
+                if maxEntropy < shannon_entropy(uri):
+                    maxEntropy = shannon_entropy(uri)
             except(IndexError, TypeError, KeyError):
                 print()
 
@@ -122,17 +129,17 @@ class HTTPMicroBehaviors:
     def min_entropy(inList):
         """Returns the minimum shannon entropy of URIs in the list"""
         try:
-            minEntropy = en.shannon_entropy(inList[0])
+            minEntropy = shannon_entropy(inList[0])
         except(IndexError,TypeError,KeyError):
             try:
-                minEntropy = en.shannon_entropy(inList)
+                minEntropy = shannon_entropy(inList)
             except(TypeError):
                 minEntropy = 0.0
 
         for uri in inList:
             try:
-                if minEntropy > en.shannon_entropy(uri):
-                    minEntropy = en.shannon_entropy(uri)
+                if minEntropy > shannon_entropy(uri):
+                    minEntropy = shannon_entropy(uri)
             except(IndexError, TypeError, KeyError):
                 print()
 
@@ -220,8 +227,6 @@ class HTTPMicroBehaviors:
 
 
 class TimeBehaviors:
-
-
     """Class specific method for calculating difference between time-stamps,
         expects list of date timese, type float"""
     def time_delta(times):

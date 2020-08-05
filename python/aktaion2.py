@@ -85,7 +85,7 @@ if choice == 1:
 
 if choice == 2:
     file_path = input(Fore.WHITE + 'Please enter file location as string of BRO http.log' + Fore.GREEN + ':' + Style.RESET_ALL)
-    user_bro_df = broParse.bro_http_to_df(file_path)
+    user_bro_df = broParse.bro_http_to_df( file_path )
     print(ex.HTTPMicroBehaviors.behaviorVector(user_bro_df))
 #try:
 #    in_file = broParse.bro_http_to_df(fileName)
@@ -95,5 +95,5 @@ if choice == 2:
 #    print(Fore.RED+"Cannot open file!"+ Style.RESET_ALL)
 
 else:  ## default ##
-    print(Fore.RED+"Invalid number. Try again..."+ Style.RESET_ALL)
+    print(Fore.RED+"Invalid number. Try again..." + Style.RESET_ALL)
 
