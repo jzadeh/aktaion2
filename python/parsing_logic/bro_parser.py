@@ -9,33 +9,34 @@ import sys
 import pandas as pd
 from brothon import bro_log_reader
 
-class broParse:
+
+class bro_parse:
 
     def bro_http_to_df(inFile):
         """Parses a Bro http.log file, returns a pandas data frame"""
         if not inFile.endswith('log'):
-            print('This method only works with Bro http.log files, the file ' + inFile + ' is not valid.' )
+            print('This method only works with Bro http.log files, the file ' + inFile + ' is not valid.')
             sys.exit(1)
 
         reader = bro_log_reader.BroLogReader(inFile)
         bro_df = pd.DataFrame(reader.readrows())
-        bro_df = broParse.add_full_URL(bro_df)
-        bro_df = broParse.normalize_bro(bro_df)
+        bro_df = bro_parse.add_full_URL(bro_df)
+        bro_df = bro_parse.normalize_bro(bro_df)
 
-        return(bro_df)
+        return (bro_df)
 
     def add_full_URL(inFrame):
         """Given a bro http.log dataframe, returns the frame with a 'fullUrl' colum appended"""
-        masterDictionary = []
+        master_dictionary = []
         for index, row in inFrame.iterrows():
             if row['id.resp_h'] == 443:
                 fUrl = "https://" + row['host'] + row['uri']
             else:
                 fUrl = "http://" + row['host'] + row['uri']
 
-            masterDictionary.append(fUrl)
+            master_dictionary.append(fUrl)
 
-        inFrame['fullUrl'] = pd.Series(masterDictionary).values
+        inFrame['fullUrl'] = pd.Series(master_dictionary).values
         return (inFrame)
 
     def normalize_bro(df):
@@ -45,4 +46,4 @@ class broParse:
                            'method': 'httpMethod', 'orig_mime_types': 'mimeType',
                            'id.orig_h': 'origHost', 'status_code': 'statusCode',
                            'user_agent': 'userAgent', 'username': 'userName'}, inplace=True)
-        return(df)
+        return (df)

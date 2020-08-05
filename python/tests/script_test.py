@@ -138,7 +138,7 @@ del new_df['index']
 # print(ex.TimeBehaviors.interval_length(new_df.tail()), 2)
 # print(ex.TimeBehaviors.interval_length(new_df.tail()))
 #print(ex.TimeBehaviors.behavior_vector(new_df, 5))
-print(ex.microBehaviors.behaviorVector(new_df))
+print(ex.micro_behaviors.behaviorVector(new_df))
 
 
 # Dlist = new_df['epochTime'].tolist()

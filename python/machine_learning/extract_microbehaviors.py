@@ -1,11 +1,11 @@
 # Load bro parser
-from python.parsing_logic.bro_parser import broParse as br
+from python.parsing_logic.bro_parser import bro_parse as br
 
 # Load proxy parser
 import python.parsing_logic.generic_proxy_parser as gpp
 
 # Load ML Logic
-import python.machine_learning.random_forest.microbehavior_core_logic as ex
+import python.machine_learning.microbehavior_core_logic as ex
 
 # Load pandas
 import pandas as pd
@@ -13,7 +13,6 @@ import pandas as pd
 # Load os to parse directories
 import os
 import time
-import argparse
 
 # Takes user input file
 # parser = argparse.ArgumentParser()
@@ -40,7 +39,7 @@ bro_exploit_dir = "data/logs_bro_format/exploit"
 bro_benign_dir = "data/logs_bro_format/benign"
 
 proxy_exploit_dir = "data/logs_proxy_format/exploit"
-proxy_benign_dir  = "data/logs_proxy_format/benign"
+proxy_benign_dir = "data/logs_proxy_format/benign"
 
 # Declare global exploit and benign dataFrame vars for keeping the raw log data
 df_ex = pd.DataFrame()
