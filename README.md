@@ -1,13 +1,8 @@
 # Aktaion: Behavior Based Exploit Detection Prototype
-
-
-![alt-text-1](graphics/aktaion_fractal_juliaset2.png "title-1") ![alt-text-2](image2.png "title-2")
-
-
 <table><tr>
-<td> <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/aktaion_fractal_juliaset2.png" alt="aktaion_logo" width="100" height="100"/> </td>
-<td> <img src="https://github.com/jzadeh/aktaion2/blob/master/defcon2020/RTV-logo-high-res.png" alt="redteamvillage_logo" width="100" height="100"/> </td>
-<td> <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/exploit_logo.png" alt="exploit_logo" width="100" height="100"/> </td>
+<td> <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/aktaion_fractal_juliaset2.png" alt="aktaion_logo" width="200" height="200"/> </td>
+<td> <img src="https://github.com/jzadeh/aktaion2/blob/master/defcon2020/RTV-logo-high-res.png" alt="redteamvillage_logo" width="200" height="200"/> </td>
+<td> <img src="https://github.com/jzadeh/aktaion2/blob/master/graphics/exploit_logo.png" alt="exploit_logo" width="200" height="200"/> </td>
 </tr></table>
 
 
