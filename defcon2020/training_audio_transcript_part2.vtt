@@ -1,0 +1,1466 @@
+WEBVTT
+
+1
+00:00:01.079 --> 00:00:08.130
+Joseph Zadeh: Alright, hello, my name is Joseph day and welcome to the red team village.
+
+2
+00:00:09.809 --> 00:00:17.039
+Joseph Zadeh: Saturday morning training the project, we're going to be talking about today is is something called Actaeon
+
+3
+00:00:18.060 --> 00:00:18.600
+Joseph Zadeh: And
+
+4
+00:00:21.360 --> 00:00:32.400
+Joseph Zadeh: It's a, it's a software project. A couple of us have worked on for about a half a decade now, it's been as like a teaching tool for a couple of complicated concepts and
+
+5
+00:00:33.360 --> 00:00:45.420
+Joseph Zadeh: In sort of behavioral intrusion detection, particularly, we will be using machine learning train model to detect exploits in P cap and bro data.
+
+6
+00:00:45.840 --> 00:00:58.500
+Joseph Zadeh: Particularly, we're going to be using Layer seven examples and HTTP data, a lot. And we'll kind of dig into all the words here. I'm in throughout the course of the training, I'm
+
+7
+00:01:00.480 --> 00:01:21.810
+Joseph Zadeh: Just to sort of give you kind of a quick preview of what we want to do for this class, we're basically going to be running this Actaeon script and it's going to a sort of under the hood. Take a peek apps or I'm running kind of the demo right now. And basically it's just scoring a single
+
+8
+00:01:24.210 --> 00:01:38.130
+Joseph Zadeh: HTTP secret set of sequences from a file I gave it that I know has an exploit in it and it detected the exploit. And that's kind of what we're going to go after here in the spirit of
+
+9
+00:01:39.060 --> 00:01:49.740
+Joseph Zadeh: Behavioral intrusion detection. And so I think it's just you know what one thing to say just, you know, thank you to red team village and Omar Joseph and all the people who have kind of
+
+10
+00:01:50.070 --> 00:01:58.590
+Joseph Zadeh: volunteered their time and effort. This is such an impressive endeavor to be a part of. It's a real honor to do anything involving DEF CON.
+
+11
+00:01:59.190 --> 00:02:09.960
+Joseph Zadeh: And I'm just, you know, lucky to be a part of it like it's particularly because I kind of spend more time on as more of a blue team member, I'd say. So I and
+
+12
+00:02:10.320 --> 00:02:21.570
+Joseph Zadeh: The, the buzzword these days is purple team. So now on you know my my better half rod Soto who normally kind of gives a big part of this presentation is doing other training at DEF CON on
+
+13
+00:02:22.260 --> 00:02:30.060
+Joseph Zadeh: The Red Team village on something called the attack range. He's much more of a red team, or I'd say he does, he actively
+
+14
+00:02:30.360 --> 00:02:40.290
+Joseph Zadeh: You know, just researches the latest exploits and get some work in and all that stuff. And so we we kind of work together and collaborate on how you know how those behaviors manifest, how we can express them in code.
+
+15
+00:02:40.800 --> 00:02:50.640
+Joseph Zadeh: And and there's a lot of cool ideas there that I just, I hope I can kind of share with you in a practical sort of narrative here today, um,
+
+16
+00:02:51.780 --> 00:02:53.340
+Joseph Zadeh: So let's see here.
+
+17
+00:02:54.480 --> 00:02:58.080
+Joseph Zadeh: The so the objectives for this kind of
+
+18
+00:02:59.130 --> 00:03:04.710
+Joseph Zadeh: Crash Course on on end to end intrusion detection is just to really sort of understand
+
+19
+00:03:05.400 --> 00:03:15.270
+Joseph Zadeh: Kind of the research spirit involving house. It's kind of how these ideas take shape the history of where we, you know, what use case, we were looking at when we started this with ransomware so we're going to kind of just start from
+
+20
+00:03:15.600 --> 00:03:31.500
+Joseph Zadeh: You know, just the the practical side of where we started, how we came to the ideas for doing a specific kind of detection involving the X actual sort of exploitation of the machine before the rants Mars delivered. Um, we ended up sort of using
+
+21
+00:03:32.550 --> 00:03:55.620
+Joseph Zadeh: A some hacks to tie in an upstream action to the output of the the Actaeon sort of software classification, which is basically looking at data that's network data and when it sees an a potential exploit it says this thing looks bad, and we tie that kind of outcome into
+
+22
+00:03:56.670 --> 00:04:08.820
+Joseph Zadeh: group policy objects in Active Directory. So we started sort of like a very kind of crude prototype of taking a heavy handed action where if we see the exploit in a peak app.
+
+23
+00:04:09.450 --> 00:04:23.880
+Joseph Zadeh: Will extract some IOC some indicators like IPS domain domains file ashes. Just, just kind of standard things that we can say hey endpoints look every single other person that's involved in this active directory
+
+24
+00:04:24.360 --> 00:04:38.610
+Joseph Zadeh: Uh, you know this looks bad. So let's block it. So it's kind of a heavy handed example of pushing an ACL through group policy objects in as as a response to an action from a security analytic
+
+25
+00:04:40.320 --> 00:04:48.960
+Joseph Zadeh: There's a lot of buzzwords that are thrown around in this kind of vein of conversation and cyber securities, especially in Silicon Valley.
+
+26
+00:04:49.680 --> 00:05:03.300
+Joseph Zadeh: Machine Learning gets kind of a abused as a as a kind of an overloaded operator for for cybersecurity. In particular, I think there's, there's a lot of
+
+27
+00:05:04.170 --> 00:05:18.270
+Joseph Zadeh: Cases we encounter in security that just aren't well suited to the paradigms of statistical learning and pattern recognition and and so on. You know the game we're playing as D in defense particularly is is
+
+28
+00:05:18.840 --> 00:05:31.320
+Joseph Zadeh: Is, you know, getting operators sort of the fastest feedback and the best use of data and and I think to me in my career that using the right
+
+29
+00:05:32.130 --> 00:05:40.410
+Joseph Zadeh: Tools for enhancing operator like just efficiency and saving them time getting getting
+
+30
+00:05:40.860 --> 00:06:01.080
+Joseph Zadeh: That human computer interaction workflow working from the sense of a user user interface and user experience is so much more valuable in this kind of paradigm that we, the game we play because there's sort of a, an unbounded adaptive asymmetric game between attackers and defenders and
+
+31
+00:06:02.250 --> 00:06:07.980
+Joseph Zadeh: It just, it's, it's a cliche to say now, but the the classic example as much as talk at Black Hat where he's
+
+32
+00:06:08.310 --> 00:06:15.360
+Joseph Zadeh: Saying you know it's also like the mall or analysts cookbook and you know they cite that the number of lines of code for an offensive payload.
+
+33
+00:06:15.780 --> 00:06:20.580
+Joseph Zadeh: You didn't like is 150 on on the dock DARPA samples much looked at versus
+
+34
+00:06:21.540 --> 00:06:29.760
+Joseph Zadeh: You know 10 million lines of code for a firewall to digit to detect that weaponized payload and we'll see it just takes like a couple lines in HTTP for us to
+
+35
+00:06:30.120 --> 00:06:45.420
+Joseph Zadeh: To sort of see the footprint of an exploit being delivered, you know, and so there's a huge sort of asymmetric game between offense and defense that's constantly adapting and changing. And that's kind of why software pattern recognition isn't such a good, good.
+
+36
+00:06:46.860 --> 00:06:54.720
+Joseph Zadeh: Like paradigm to apply in a lot of the kind of sub problems that manifest when we're defending a complex technology service, um,
+
+37
+00:06:55.260 --> 00:07:04.170
+Joseph Zadeh: So, uh, just not normally this talk is two hours I i sorry, this talk is one hour so I'm
+
+38
+00:07:04.740 --> 00:07:11.670
+Joseph Zadeh: I tend to be chatty Cathy, so I might be talking a lot, I hope I don't kind of turn you guys off to the, the bigger messages here.
+
+39
+00:07:12.150 --> 00:07:26.730
+Joseph Zadeh: But we're going to kind of spend the next two hours together just digging into a lot of the theory and concepts behind kind of these learning objectives and, you know, though, there'll be sort of a hands on at the end, it doesn't. I hope it's the learning curve isn't too crazy here.
+
+40
+00:07:27.750 --> 00:07:35.730
+Joseph Zadeh: And let me just sort of plug in all the discord and proper links so you can anyone interested, ask questions. It's all in the spirit of learning here.
+
+41
+00:07:36.030 --> 00:07:46.050
+Joseph Zadeh: Open source as we get all the code here is Apache license. You know, there's no we're not trying to make money off it or anything. We're just trying to get people excited to learn some complicated concepts that
+
+42
+00:07:46.890 --> 00:07:57.300
+Joseph Zadeh: You know, at the end of the day, there's such a shortage of security workforce on you know across the globe that, you know, it just, it just being curious about it is all it takes to be
+
+43
+00:07:57.660 --> 00:08:12.870
+Joseph Zadeh: Kind of an idea potential audience member for this content. It helps having a sort of a networks kind of security dictionary, you know, in your in your sort of working knowledge. But if not, you know, it's just, it's just all stuff you can learn and
+
+44
+00:08:13.890 --> 00:08:21.630
+Joseph Zadeh: And so, you know, basically, the spirit DEF CON. And you know anyone who's curious, does is the audience. If you want to kind of get the hands on stuff working
+
+45
+00:08:22.200 --> 00:08:29.670
+Joseph Zadeh: You know, in parallel, like the chats going to be a great place to ask questions if you run into issues and and trying to follow along.
+
+46
+00:08:30.090 --> 00:08:41.190
+Joseph Zadeh: Unfortunately, I didn't test the code on Windows box. So basically what you'll kind of see on my development side is OS X with brood Python and
+
+47
+00:08:41.580 --> 00:08:47.460
+Joseph Zadeh: The like the relevant Python stuff just all living in a virtual environment and we'll get all that run together.
+
+48
+00:08:48.030 --> 00:08:55.320
+Joseph Zadeh: And hopefully you guys know where the discord and stuff is at did I plug our. Oh, and then okay and then here's going to be my
+
+49
+00:08:55.980 --> 00:09:03.390
+Joseph Zadeh: So if you want to hit me up on discord I'm math makes me dance and then I'm on Twitter. It's my first name, last name, Joseph today.
+
+50
+00:09:04.230 --> 00:09:16.590
+Joseph Zadeh: The, the better half my partner in crime on all the research I've ever done in my career has brought Soto, he's he's on Twitter and also on discord just ping us you know there's, I mean,
+
+51
+00:09:17.640 --> 00:09:24.240
+Joseph Zadeh: One thing to mention too is the red team village has a variety of sponsors, a lot of real cool companies that i mean
+
+52
+00:09:24.540 --> 00:09:35.820
+Joseph Zadeh: The, the stuff. These guys like Cisco and some of these other shops have kind of volunteered and just set up in terms of capture the flags is just awesome. And they're you know they're there, they're just looking for sharp minds like yourself.
+
+53
+00:09:36.930 --> 00:09:42.690
+Joseph Zadeh: For jobs careers, all that stuff internships just research opportunities. So if you're interested in
+
+54
+00:09:43.110 --> 00:09:51.360
+Joseph Zadeh: You know, hit up anyone in the red team village, because I think there's a whole, I just didn't have the link in time. But there's a whole like linked to a companies interested in jobs.
+
+55
+00:09:52.080 --> 00:09:58.890
+Joseph Zadeh: You know, looking for folks that for different like fun jobs that are like research oriented in cyber security oriented.
+
+56
+00:09:59.370 --> 00:10:13.650
+Joseph Zadeh: And paying us to we work at spunk currently both, both of us are part of a spunky threat research team and we're job, honey. We're looking for eager candidates as well so you can ping us if you're interested in that. I'll show you some links to some projects.
+
+57
+00:10:16.380 --> 00:10:34.680
+Joseph Zadeh: And yeah, so one, one thing to mention real quick here kind of where we're going to be working off today is this sort of the second incarnation of Actaeon act town is there as a reference to like a Greek legends. I think he was murdered by Artemis, it's kind of didn't go so well. But, um,
+
+58
+00:10:35.730 --> 00:10:40.620
+Joseph Zadeh: But the first the first version of the code was all Scala and Java.
+
+59
+00:10:41.580 --> 00:10:55.830
+Joseph Zadeh: It was a little kind of hard to use as a teaching tool then but now on the second version with the help of a ton of people. Um, there's not enough shout outs, we could give one of the scene, all that cool ASCII art pop and some of the machine learning and the feature the statistics.
+
+60
+00:10:57.030 --> 00:11:08.760
+Joseph Zadeh: Mikey Michael knight on discord and Twitch and my bro Alex both did a ton of heavy lift there along with other people, students and stuff and then john Pierce did a bunch of the
+
+61
+00:11:10.620 --> 00:11:18.240
+Joseph Zadeh: Group Policy Object orchestration piece in on the spirits teaching and learning a lot of students have kind of spent time with this project.
+
+62
+00:11:18.690 --> 00:11:30.600
+Joseph Zadeh: From time to time and just from a research effort we start presenting the original Java code in 2015 at back at arsenal. And we've kind present at various sort of forums and just use it as like a
+
+63
+00:11:31.050 --> 00:11:42.840
+Joseph Zadeh: You know, kind of a practical prototype and hands on. And a lot of these concepts and just try to get people excited about some of the fun stuff. We weren't. Um, so, oh okay so
+
+64
+00:11:44.250 --> 00:11:58.380
+Joseph Zadeh: Let's see here. Um, okay. So, and just to kind of give you a flavor of what other things folks like us do on these type of research teams and especially in in Silicon Valley, there's sort of a
+
+65
+00:12:00.330 --> 00:12:13.080
+Joseph Zadeh: heavily weighted demographic in some specialties in these areas. I've been exposed to some really cool things that I just, you know, kind of changed my life for the better. One of them was something called a
+
+66
+00:12:13.620 --> 00:12:19.710
+Joseph Zadeh: Facebook child safety hackathon. And I got to help work on projects that were using like
+
+67
+00:12:20.790 --> 00:12:25.860
+Joseph Zadeh: A machine vision on dark web data to help Interpol triangulate
+
+68
+00:12:27.900 --> 00:12:29.490
+Joseph Zadeh: places in the world where
+
+69
+00:12:30.630 --> 00:12:42.120
+Joseph Zadeh: People might be being trafficked and it is very kind of dark and sad problem. I mean, turned out like learn 50 million people aren't modern slavery today and and
+
+70
+00:12:42.720 --> 00:12:52.560
+Joseph Zadeh: And so we have some kind of call to arms around this as some of the different talks rotten. We've done some other cool things. We've got to be involved in turned into patents.
+
+71
+00:12:53.610 --> 00:13:01.260
+Joseph Zadeh: And this is just so like the thing. I'll be talking about is sort of in the spirit of how like one of these ideas eventually down the road.
+
+72
+00:13:01.650 --> 00:13:07.020
+Joseph Zadeh: You know, became like a patentable concept and and sort of how that how you go from research to
+
+73
+00:13:07.890 --> 00:13:11.970
+Joseph Zadeh: You know, production, essentially, in the spirit of some of this research and development.
+
+74
+00:13:12.660 --> 00:13:20.400
+Joseph Zadeh: A. The other thing to mention to just kind of from a background perspective, the two projects I kind of help sort of
+
+75
+00:13:20.910 --> 00:13:32.010
+Joseph Zadeh: A from an open source perspective from the current team. I'm on the spunk threat research team are called security content and attack range. The content is sort of like our teams detections.
+
+76
+00:13:33.750 --> 00:13:42.930
+Joseph Zadeh: Written in SPL and the like. And then the attack ranges is kind of based on caldera and atomic red team. And it's sort of a way to do a one line.
+
+77
+00:13:43.890 --> 00:13:55.170
+Joseph Zadeh: A one liner from your command line. It's a python script that will spin up a VM infrastructure attack it using the the sort of the miter technique for from the attack matrix.
+
+78
+00:13:55.710 --> 00:14:05.910
+Joseph Zadeh: And and just passes a parameter and then execute the attack log all the data and then sort of even be able to QA our own detections with this stuff. And it's all open source.
+
+79
+00:14:06.330 --> 00:14:16.440
+Joseph Zadeh: And check it out. And the reason I mentioned the attack range, a little bit more detail is Rod my teammates rod and Jose on the spunk research team who are really cool.
+
+80
+00:14:17.010 --> 00:14:30.120
+Joseph Zadeh: Much more sort of red team minded and they're kind of their, their tribal knowledge. They're doing a talk and training and renting the village, as well, sort of centered on that attack range concept and all the all the crazy cool fun work that goes into it.
+
+81
+00:14:31.260 --> 00:14:39.450
+Joseph Zadeh: Okay, so, uh, see here. Okay. And then, so finally, just I think the the bigger
+
+82
+00:14:42.420 --> 00:14:53.040
+Joseph Zadeh: Picture this might not be the case where a picture's worth 1000 words but it's it's sort of the, this is kind of spirit of the original incarnation of the software we built
+
+83
+00:14:53.550 --> 00:15:01.020
+Joseph Zadeh: In Java, that is kind of what we're really doing in in in a picture from an architectural perspective.
+
+84
+00:15:01.560 --> 00:15:07.620
+Joseph Zadeh: And I think one of the reasons that this is a little bit more complicated than just seeing a single like person is because
+
+85
+00:15:08.100 --> 00:15:13.380
+Joseph Zadeh: A lot of the problems we think through, especially in kind of large scale enterprise security.
+
+86
+00:15:14.280 --> 00:15:24.030
+Joseph Zadeh: For behavioral intrusion detection is how to sort of parallelize the problem across the whole users population like some things in common in the world of compute
+
+87
+00:15:24.360 --> 00:15:34.110
+Joseph Zadeh: Don't paralyze very well like a great example statistics is the median. You can't really, you have to sort of have all the state in one place to compute a legitimate median and not approximated
+
+88
+00:15:34.920 --> 00:15:44.070
+Joseph Zadeh: So I think what we'll see sort of why our behavioral intrusion detection concepts require a little bit more state. And that's why we have sort of
+
+89
+00:15:44.520 --> 00:15:47.970
+Joseph Zadeh: Some, some more complex abstractions in the mix here.
+
+90
+00:15:48.420 --> 00:15:57.810
+Joseph Zadeh: In order to build a prototype that if we do decide to take it into production. It parallelize as well and still lets us maintain enough state to build
+
+91
+00:15:58.110 --> 00:16:11.580
+Joseph Zadeh: A concept of a behavior vector per individual in the organization. And so kind of what we're doing is we're sort of sequencing users sort of kind of interaction with the web. Did you like
+
+92
+00:16:12.630 --> 00:16:24.600
+Joseph Zadeh: It or not non non enterprise assets so stuff and the web, like shopping carts, all these things and basically looking at the HTTP sevens HTTP Layer seven data.
+
+93
+00:16:24.990 --> 00:16:37.320
+Joseph Zadeh: per user in a way that lets us say, oh, you know what this sequence of GET and POST request actually looked a lot like all the exploits you've shown me in the past or X exploit chains. I guess we call them.
+
+94
+00:16:38.370 --> 00:16:51.960
+Joseph Zadeh: And so I kind of so so you know there's two things I mentioned here, like the detection. Here is a pretty fun example of I'm doing something a little bit more complex than just a signature match or a pattern match.
+
+95
+00:16:53.340 --> 00:16:58.830
+Joseph Zadeh: Which is sort of the standard kind of first layer of defense and a lot of network intrusion detection.
+
+96
+00:16:59.760 --> 00:17:08.940
+Joseph Zadeh: In the sense of looking for known bad and having like a like something like a snort rule is just a pearl compatible regular expression. So we can
+
+97
+00:17:09.210 --> 00:17:21.690
+Joseph Zadeh: You know, think of a you know a signature as just being these sort of point detections that that are some form of known bad pattern that we we are kind of getting our, our, our network appliance or whatever to express it and look at
+
+98
+00:17:22.650 --> 00:17:32.910
+Joseph Zadeh: This is a little bit more behavior statistics space. And that's why we end up tying in a random forest, a type of machine learning concept into the approach to say
+
+99
+00:17:33.360 --> 00:17:49.110
+Joseph Zadeh: Okay, let's give you all the p caps. We know that have bad bad data export data and I'm see if there's any patterns you can extract from that and and if you see something new, tell us if it looks like those those exploits from a behavioral standpoint.
+
+100
+00:17:50.790 --> 00:18:00.900
+Joseph Zadeh: So I hope this isn't too overloaded in terms of jargon already. I know there's a lot of complex concepts you know that sometimes we'll just throw around and
+
+101
+00:18:01.290 --> 00:18:06.090
+Joseph Zadeh: And don't forget to define things but just remember to post questions in the chat, too, and
+
+102
+00:18:06.540 --> 00:18:15.960
+Joseph Zadeh: You know, if, if something is complicated for the you know the first time around that that's, you know, there's a lot of different kind of steep learning curves at play here. So just
+
+103
+00:18:16.320 --> 00:18:23.520
+Joseph Zadeh: You know, take your time with the ideas and if it doesn't make sense. First, like, remember the GitHub repo. We're thinking, she's going to have all this material.
+
+104
+00:18:24.180 --> 00:18:39.270
+Joseph Zadeh: So you can kind of revisit it and, you know, just kind of digest at the right pace. Um, okay. One last sort of philosophical kind of anecdote here that's that's pretty interesting, I think, is
+
+105
+00:18:40.230 --> 00:18:49.290
+Joseph Zadeh: What we'll be seeing in the sense of the philosophy of artificial intelligence and machine learning, particularly for cybersecurity is this relationship between
+
+106
+00:18:50.550 --> 00:18:57.150
+Joseph Zadeh: Learning and compression and I think it's a very important kind of concept that that subtle at first because I'm
+
+107
+00:18:57.540 --> 00:19:07.830
+Joseph Zadeh: Like I like. So, for example, right now that the the bandwidth channel between you and me. The, the audio that hopefully you're listening to me.
+
+108
+00:19:08.790 --> 00:19:20.760
+Joseph Zadeh: Besides watching the video, but actually like it just the audio signal from from me to you over voice that the bandwidth channel on average is about 100 bits per second. So, um,
+
+109
+00:19:21.090 --> 00:19:29.670
+Joseph Zadeh: You know, Nate nature's sort optimized our wet were to have these five different sensory inputs and that, um, you know, the auditory
+
+110
+00:19:30.120 --> 00:19:43.500
+Joseph Zadeh: Input it really requires a very small channel of information for us to make like complex adaptive decisions like should I survive or not, like, if I are well I
+
+111
+00:19:45.360 --> 00:19:52.710
+Joseph Zadeh: Think the answer that question is hopefully always yes. But like, I'm not sure if I hear a sound that's potentially a threat.
+
+112
+00:19:54.060 --> 00:20:01.200
+Joseph Zadeh: Should I run or not. I guess it's better way to put it. So like if I hear a lion sound. You know, when I'm out in the wilderness, like I'm
+
+113
+00:20:01.500 --> 00:20:09.300
+Joseph Zadeh: You know I'm running. I'm not, I'm not gonna, I don't need a lot of data besides that sort of audio sample to to make a
+
+114
+00:20:09.990 --> 00:20:20.940
+Joseph Zadeh: Sort of a life or death decision so so nature has sort of optimized our wet were to make, you know, to, to solve sort of one of the most general like
+
+115
+00:20:21.600 --> 00:20:35.520
+Joseph Zadeh: complex problems you can solve, like, which is the problem of winning in an asymmetric game that the that has an adaptation and there is sort of a resource asymmetry between
+
+116
+00:20:36.060 --> 00:20:42.840
+Joseph Zadeh: Us and the rest of the universe or opponent or whatever. And so, um, you know, general adaptation is a real tricky problem.
+
+117
+00:20:43.740 --> 00:20:56.070
+Joseph Zadeh: You know, whatever, you know, wherever it comes from, like, you know, the trillion lines of a trillion letters of DNA that we have in our body is the encoding, we have in our wet where that's about 800 megs on disk.
+
+118
+00:20:57.630 --> 00:21:06.990
+Joseph Zadeh: But, you know, funny enough, if you enumerated all trillion, you know, letters in, you know, try to enumerate all that that string on to all the books and library Congress, it wouldn't fit. I mean it's it's
+
+119
+00:21:07.860 --> 00:21:19.170
+Joseph Zadeh: Doing like edit distance on strings of DNA takes the lifetime of the universe. I mean, DNA is a very sort of fascinating. I'm sort of ultra adaptive encoding of kind of
+
+120
+00:21:19.650 --> 00:21:32.130
+Joseph Zadeh: How to Survive in general environments, you know, who knows, you know, it's, I mean it's it's a spiritual question as well as kind of a science question that you know the singularity since the beginning of time.
+
+121
+00:21:32.670 --> 00:21:37.110
+Joseph Zadeh: We've kind of had this process of solving this problem and you know it's
+
+122
+00:21:37.680 --> 00:21:45.360
+Joseph Zadeh: You know, fast forward to now and we're 800 megs on disk describes all that crazy stuff that's going on, you know. So anyway, so there's a
+
+123
+00:21:45.750 --> 00:21:52.560
+Joseph Zadeh: There's a learning compression duality. We're going to see that in play. When we explore some of these concepts.
+
+124
+00:21:53.550 --> 00:22:05.850
+Joseph Zadeh: Particularly in in these sort of first part of the slides that are going to touch on the philosophical anecdotes of what why we're choosing some of the ideas and algorithms and paradigms.
+
+125
+00:22:06.210 --> 00:22:11.970
+Joseph Zadeh: That that are in play in the software stack. Okay, so hopefully you're all still here.
+
+126
+00:22:12.780 --> 00:22:20.220
+Joseph Zadeh: It's thanks for kind of being patient like it's it's normally I have to rush through this stuff in like 45 minutes in our, in our typical presentations.
+
+127
+00:22:20.520 --> 00:22:28.860
+Joseph Zadeh: So it's really nice to kind of be able to sprinkle some of the more philosophical concepts in during this, this, this time with you, and I hope
+
+128
+00:22:29.790 --> 00:22:40.590
+Joseph Zadeh: I hope it doesn't seem to harebrained. Okay, so, um, okay. So just, just to recap, we're going to be kind of in this first part of the talk, and then we'll take like a little bathroom and Q AMP a break.
+
+129
+00:22:41.760 --> 00:22:51.300
+Joseph Zadeh: Just for a couple minutes at this part two, but for the next, you know, 30 minutes or so we're just going to be driving through a few. The learning objectives in terms of
+
+130
+00:22:51.600 --> 00:23:04.590
+Joseph Zadeh: Kind of key concepts in theory, before we kind of get our hands on machine. Okay. And it's a picture of Actaeon I threw him in a Mac Mandelbrot set generator. I, you know, the irony is Artemis
+
+131
+00:23:05.070 --> 00:23:13.560
+Joseph Zadeh: turned him into a animal than he was hunted, even though he's a great hunter and he was a like Achilles and, you know, curious rising like a phoenix
+
+132
+00:23:14.460 --> 00:23:31.530
+Joseph Zadeh: Okay, so I'm expressing behaviors and code. Okay, so this, this is actually just to remind us about kind of history here, this thing last time this lead was update was black hat you 2017 so Actaeon and itself is a
+
+133
+00:23:32.520 --> 00:23:50.850
+Joseph Zadeh: Is a collection of software and concepts that's been built built over time since 2015 about. So I think our original presentation or black at Arsenal demo was 2015 and we were really kind of focusing on the concept of ransomware
+
+134
+00:23:52.050 --> 00:23:52.710
+Joseph Zadeh: So,
+
+135
+00:23:54.090 --> 00:24:06.600
+Joseph Zadeh: And and and the the conversations at that time. Um, I think, was kind of starting to becoming alarming trend more and sort of like off the record discussions with
+
+136
+00:24:06.990 --> 00:24:21.840
+Joseph Zadeh: Folks that were defending big shops that we're starting to we're just starting to hear a like an increase in the number of people are like, Yeah, you know, off, off the record like we had to pay pretty big ransom. Like they these guys popped all our, you know, like all our
+
+137
+00:24:22.980 --> 00:24:34.500
+Joseph Zadeh: Patient data and encrypted and and they're starting to hear some fascinating stories and the bigger kind of snatch and grab modus operandi of threat actors using this
+
+138
+00:24:35.310 --> 00:24:45.330
+Joseph Zadeh: This particular tactics. So, um, so anyway, I mean it's kind of 2020. Now it's interesting you know the you know the the pattern you know patterns change over time and
+
+139
+00:24:45.660 --> 00:24:54.000
+Joseph Zadeh: Some techniques pay out some don't ransomware is, you know, is a broader kind of meta phenomena is probably here to stay in one form or another.
+
+140
+00:24:54.480 --> 00:25:06.330
+Joseph Zadeh: Um, but in 2015 the impact was like, I think we have some numbers coming up in terms of the total impact is made by the FBI was definitely off by a few zeros. Um, okay, so
+
+141
+00:25:07.560 --> 00:25:14.520
+Joseph Zadeh: Okay, so just basically we're acting on started and I think that the bigger spirit of kind of how this conversation, I hope, like
+
+142
+00:25:15.660 --> 00:25:22.020
+Joseph Zadeh: What we illustrates is like how I says, researchers, kind of, you know, where we start from just
+
+143
+00:25:22.500 --> 00:25:29.940
+Joseph Zadeh: You know, being at a bar and scratching stuff on a coaster with each other and go into a whiteboard and cut and just be like, look how do we
+
+144
+00:25:30.360 --> 00:25:46.080
+Joseph Zadeh: How we like, what's a good way to kind of fight this problem. Um, it's particularly using like the sort of the technological paradigms that are invoke at the time, or with the with the broader mandate is for whatever kind of
+
+145
+00:25:48.360 --> 00:25:56.250
+Joseph Zadeh: Sort of upstream kind of roadmap, where we're, we're, we're tied to so I'm
+
+146
+00:25:57.660 --> 00:26:01.740
+Joseph Zadeh: So kind of we're acting on starts is the ransomware conversation.
+
+147
+00:26:03.000 --> 00:26:10.380
+Joseph Zadeh: Strangely enough, and so um yeah if y'all haven't seen an example ransomware it's you know it's
+
+148
+00:26:11.580 --> 00:26:21.810
+Joseph Zadeh: pretty fascinating. Where you know how sophisticated you know there's whole help desks and stuff, that'll help you. Now if you're having trouble paying the ransom. Um, but it's it's a very good
+
+149
+00:26:22.830 --> 00:26:36.690
+Joseph Zadeh: lightweight way for threat actors to monetize. And, you know, depending on the, the value of the the target they they encrypt you know they there's you know there's there's big money to pay
+
+150
+00:26:37.590 --> 00:26:47.370
+Joseph Zadeh: And so, you know, this is just the output of one of the ransomware programs rod. I think probably detonated at the time or or just a, you know,
+
+151
+00:26:48.060 --> 00:26:58.620
+Joseph Zadeh: I I'm sure this is pretty old at this point. But in any case, kinda, you'll see a variation of, you know, you can't touch your machine until you pay the ransom. This kind of high level concept.
+
+152
+00:27:00.630 --> 00:27:06.630
+Joseph Zadeh: And so, you know, ransomware is a pretty fascinating kind of historical
+
+153
+00:27:08.070 --> 00:27:12.690
+Joseph Zadeh: Kind of malware research type timeline here. So, um,
+
+154
+00:27:13.260 --> 00:27:21.300
+Joseph Zadeh: I, you know, and I think I can't remember the history here in terms of the GP coder, if that was like a research thing or daughter, but basically the first kind of
+
+155
+00:27:21.690 --> 00:27:32.970
+Joseph Zadeh: Big anecdote in 2005 happened with with so the ransomware concept. And then if you kind of see this in exponential increase in just the
+
+156
+00:27:33.390 --> 00:27:43.080
+Joseph Zadeh: The number of varieties and samples of the different different things. And, you know, fast forward, four years later, it's you know, it's a like we said it's here to stay.
+
+157
+00:27:44.010 --> 00:27:54.780
+Joseph Zadeh: Probably. Um, yeah, there's a lot of cool research going on after time, we were kind of figuring out where to focus our, our own efforts in terms of
+
+158
+00:27:56.250 --> 00:28:11.880
+Joseph Zadeh: Kind of fighting this problem from a detection standpoint, classically, and and and very intuitively, I think a lot of the things that are maybe considered best practices are definitely file system based
+
+159
+00:28:13.110 --> 00:28:22.710
+Joseph Zadeh: There was like a hook in agent or something that was supposed to. I think there's a paper that came out of Florida. Florida University, if I remember correctly.
+
+160
+00:28:24.240 --> 00:28:35.520
+Joseph Zadeh: That was sort of doing some heuristics on like what it looks like when when drives are being encrypted from, you know, File System monitoring standpoint, I think.
+
+161
+00:28:36.060 --> 00:28:45.660
+Joseph Zadeh: The tricky problem with that, that paradigm, we found was that when you look for ransomware and kind of the indicators on the file system for one like an encryption.
+
+162
+00:28:47.010 --> 00:29:00.660
+Joseph Zadeh: Job is being kicked off for one it FPS a lot on like like antivirus like so there you know basically other file system type operations can can look like you're encrypting a drive or something.
+
+163
+00:29:01.080 --> 00:29:13.830
+Joseph Zadeh: And also just the point of kind of doing detection at the endpoint level where we're sort of assuming some data we have has visibility into the file system and the OS kind of
+
+164
+00:29:14.610 --> 00:29:24.600
+Joseph Zadeh: Sort of care and feeding at the endpoint level data is is is not, it's not really like getting ahead of the problem. It's, it's, it's kind of like, assuming
+
+165
+00:29:25.260 --> 00:29:37.380
+Joseph Zadeh: Compromise are very close to it at least. So we just decided to spend a little bit more time on like where what the vector was for the ransomware doing its thing on the file system.
+
+166
+00:29:38.280 --> 00:29:47.190
+Joseph Zadeh: And so that's kind of how we sort of ended up at the network side of things which which we'll see. We'll see in a little bit. Um, okay, so
+
+167
+00:29:48.600 --> 00:29:56.010
+Joseph Zadeh: Oh and okay this is I think a fun anecdote because of you know the the
+
+168
+00:29:56.520 --> 00:30:09.810
+Joseph Zadeh: underestimation and overestimation of breaches in in the broader kind of conversation of cyber security, you know, this is a very challenging thing to really estimate correctly.
+
+169
+00:30:10.710 --> 00:30:20.520
+Joseph Zadeh: And so, you know, we, when we were originally looking at this, I think one of the funny things was the, the original quote was about 18 million in total losses in 2015
+
+170
+00:30:21.090 --> 00:30:34.230
+Joseph Zadeh: And then, you know, you see these these totally like just the order of magnitude of the other estimates for kind of damages related at ransomware I think for one is sort of
+
+171
+00:30:35.070 --> 00:30:54.420
+Joseph Zadeh: An indicator of the not the low risk lightweight nature of the threat vector, um, in terms of low costs to try and then the payout is really high, you know, so I think
+
+172
+00:30:55.380 --> 00:31:07.560
+Joseph Zadeh: That's why you know it's like, well, you know, if you pop a machine. What are you going to do with it. Well, you can mine bitcoin with it. But are you going to make as much money as if you just pop the right machine and you know chart, you know,
+
+173
+00:31:08.520 --> 00:31:21.090
+Joseph Zadeh: Make them come to you. So anyway, I think ride sometimes is calling this in his talks, the, the, the, kind of the digital cyberspace. This concept of the express kidnap
+
+174
+00:31:22.230 --> 00:31:27.960
+Joseph Zadeh: Anyway, okay, so, um, yeah I think alarmingly we were seeing a big sort of
+
+175
+00:31:29.940 --> 00:31:30.540
+Joseph Zadeh: Kind of
+
+176
+00:31:31.650 --> 00:31:49.650
+Joseph Zadeh: Impact on health care, even in 2015 2016 I think particularly we we definitely had heard rumblings of shops, you know, paying ransoms you know off the record and some of them were pretty pretty scary kind of what was, what was the effect of parties, a
+
+177
+00:31:51.060 --> 00:31:52.230
+Joseph Zadeh: Yeah, so I think
+
+178
+00:31:53.400 --> 00:32:04.320
+Joseph Zadeh: You know, the, the enablers here to in the broader kind of cybercrime threats. Great Escape is, you know, wait, ways to stay anonymous and launder money online.
+
+179
+00:32:06.390 --> 00:32:09.090
+Joseph Zadeh: You know Tor. Tor at that time was
+
+180
+00:32:10.380 --> 00:32:17.400
+Joseph Zadeh: Was I think less of a, like a leaky channel than it is now, but
+
+181
+00:32:18.690 --> 00:32:35.160
+Joseph Zadeh: Anyway, you know, tour. And I think, you know, just knowing on the dark, dark web where to pay ransom. Where's this way, where to grab the ransomware as a service, which is kind of just a fascinating evolution of, of, you know, black market economy evolutions.
+
+182
+00:32:37.050 --> 00:32:43.860
+Joseph Zadeh: Yeah, you can. You know what this slide is showing is that if you go to the right place and tour, you get ransomware for higher, you know,
+
+183
+00:32:46.740 --> 00:33:02.310
+Joseph Zadeh: It's like if dark Darth Vader ran AWS cloud, dude. You just the, the total the total dark side. You know what, it's a, you know, just the fascinating kind of sort of convergence of market concepts to all right. Um,
+
+184
+00:33:05.550 --> 00:33:07.110
+Joseph Zadeh: Alright, so the
+
+185
+00:33:08.460 --> 00:33:23.370
+Joseph Zadeh: Oh yeah, and this was kind of the other part of the, the, the economy for ransomware at the time. It's basically Bitcoin is it was really just such a common form of
+
+186
+00:33:24.420 --> 00:33:34.980
+Joseph Zadeh: Anonymously monetizing off a machine that's popped paying ransom. So typically, asking for bitcoin and then I think what we heard
+
+187
+00:33:35.640 --> 00:33:46.530
+Joseph Zadeh: You know, last one, last talk to your out was that to wash the money from Bitcoin to to actual currency is gonna cost you 50% but hey.
+
+188
+00:33:46.980 --> 00:33:58.980
+Joseph Zadeh: If it's only costing you a few hundred bucks to to, you know, do a bunch of snatching grabs and a few of them. And yeah you know this that money bit payout is it makes a lot of sense to think that these these
+
+189
+00:34:00.120 --> 00:34:06.540
+Joseph Zadeh: These tactics still persist today. Um, I think the risk reward is, you know, it speaks for itself.
+
+190
+00:34:08.130 --> 00:34:14.820
+Joseph Zadeh: And hopefully, everyone's kind of familiar with Bitcoin why you know what the goods and bads. It's another fascinating concept, you know, the
+
+191
+00:34:15.150 --> 00:34:32.040
+Joseph Zadeh: Satoshi not not Komodo paper and the concepts read like a friggin like a comic book character. You know, it's just, it's such a crazy thing to think about it i mean i i think i'm a Bitcoin. The, the concept of the blockchain. I've seen started to impact so many industries for the better.
+
+192
+00:34:33.840 --> 00:34:43.170
+Joseph Zadeh: One of our friends shop, one of our friends who've done some patents with Victor Chang is the CEO of a company called a non chain. I think they're doing some cool stuff at
+
+193
+00:34:43.950 --> 00:34:53.850
+Joseph Zadeh: I'm not sure what villages that he told me to put a plug out night but um I'll put it in the discord, at some point, but they're doing some Bitcoin related forensics challenges.
+
+194
+00:34:54.300 --> 00:35:13.140
+Joseph Zadeh: And the like. So check out a non chain, they, they, they put me into some forensics data for an online casino that was popped like some guy like took advantage, like a random number generator flaw in the casino software something for generating the slot like pay
+
+195
+00:35:14.340 --> 00:35:30.540
+Joseph Zadeh: Slots. It was a crazy story and and and but they were trying to like do sort of the, the triage on the blockchain wallets and how they move to the threat actor. I think he got like 50 or hundred thousand just out of the just out this little hack that a day and
+
+196
+00:35:32.400 --> 00:35:39.390
+Joseph Zadeh: Anyway, but it turns out like along a lot online casinos are leveraging blockchain technology to make them more transparent.
+
+197
+00:35:39.720 --> 00:35:49.410
+Joseph Zadeh: So that they become more trustworthy you to the consumer, just because the the transaction ledger is is is is is immutable but readable by the world.
+
+198
+00:35:49.800 --> 00:35:59.100
+Joseph Zadeh: Same with like real estate. I ain't, I think there's a lot of fascinating concepts. If we get distributed consensus on on the blockchain and immutability
+
+199
+00:35:59.460 --> 00:36:14.490
+Joseph Zadeh: On. And anyway, I mean, so, you know, this is he go down a theoretical rabbit hole on any of these concepts. Oh, and then talk. I'm not so up to date on tours use these days in terms of state of the art op SEC, but it was definitely
+
+200
+00:36:16.170 --> 00:36:34.890
+Joseph Zadeh: Just you know covert channel for some of the things we're looking at the time. Okay. Alright, so we're we're through kind of the history of why why we ended up building Actaeon we were basically learning all that stuff about Ransomware and
+
+201
+00:36:36.450 --> 00:36:44.700
+Joseph Zadeh: And we were we were part of a couple of companies and just like trends in Silicon Valley at the time we were doing this, I think,
+
+202
+00:36:45.660 --> 00:36:58.320
+Joseph Zadeh: The venture capitalists in Silicon Valley and told us, there was about 500 venture backed startups with with Valley money in 2015
+
+203
+00:36:59.100 --> 00:37:05.610
+Joseph Zadeh: So machine learning was a huge buzz word that was in vogue. Thank God it's kind of like
+
+204
+00:37:06.570 --> 00:37:23.700
+Joseph Zadeh: Being put in its right place and security, like everything else, you know, and I think security is a place you have to be super practical with what tools you use and and really like that the value you're impacting the operators operator time and boots on the ground. Okay, so
+
+205
+00:37:25.020 --> 00:37:33.630
+Joseph Zadeh: Where do we start with security and this is a little bit more my wheelhouse, like the first part of the slides. Well, the first part of that talk. Usually rod does and he's like I said he's kind of read teamer and
+
+206
+00:37:34.020 --> 00:37:40.920
+Joseph Zadeh: I'm sort of the blue team or and in the sense that we sort of make a nice goof purple and so
+
+207
+00:37:42.300 --> 00:37:43.440
+Joseph Zadeh: Okay. Okay, so we
+
+208
+00:37:44.700 --> 00:37:52.680
+Joseph Zadeh: We want to start the conversation on like this is sort of meant to give you like the do's and don'ts and just the the
+
+209
+00:37:53.160 --> 00:37:58.800
+Joseph Zadeh: Real high level overview of kind of why this stuff is is so hard to get right.
+
+210
+00:37:59.310 --> 00:38:07.500
+Joseph Zadeh: Um, one of my favorite anecdotes. I've asked this to a few executives, like when they're like kind of given us pitches on Alright man, you know, the
+
+211
+00:38:07.920 --> 00:38:16.380
+Joseph Zadeh: We really want to use AI for this you know this, you know, as x, y, z problem. And what do you think. And so usually certain my anecdote is this
+
+212
+00:38:17.130 --> 00:38:29.790
+Joseph Zadeh: friend of ours pointed this out to us a long time ago, one of the startups a reddit post by this. He's a really well known professor from Berkeley and machine learning. So name's Michael Jordan.
+
+213
+00:38:31.920 --> 00:38:45.570
+Joseph Zadeh: And he he's just, he's just a sharp cookie and he he has this really practical anecdote that I think you know drives my day daily thought on when I, you know, artificial intelligence and the like.
+
+214
+00:38:46.170 --> 00:38:55.740
+Joseph Zadeh: And the baby people basically asked them, like, Okay, if you had a billion dollars if you had infinite money to spend on a huge machine learning artificial intelligence research project.
+
+215
+00:38:56.520 --> 00:39:03.720
+Joseph Zadeh: How would you spend it. And he's like, well, I would invest in human intensive labeling process, which is sort of a, you know,
+
+216
+00:39:05.250 --> 00:39:15.450
+Joseph Zadeh: Another way to say that is I would invest in good data. So the algorithms will see kind of inaction and the machine learning classifier as we build um
+
+217
+00:39:15.960 --> 00:39:27.780
+Joseph Zadeh: They definitely learn, you know, it's very philosophical concept, but these pieces of software learn in a very sort of interesting and kind of acute way but how they learn is a total function.
+
+218
+00:39:28.920 --> 00:39:42.330
+Joseph Zadeh: Of the quality of data and the amount of data we give it and the variety and so it's these really when we say machine learning algorithm really what we're not. There's no magic there. There's no no no special
+
+219
+00:39:42.720 --> 00:39:49.020
+Joseph Zadeh: Thing that's just like you know like that like Kurzweil singularity. It's just good data.
+
+220
+00:39:49.800 --> 00:39:59.640
+Joseph Zadeh: And then, you know, we have our choice of of best practices in terms of what exactly algorithm is going to kind of give us optimal behavior for our use case.
+
+221
+00:39:59.970 --> 00:40:15.810
+Joseph Zadeh: Given um you know the data we have at hand. So in security, it's very hard to find good data. Um, yes and and to that point. I mean, I guess, I guess the the big takeaway here.
+
+222
+00:40:16.770 --> 00:40:24.450
+Joseph Zadeh: Or if you learn anything from this part of the talk, machine learning really is a synonym for good data and some very high level.
+
+223
+00:40:24.840 --> 00:40:37.110
+Joseph Zadeh: I there's a really cool podcast called talking machines. I think it's from like Harvard and MIT, are some of the East Coast kind of ivory towers over there, but really cool folks that run it.
+
+224
+00:40:38.160 --> 00:40:55.560
+Joseph Zadeh: And they wonder like, I think he's like a machine learning professor from Harvard is one of the the the CO host. And he's like, dude, I, I remember like taking my first artificial intelligence class at Harvard or MIT and how he's like so bummed out like I learned, like, all it is is search
+
+225
+00:40:58.770 --> 00:41:02.250
+Joseph Zadeh: Magic under the hood. Again, it's just different ways to search
+
+226
+00:41:03.300 --> 00:41:17.940
+Joseph Zadeh: And so, um, I mean it's it's it's kind of crude way to, you know, to say, you know, there's just, there's, there's a lot of there's a whole lot of fluff around these concepts when when sometimes
+
+227
+00:41:19.950 --> 00:41:24.420
+Joseph Zadeh: Industry gets wind of them. And so, as researchers were here to kind of
+
+228
+00:41:24.750 --> 00:41:33.990
+Joseph Zadeh: You know, just, just keep everyone honest and you know we practical and nice. At the same time, I mean, all this stuff is it means is there's a lot of exciting things to. And so, not to
+
+229
+00:41:34.350 --> 00:41:43.470
+Joseph Zadeh: poo like machine learning. It just, just to be kind of practical and very kind of level headed in our application, particularly for security. There's other
+
+230
+00:41:43.800 --> 00:41:51.330
+Joseph Zadeh: Problem spaces where it works really, really good. Um, and machine learning. I think we really have to sort of be mindful and cherry pick our use cases.
+
+231
+00:41:52.140 --> 00:42:05.040
+Joseph Zadeh: And sort of To the Point of. I was just sort of talking about this with our team a couple days ago. So I think it just it's it makes kind of sense to talk about good data here just anecdotally, um,
+
+232
+00:42:06.030 --> 00:42:18.000
+Joseph Zadeh: There was a miter. It's called the matter attack con in 2018 there's a really, really interesting and cool talk by some of these folks. Robert, over to you guys and Jose Luis Rios
+
+233
+00:42:18.480 --> 00:42:23.970
+Joseph Zadeh: On hundreds attacking with the data and and and what they call on kind of operationalize using
+
+234
+00:42:24.510 --> 00:42:32.820
+Joseph Zadeh: The miter threat matrix which is a concept, you'll run into a lot these days in industry, if you're not familiar with the miter attack matrix just
+
+235
+00:42:33.270 --> 00:42:42.420
+Joseph Zadeh: Google it and and it's just sort of like a taxonomy for labeling TTP of threat actors unknown threat groups and some other things that's
+
+236
+00:42:42.990 --> 00:42:50.580
+Joseph Zadeh: Just it's it's grown very gotten very widespread adoption and and it's very helpful and communicating. A lot of these concepts quickly.
+
+237
+00:42:51.060 --> 00:42:57.810
+Joseph Zadeh: On our own teams open source software project is sort of is baked our schema around kind of
+
+238
+00:42:58.620 --> 00:43:09.840
+Joseph Zadeh: The data structures and the taxonomy there, for instance. So to operationalize this attack matrix from mitre which is like a huge set of known behaviors and things
+
+239
+00:43:10.290 --> 00:43:26.280
+Joseph Zadeh: actors do during like an operation. I'm like, they said like something crazy like 95% of all the all the behaviors they want to catch an attack matrix require OS.
+
+240
+00:43:26.700 --> 00:43:39.570
+Joseph Zadeh: Always query data or sis, mon. I'm sweating a little hard to read but basically all these like these sort of rank ordering like the types of detections by like what data source, they need
+
+241
+00:43:40.020 --> 00:43:47.520
+Joseph Zadeh: And and this is a bigger kind of problem in enterprise. This is sort of indicator of a bigger kind of problem in our enterprise security.
+
+242
+00:43:48.450 --> 00:44:00.300
+Joseph Zadeh: Is that really like doing good intrusion detection at scale for the enterprise really requires great visibility into the endpoint at scale.
+
+243
+00:44:00.840 --> 00:44:11.130
+Joseph Zadeh: And this is sort of the trade off again kind of why we decided to go with network data at the time in 2015. It was just, it was that much harder than to
+
+244
+00:44:11.460 --> 00:44:20.370
+Joseph Zadeh: Assume the shops. We are working with were tooled up enough to give us like the telemetry for the endpoint that was really high resolution.
+
+245
+00:44:20.580 --> 00:44:27.660
+Joseph Zadeh: And able to answer some of these questions like on the file system process level like does this process, just look like it executes executing a
+
+246
+00:44:27.990 --> 00:44:36.930
+Joseph Zadeh: An encryption job well you know we might have logs from, like, kind of like important assets like servers, but it, it definitely doesn't touch the whole population usually
+
+247
+00:44:37.410 --> 00:44:50.700
+Joseph Zadeh: You know, five years later. Nowadays it's it's it's a little bit different of a story. Thank goodness, but just remember like to do good intrusion detection, you really have to have like a full end to end complete picture.
+
+248
+00:44:51.300 --> 00:44:57.510
+Joseph Zadeh: In terms of data sources and it's just one of the hardest things in practical reality, even in this day and age, you know,
+
+249
+00:44:58.050 --> 00:45:04.620
+Joseph Zadeh: Some industry verticals are very sophisticated in this regard, but your average kind of shop. I think it's just like
+
+250
+00:45:04.980 --> 00:45:14.400
+Joseph Zadeh: What am I measures of kind of conversations just security maturity. When we talk to the enterprise in terms of like data availability for complex security analytics.
+
+251
+00:45:14.790 --> 00:45:28.680
+Joseph Zadeh: Is asking them okay if I take a flow or firewall event at at the perimeter of your organization, how easy is it for us to tie that event to a process and socket.
+
+252
+00:45:29.070 --> 00:45:37.470
+Joseph Zadeh: On an endpoint, or a VM. And it just, I mean that's being able to answer that question, like in a data correlation standpoint, it means you're
+
+253
+00:45:37.710 --> 00:45:48.450
+Joseph Zadeh: You're already very sophisticated in some sense ahead of the pack. If that's already kind of plugged into your workflow. And so, because we can kind of get that end to end visibility easily at scale.
+
+254
+00:45:48.840 --> 00:46:08.370
+Joseph Zadeh: These are also kind of the constraints as researchers that end up kind of forcing us down, you'll see we we chose a very narrow kind of way to solve the problem we're looking at, because, partly because it was sort of the lowest lift in terms of like data availability.
+
+255
+00:46:09.630 --> 00:46:23.100
+Joseph Zadeh: And anyway, so, um, so here's kind of a very nicely curated sample set of data that is kind of given you the picture of
+
+256
+00:46:23.910 --> 00:46:37.200
+Joseph Zadeh: The pieces of information at a, at a high level, that our analytic our software program is is really going to be kind of looking for and decomposing I'm
+
+257
+00:46:37.680 --> 00:46:50.820
+Joseph Zadeh: From a statistics and and and sort of mathematics perspective on so so what so kind of level set, what we're going to be doing from architecture perspective.
+
+258
+00:46:51.480 --> 00:47:03.210
+Joseph Zadeh: Is where what we did was we had a ton of P CAPs there in the repo each peak app has a has an exploit. We know what was was like delivered to a machine.
+
+259
+00:47:04.020 --> 00:47:12.510
+Joseph Zadeh: Each one of these exploits was delivered over HTTP data, um, that that just that statement alone deserves a little Asterix because
+
+260
+00:47:12.990 --> 00:47:23.880
+Joseph Zadeh: One of the assumptions here, which I think especially after like kind of the change is the sort of the transitions to CLS the latest versions.
+
+261
+00:47:24.420 --> 00:47:30.840
+Joseph Zadeh: Like visibility into this at the enterprise becomes less and less a reality. You know, just
+
+262
+00:47:31.230 --> 00:47:49.080
+Joseph Zadeh: Unfortunately proxy logs that one time and and and Layer seven HTTP logs were I really great source of hunting for bad low hanging fruit. I'm kind of earlier in in sort of the history of cyberspace, but these days.
+
+263
+00:47:50.100 --> 00:48:01.530
+Joseph Zadeh: It's, it's, you know, it's just, it's kind of a change in the visibility and the encryption of of how this is done that less and less likely. Do we see such clean data.
+
+264
+00:48:03.030 --> 00:48:05.640
+Joseph Zadeh: For doing things like the delivery of an exploit.
+
+265
+00:48:06.960 --> 00:48:07.590
+Joseph Zadeh: Detection
+
+266
+00:48:08.760 --> 00:48:10.830
+Joseph Zadeh: Okay, so, um,
+
+267
+00:48:11.910 --> 00:48:25.020
+Joseph Zadeh: Let's see here. So how do we talk about this. Okay, so basically this is kind of like a subset of the data that will be kind of looking at from the machine learning standpoint and from building this empty and act down workflow.
+
+268
+00:48:25.440 --> 00:48:38.130
+Joseph Zadeh: What this is really is an example of an exploit being delivered to a machine, the user's name is Nico Rosberg. This is the machines IP. It's just a one nine to
+
+269
+00:48:39.210 --> 00:48:53.010
+Joseph Zadeh: Private subnet. And what is kind of important from how we build a behavioral detection out of this is what we're really looking at is how these kinds of requests.
+
+270
+00:48:53.910 --> 00:49:01.380
+Joseph Zadeh: Um, evolve relative to a one really important thing is called the MIME type in here.
+
+271
+00:49:02.160 --> 00:49:12.120
+Joseph Zadeh: So what you can kind of think of happening is a user got, like, some say they got phished from an email okay for just a commodity ransomware campaign.
+
+272
+00:49:12.600 --> 00:49:20.700
+Joseph Zadeh: So the first thing that that's going to happen if this is sort of a successful ransomware drop is the user is going to click on this email link.
+
+273
+00:49:21.300 --> 00:49:30.810
+Joseph Zadeh: And this was all exploit kits that we're running out of time, so that's why this is a little dated from security standpoint, but at the time where they were kind of getting redirected to
+
+274
+00:49:31.380 --> 00:49:45.780
+Joseph Zadeh: Um, was sort of this, this kind of family of little probing pieces of code that we're checking which type of exploit to deliver to the users browser given like what the browser look like to the exploit kit.
+
+275
+00:49:46.260 --> 00:49:54.120
+Joseph Zadeh: So the first the first thing they're doing they're clicking on an email. They're getting redirected to this kind of infrastructure for dropping the exploit.
+
+276
+00:49:54.660 --> 00:50:08.400
+Joseph Zadeh: And that, that, that first thing they're landing at or the the first piece of content rendered here is just a text or HTML. The second thing that happens is they're like, okay, this is what that users.
+
+277
+00:50:09.630 --> 00:50:24.450
+Joseph Zadeh: My a user agent string and all the things for us fingerprinting look like we're going to, we think that that that users browser is subject to this flash exploit. So it's going to drop a little flash payload right here.
+
+278
+00:50:25.860 --> 00:50:37.440
+Joseph Zadeh: Or the exploit. I'm sorry. This is the flash exploit. And then, um, if it's successful will see the ransomware drop. So the octet stream means a binary file or a file was
+
+279
+00:50:38.400 --> 00:50:52.290
+Joseph Zadeh: Tossed over to the machine. After, after basically this thing. Let it elevate privileges and do what it wants, and then boom, the ransom. Where's on the machine command and control and you know they're making some money.
+
+280
+00:50:53.310 --> 00:51:03.840
+Joseph Zadeh: So that's kind of the sequence of behaviors. So this if you don't know what a mime type is it's just, you know, it's just part of like the like Layer seven RFC spec for like HTTP.
+
+281
+00:51:04.620 --> 00:51:21.270
+Joseph Zadeh: HTTP, I believe. And, and so these things sort of have a set of different possibilities for every get requests. And there's really interesting sequences of MIME types for this particular problem of looking at the exploit being delivered
+
+282
+00:51:23.040 --> 00:51:23.700
+Joseph Zadeh: I'm
+
+283
+00:51:25.380 --> 00:51:32.310
+Joseph Zadeh: Cool. So this is, again, kind of back to that tribal knowledge and machine learning concept. This is just a hammer home.
+
+284
+00:51:33.090 --> 00:51:37.860
+Joseph Zadeh: If you aren't already sick of hearing me talk about learning is the same as compression and
+
+285
+00:51:38.160 --> 00:51:49.170
+Joseph Zadeh: Remember, it's just you know there's there's very small bandwidth channels between us right now. And that's all we need to adapt and survive nature's or you know whatever is optimized for that and so
+
+286
+00:51:50.400 --> 00:52:00.840
+Joseph Zadeh: When we do this in code. So here's kind of where you're going to see this isn't quite a hands on example. But, um, um, it's sort of hands off, unless you're running our
+
+287
+00:52:02.610 --> 00:52:06.120
+Joseph Zadeh: So what we're going to do is we're going to build a machine learning model real quick.
+
+288
+00:52:07.290 --> 00:52:16.590
+Joseph Zadeh: And you don't feel free to follow along. I just kind of forgot to put in the requirements that this little piece. This example is going to be using our
+
+289
+00:52:16.890 --> 00:52:27.030
+Joseph Zadeh: And it's so simple. It's just, it's, it's not really, it's not really illustrated if you just do the simple the simple code that I that I'm going to show you in the screenshot, but
+
+290
+00:52:27.690 --> 00:52:37.740
+Joseph Zadeh: Anyway, our, our, the open source program is what I use to kind of generate this so on. And when you download our you have what's called these sort of just
+
+291
+00:52:39.210 --> 00:52:56.430
+Joseph Zadeh: The cars database is just a simple toy database to kind of experiment, you know, QA and debug concepts on and stuff. So what we're going to do is build a the simplest kind of machine learning model in the world, which is a regression model I'm
+
+292
+00:52:57.540 --> 00:53:08.490
+Joseph Zadeh: Probably being a little disingenuous saying it's the simplest but it's just it's a concept, you might have done already. Not even known it. If you ever built a regression in Excel or spreadsheet application like Google Docs.
+
+293
+00:53:09.810 --> 00:53:10.770
+Joseph Zadeh: So, um,
+
+294
+00:53:11.910 --> 00:53:22.020
+Joseph Zadeh: So okay, so what happens. So this is that basically this is the console are what happens is you can just type in empty cars shows you the database. What we're gonna do is we're going to build a model.
+
+295
+00:53:22.560 --> 00:53:34.050
+Joseph Zadeh: And I'm just going to kind of illustrate to you what's going to happen under the hood inside Actaeon when I'm instead of training on like a model of cars were training on a collection of P caps.
+
+296
+00:53:36.030 --> 00:53:42.960
+Joseph Zadeh: And they have some of them at exploit some of them don't. And we've labeled it really good so that the model knows how to distinguish between the two.
+
+297
+00:53:43.290 --> 00:53:49.650
+Joseph Zadeh: That labeling is a really important part that I feel like I might not have done a good job describing. But, well, we'll get to labeling
+
+298
+00:53:50.100 --> 00:53:57.510
+Joseph Zadeh: In a little bit after we sort of just build this model real quick. Okay, so the cars database has a few different columns.
+
+299
+00:53:58.170 --> 00:54:05.580
+Joseph Zadeh: The columns, we're interested in is, we're going to be predicting the number of cylinders, a car has
+
+300
+00:54:06.420 --> 00:54:14.790
+Joseph Zadeh: Given miles per gallon sort of the size the displacement of the engine. And I think the weight. So we're just, we're basically kind of
+
+301
+00:54:15.300 --> 00:54:30.780
+Joseph Zadeh: You know, in this idealized world of statistics, we're making it we're making kind of a modeling assumption saying we think on the number of cylinders have a car hope it's that that model. Oh, yeah. Mouse Oh crap. Sorry, I got the
+
+302
+00:54:32.430 --> 00:54:41.970
+Joseph Zadeh: What we're predicting pre muted with the the input variables. So anyway, um, what we're predicting is the miles of gallon of the car.
+
+303
+00:54:42.630 --> 00:54:57.660
+Joseph Zadeh: I'm given a couple input variables. And so what what we're we're building a linear model here linear regression. So we're really saying under the hood is that miles per gallon is a
+
+304
+00:54:58.350 --> 00:55:15.450
+Joseph Zadeh: Linear function of our input variables, which in this case are going to be like the number of cylinders, the weight and like the displacement or whatever these columns mean. Um, so when you build a model are ours. Just a nice to open source statistical modeling language.
+
+305
+00:55:16.590 --> 00:55:39.450
+Joseph Zadeh: For linear REGRET REGRET regression, all you do is LM on he might, I might have to be an import here, but this is a basically a one liner for building the model and saying, okay, I want to linear model. I want a regression that is say is, is giving me a prediction on number on mpg
+
+306
+00:55:40.590 --> 00:55:46.710
+Joseph Zadeh: And we're saying mpg is a linear function of these three variables. Wait, displacement and cylinders.
+
+307
+00:55:47.670 --> 00:56:05.250
+Joseph Zadeh: Um, and this is the data we pass to LM and then I think this is just variable, Simon. So, um, so that's it. Like if you got are installed you don't run that command. I think what it should output for you. Um, it is a little bit. I mean, you're gonna have to get it to
+
+308
+00:56:06.570 --> 00:56:14.550
+Joseph Zadeh: Basically dumped some of the models statistics, but basically what's under, under the hood when you kind of have the model print out all the stuff that learned
+
+309
+00:56:15.120 --> 00:56:32.010
+Joseph Zadeh: I'm is what did I learn and learn a coefficient. So it takes all this data. Boom. What's the magic of learning, while it compressed it this is the this is the coefficient that describes the slope of the line that fits our data like we want it.
+
+310
+00:56:33.360 --> 00:56:43.110
+Joseph Zadeh: There's a lot of concepts there too, but just I think the takeaway here is just think of this workflow in general in these sort of learning based software workflows.
+
+311
+00:56:43.530 --> 00:56:52.500
+Joseph Zadeh: We have some algorithm on in our case, we're going to be doing using random forest, and I think we have a support vector machine I'm in there as well.
+
+312
+00:56:53.340 --> 00:57:04.950
+Joseph Zadeh: But basically, instead of LM we have like RF for random forests. And what we're doing is we're not taking like these simple statistics, we're taking more like this. This type of data.
+
+313
+00:57:05.400 --> 00:57:15.420
+Joseph Zadeh: Where we're doing a pre processing step by taking the data go make going from text to features which are like these numbers here.
+
+314
+00:57:15.990 --> 00:57:25.260
+Joseph Zadeh: And then the data is being built and a slightly different way. It's not giving us a coefficient. Um, but, uh, let's kind of talk about that next.
+
+315
+00:57:25.890 --> 00:57:35.760
+Joseph Zadeh: Um, yeah, this is just the deep. This is the bigger debug output for the linear model you build. So you can, can't remember what the command is. It's been a while. But, um,
+
+316
+00:57:36.450 --> 00:57:41.970
+Joseph Zadeh: But if you download our and playing around with it. Just enjoy it means to such a cool open source program I'm
+
+317
+00:57:42.390 --> 00:57:51.570
+Joseph Zadeh: Just, you know, the great thing about computers is, you know, you can, you know, do all experiments you want um mistakes are great. I think one of the my favorite
+
+318
+00:57:52.080 --> 00:58:01.740
+Joseph Zadeh: Quotes in research was, um, you know, the unfortunate part of academics and stuff. Oftentimes when you read a really cool like resolved or cool paper.
+
+319
+00:58:02.190 --> 00:58:08.100
+Joseph Zadeh: Um, you know, it's, it's, they don't talk. They don't open source. A lot of the mistakes.
+
+320
+00:58:08.670 --> 00:58:18.480
+Joseph Zadeh: They make along the way they don't. It's not. It's just not part of the culture of sort of research communications as much as in, and in in computer science. I think
+
+321
+00:58:18.930 --> 00:58:26.730
+Joseph Zadeh: Like the great thing about like committing to your repos and GitHub and stuff is you can kind of see all the bugs along the way and and you know i'm not
+
+322
+00:58:27.510 --> 00:58:35.310
+Joseph Zadeh: Just the more mistakes you make the better off in learning in general. So just hack away at all these programs don't feel free to not try anything and
+
+323
+00:58:36.180 --> 00:58:51.930
+Joseph Zadeh: kind of forgot to put on the requirements. So, sorry. Sorry for the lack of heads up there. Um, okay, here we go. Is this is sort of the, in a nutshell, what is happening with our program. And when you run the demo, um,
+
+324
+00:58:54.570 --> 00:58:56.850
+Joseph Zadeh: I think so.
+
+325
+00:58:58.050 --> 00:58:59.010
+Joseph Zadeh: Um, I
+
+326
+00:59:01.950 --> 00:59:18.210
+Joseph Zadeh: Think the primary key is not exactly the right thing that the, the, the, the example we're using is but instead of a domain name. Think of like each one of these rows, being a username or an IP address of a user's machine.
+
+327
+00:59:18.780 --> 00:59:36.660
+Joseph Zadeh: And what we're doing is we're kind of tabulating a bunch of statistics for that user. I'm kind of as what we call a feature vector a feature vector or a behavior vector is just a tubal of statistics data, essentially, um, and
+
+328
+00:59:37.950 --> 00:59:49.530
+Joseph Zadeh: How we kind of under the hood train a model to learn to learn our security use case is we we really liked this choice of model for security kind of
+
+329
+00:59:50.430 --> 01:00:02.760
+Joseph Zadeh: Exploration and debugging because a random forest is a model that kind of learns like this tree like this is sort of the if you wanted to debug a random forest. This is sort of output from
+
+330
+01:00:04.200 --> 01:00:15.150
+Joseph Zadeh: Sparks MLM random forest library. So this is sort of the Java side of things, but um if you kind of look at this kind of debug of this guy. We were debugging at the time.
+
+331
+01:00:15.630 --> 01:00:32.190
+Joseph Zadeh: It's just sort of this branching Cena if conditions given like the features and how close they were to the data we showed it that we labeled. And one of the last illustrations. I'll show you here before we get ready to take a break. Um,
+
+332
+01:00:33.360 --> 01:00:35.220
+Joseph Zadeh: Is a
+
+333
+01:00:36.300 --> 01:00:42.510
+Joseph Zadeh: Is related to like what that labeling actually means and how like we've kind of work. There's sort of one missing.
+
+334
+01:00:43.020 --> 01:00:51.750
+Joseph Zadeh: Concept in terms of ingredients to really understand how this tree was made, but we're almost there. So, so basically just
+
+335
+01:00:52.500 --> 01:01:04.440
+Joseph Zadeh: Just this this is sort of the conceptual picture of what the software is learning from our machine learning part of the are kind of key component that's doing the thinking for us when we kind of deploy this model and run the demo and stuff.
+
+336
+01:01:05.190 --> 01:01:22.530
+Joseph Zadeh: Um, and so if you kind of saw at the beginning when I kind of ran that demo. Um, what is really happening is per user were sort of saying that user just looked like he clicked on something that dropped an exploit on him. And that's, that's kind of the goal of this whole
+
+337
+01:01:24.000 --> 01:01:25.740
+Joseph Zadeh: cockamamie experiment. All right.
+
+338
+01:01:27.000 --> 01:01:37.770
+Joseph Zadeh: Yeah, so one one last kind of thing from a software development standpoint, I'm sort of when you build these models. This is, this was the Java stuff. So this is the original project.
+
+339
+01:01:38.700 --> 01:01:44.850
+Joseph Zadeh: Luckily, we don't have to look at Java or Scala or anything like that. I love Scala, it's fascinating, but um
+
+340
+01:01:47.040 --> 01:01:54.000
+Joseph Zadeh: Don't, don't worry too much about like the code here because we're going to be much looking at much more readable Python.
+
+341
+01:01:54.480 --> 01:01:59.850
+Joseph Zadeh: I think what's important to note about why why I guess this was in our slides was because
+
+342
+01:02:00.240 --> 01:02:09.090
+Joseph Zadeh: When you build a model, what happens is you start like see realizing something just like DNA. DNA is like kind of the serial non serialized knowledge of like
+
+343
+01:02:09.600 --> 01:02:22.560
+Joseph Zadeh: You know unbounded information kind of being compressed to like 100 Meg hundred bits. A second have a voice channels like basically I taking infinity and just 100 minutes to, you know, go about my day.
+
+344
+01:02:23.730 --> 01:02:35.880
+Joseph Zadeh: Hundred bits per second. So in that same sort of vein when you build a model. What you really do an after the models built and the model we have living in Python right now is sort of a very
+
+345
+01:02:36.540 --> 01:02:46.350
+Joseph Zadeh: Analogous to this is we basically have this serialized thing a serialized piece of software that's just something that exists on disk.
+
+346
+01:02:46.710 --> 01:02:53.400
+Joseph Zadeh: And we wanted to do a prediction with it, we just we call up that thing. It's a function and we say, give me a prediction.
+
+347
+01:02:54.030 --> 01:03:02.940
+Joseph Zadeh: Um, and that's kind of how that works at a high level, um, I hope that makes sort of sense and don't, don't be alarmed if allow these
+
+348
+01:03:03.780 --> 01:03:17.310
+Joseph Zadeh: Concepts and buzzwords and vernacular. I mean, there's so many overloaded operators in just the conversation we're having that I'm you know just always, always remember post questions in the chat and paying us and stuff. If anything, seems confusing. Okay.
+
+349
+01:03:18.570 --> 01:03:26.430
+Joseph Zadeh: Wherever you are, if everything seems confusing. Okay. So, I think, was this one last things we should end on maybe
+
+350
+01:03:27.000 --> 01:03:36.660
+Joseph Zadeh: Um, and then we'll do a little one minute break and I'm going to switch videos finish recording things so I'm
+
+351
+01:03:37.620 --> 01:03:52.470
+Joseph Zadeh: A you okay this is about labeling and I think this is probably like in retrospect that this, this probably fits much more at the beginning of conversations about machine learning and what makes machine learning, right.
+
+352
+01:03:52.950 --> 01:04:10.140
+Joseph Zadeh: Um, so I think what was missing from showing you the data samples that we saw that we're building a model on is that, how do we label it. Like, how do we like labeling is kind of synonymous, which was giving it encoding to an upstream
+
+353
+01:04:11.580 --> 01:04:17.970
+Joseph Zadeh: To an upstream piece of software that's going to be learning from that encoding and this is very much
+
+354
+01:04:19.050 --> 01:04:26.070
+Joseph Zadeh: A machine learning concept, right. So the way the machine learns is by getting good information from the human
+
+355
+01:04:28.110 --> 01:04:39.630
+Joseph Zadeh: And that's why, and sort of the neuroscience of learning, you know, mimicry is is a very important part of, you know, how we develop as humans and then transfer learning and a bunch of these concepts. So just
+
+356
+01:04:40.110 --> 01:04:45.390
+Joseph Zadeh: Remember why this what's all magic. That's really the magic that's happening is here.
+
+357
+01:04:46.680 --> 01:04:51.030
+Joseph Zadeh: This is where the real value of kind of
+
+358
+01:04:52.230 --> 01:05:04.020
+Joseph Zadeh: How we make our model good is really comes down to how well we label our data. So think of like our P caps as having been given a label.
+
+359
+01:05:04.410 --> 01:05:10.140
+Joseph Zadeh: Where the exploit took place. And what that label is saying is basically malicious or benign.
+
+360
+01:05:10.710 --> 01:05:17.160
+Joseph Zadeh: And so this. So typically what what when you see a new piece of data, it looks like this. And the classifier scores it
+
+361
+01:05:17.730 --> 01:05:26.760
+Joseph Zadeh: And in the in the training part of the classifier which was already done. It's already finished we trained it offline and we just serialized the model.
+
+362
+01:05:27.660 --> 01:05:33.960
+Joseph Zadeh: And now what what what it's been trained on is this encoding of all the outcomes we know about. There's a
+
+363
+01:05:34.920 --> 01:05:50.580
+Joseph Zadeh: There's not a lot, there's a couple hundred P caps that were labeled this way, along with a ton of the nine data. It's known as a class and melons problem and pretty much happens across the board and cyber security. So, um, so we had sort of a poor man's crude labeling of
+
+364
+01:05:51.750 --> 01:06:06.030
+Joseph Zadeh: Of exploit data and what it really was is this is what in machine learning. We call it like a binary classification problem. We're basically binary just means there's two things or relabeling zero or one good or bad malicious or benign.
+
+365
+01:06:06.720 --> 01:06:22.470
+Joseph Zadeh: And again, I can't stress the important enough, the human expertise for encoding. This is is what makes artificial intelligence. Great. Now, at this stage, and kind of the evolution of the theories involved, at least in software engineering
+
+366
+01:06:23.670 --> 01:06:32.520
+Joseph Zadeh: I'm going to stop my recording here and then switch over and maybe it'll be a good time for one minute bathroom break, be right back.
+
