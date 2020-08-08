@@ -24,6 +24,8 @@ and distributed systems.
 
 [*Accompanying Slides for the Hands on Training*](https://docs.google.com/presentation/d/12mLg-DDVz8ddTN8mFU7jPu7RhQppCVMqzhQCU58VZC4/edit?usp=sharing)
 
+[*Training Video Google Drive Link*](https://drive.google.com/a/splunk.com/uc?id=1LlFz6u3jNsUsjJz9M9glj_RcMXDJPfZD&export=download)
+
 This 2-hour training session will help the attendees to increase their understanding of how artificial 
 intelligence can be used (with limitations) to build behavior based detections.  We will use the open source project
 [Aktaion](https://github.com/jzadeh/aktaion2) to discuss the internals of how this detection is built using standard python libraries for packet analysis and 
