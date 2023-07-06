@@ -1,4 +1,4 @@
-scipy==1.5.2
+scipy==1.10.0
 numpy==1.19.1
 brothon==0.2.5
 pandas==1.1.0
