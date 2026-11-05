@@ -10,7 +10,6 @@
 
 1. [Training Readme Here](https://github.com/jzadeh/aktaion2/blob/master/defcon2020/TrainingAbstract.md)
 2. [Training Youtube Link](https://www.youtube.com/watch?v=0oGSu32zzQA)
-3. [Training Slides Google Drive Link](https://docs.google.com/presentation/d/12mLg-DDVz8ddTN8mFU7jPu7RhQppCVMqzhQCU58VZC4/edit?usp=sharing)
 
 Redteam Village Defcon 28 Links: [Homepage](https://redteamvillage.io/), 
 [Discord](https://discord.gg/redteamvillage), 
